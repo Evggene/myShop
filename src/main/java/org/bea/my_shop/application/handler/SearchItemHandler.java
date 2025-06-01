@@ -20,18 +20,27 @@ public class SearchItemHandler {
 
     private final ItemRepository itemRepository;
 
-    public ItemAndPageInfo search(String searchRaw, SearchType searchType, Integer itemSizeRaw, Integer pageNumberRaw) {
+    public ItemAndPageInfo search(String searchRaw, SearchType searchTypeRaw, Integer itemSizeRaw, Integer pageNumberRaw) {
         var itemSize = itemSizeRaw == null ? 10 : itemSizeRaw;
         var search = searchRaw == null ? "" : searchRaw;
         var pageNumber = pageNumberRaw == null ? 0 : pageNumberRaw - 1;
+        var searchType = searchTypeRaw == null ? SearchType.NO : searchTypeRaw;
 
-        var pageRequest = PageRequest.of(pageNumber, itemSize, Sort.by("cost"));
+        var sort = selectSortField(searchType);
+        var pageRequest = PageRequest.of(pageNumber, itemSize, sort);
 
         Page<ItemEntity> entities = itemRepository.findByTitleLikeIgnoreCase(search, pageRequest);
-        int count = itemRepository.countByTitleLikeIgnoreCase(search, pageRequest);
         var items = entities.stream().map(ItemMapper::to).toList();
         var splitted = Lists.partition(items, 3);
-        var page = new PageOfItemsResponse(count, pageNumber, itemSize, search);
+        var page = new PageOfItemsResponse(entities.getTotalElements(), pageNumber + 1, itemSize, search, searchType.name());
         return new ItemAndPageInfo(splitted, page);
+    }
+
+    private Sort selectSortField(SearchType searchType) {
+        return switch (searchType) {
+            case NO -> Sort.unsorted();
+            case ALPHA -> Sort.by("title");
+            case PRICE -> Sort.by("price");
+        };
     }
 }

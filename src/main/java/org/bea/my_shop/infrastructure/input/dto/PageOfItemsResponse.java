@@ -15,6 +15,7 @@ public class PageOfItemsResponse {
     private int pageNumber; // offset - 1
     private int pageSize;  // limit
     private String search;
+    private String sort;
     public boolean hasNext() {
         return count - ((long) pageNumber * pageSize) > 0;
     }
@@ -22,8 +23,8 @@ public class PageOfItemsResponse {
         return pageNumber != 1;
     }
 
-    public long getCount() {
-        return count;
+    public String sort() {
+        return sort;
     }
 
     public int pageNumber() {
@@ -34,7 +35,7 @@ public class PageOfItemsResponse {
         return pageSize;
     }
 
-    public String getSearch() {
+    public String  search() {
         return search;
     }
 }

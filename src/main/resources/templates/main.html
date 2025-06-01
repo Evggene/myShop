@@ -18,15 +18,15 @@
                 <form>
                     <p>
                         <label for="search">Найти: </label>
-                        <input id="search" style="width:300px;" name="search" th:value="${search}">
+                        <input id="search" style="width:300px;" name="search" th:value="${paging.search}">
                         <button name="action">&#128269;</button>
                     </p>
                     <p>
                         <label for="sort">Сортировка: </label>
                         <select id="sort" name="sort" onchange="this.form.submit()">
-                            <option value="NO" th:selected="${sort=='NO'}">нет</option>
-                            <option value="ALPHA" th:selected="${sort=='ALPHA'}">по алфавиту</option>
-                            <option value="PRICE" th:selected="${sort=='PRICE'}">по цене</option>
+                            <option value="NO" th:selected="${paging.sort=='NO'}">нет</option>
+                            <option value="ALPHA" th:selected="${paging.sort=='ALPHA'}">по алфавиту</option>
+                            <option value="PRICE" th:selected="${paging.sort=='PRICE'}">по цене</option>
                         </select>
                     </p>
                     <p>

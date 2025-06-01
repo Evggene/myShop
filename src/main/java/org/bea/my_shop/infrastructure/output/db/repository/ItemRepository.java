@@ -17,6 +17,4 @@ public interface ItemRepository extends JpaRepository<ItemEntity, UUID> {
     @Query("select i from ItemEntity i where upper(i.title) like concat('%', upper(:title), '%')")
     Page<ItemEntity> findByTitleLikeIgnoreCase(@Param("title") String title, PageRequest pageRequest);
 
-    int countByTitleLikeIgnoreCase(@Param("title") String title, PageRequest pageRequest);
-
 }
