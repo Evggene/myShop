@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PageOfItemsResponse {
     private long count;
-    private int pageNumber; // offset -1
+    private int pageNumber; // offset - 1
     private int pageSize;  // limit
     private String search;
     public boolean hasNext() {
