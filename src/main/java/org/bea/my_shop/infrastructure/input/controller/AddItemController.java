@@ -1,7 +1,7 @@
 package org.bea.my_shop.infrastructure.input.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.bea.my_shop.application.AddItemHandler;
+import org.bea.my_shop.application.handler.AddItemHandler;
 import org.bea.my_shop.application.configuration.FileStorageService;
 import org.bea.my_shop.infrastructure.input.dto.AddItemRequest;
 import org.springframework.http.MediaType;

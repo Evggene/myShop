@@ -1,4 +1,4 @@
-package org.bea.my_shop.application;
+package org.bea.my_shop.application.handler;
 
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.domain.Currency;

@@ -16,7 +16,7 @@ public class ResourceRootPathConfiguration {
 
     private final ResourceLoader resourceLoader;
 
-    public static final String IMAGES = "resources/images";
+    public static final String IMAGES = "resources/static";
 
     public Path getRootPathTo(String folderName) throws IOException {
         var resource = resourceLoader.getResource(folderName);
