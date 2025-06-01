@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create-table-goods" author="your_name">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="goods"/>
+            </not>
+        </preConditions>
+
+        <createTable tableName="goods">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="image_path" type="varchar(512)"/>
+            <column name="cost_amount" type="numeric(19,4)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cost_currency" type="varchar(3)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Комментарии к таблице и полям -->
+        <sql>
+            COMMENT ON TABLE goods IS 'Таблица для хранения информации о товарах';
+            COMMENT ON COLUMN goods.id IS 'Уникальный идентификатор товара';
+            COMMENT ON COLUMN goods.title IS 'Наименование товара (обязательное поле)';
+            COMMENT ON COLUMN goods.image_path IS 'Путь к изображению товара в файловой системе';
+            COMMENT ON COLUMN goods.cost_amount IS 'Стоимость товара (числовая часть)';
+            COMMENT ON COLUMN goods.cost_currency IS 'Валюта стоимости (3-буквенный код по ISO 4217: RUB, USD, EUR)';
+        </sql>
+    </changeSet>
+</databaseChangeLog>
