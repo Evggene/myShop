@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class Bucket {
+public class Order {
     private UUID id;
-    Map<Item, Integer> positions;
+    Map<Cart, OrderStateType> cartsAndState;
 }

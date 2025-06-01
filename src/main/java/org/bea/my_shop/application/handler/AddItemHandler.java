@@ -1,7 +1,6 @@
 package org.bea.my_shop.application.handler;
 
 import lombok.RequiredArgsConstructor;
-import org.bea.my_shop.domain.Currency;
 import org.bea.my_shop.infrastructure.input.dto.AddItemRequest;
 import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
@@ -28,7 +27,6 @@ public class AddItemHandler {
         entity.setId(entity.getId() == null ? UUID.randomUUID() : entity.getId());
         entity.setCreatedAt(Instant.now(Clock.systemUTC()));
         entity.setUpdatedAt(Instant.now(Clock.systemUTC()));
-        entity.setCurrency(Currency.RUB);
         return entity;
     }
 }

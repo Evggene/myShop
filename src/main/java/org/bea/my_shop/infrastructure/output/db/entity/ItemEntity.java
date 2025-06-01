@@ -10,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.bea.my_shop.domain.Currency;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -29,7 +28,5 @@ public class ItemEntity extends AuditFields {
     private String description;
     private String imagePath;
     private BigDecimal cost;
-    @Enumerated(EnumType.STRING)
-    private Currency currency;
 
 }

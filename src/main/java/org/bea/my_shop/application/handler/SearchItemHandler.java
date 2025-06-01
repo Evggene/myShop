@@ -3,6 +3,7 @@ package org.bea.my_shop.application.handler;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.mapper.ItemMapper;
+import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.infrastructure.input.dto.ItemAndPageInfo;
 import org.bea.my_shop.infrastructure.input.dto.PageOfItemsResponse;
 import org.bea.my_shop.infrastructure.input.type.SearchType;
@@ -13,6 +14,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -42,5 +46,10 @@ public class SearchItemHandler {
             case ALPHA -> Sort.by("title");
             case PRICE -> Sort.by("price");
         };
+    }
+
+    public Item findById(UUID id) {
+        var itemEntityOpt = itemRepository.findById(id);
+        return ItemMapper.to(itemEntityOpt.get());
     }
 }
