@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class GoodsAmount {
-    private Goods goods;
+public class ItemsAmount {
+    private Item item;
     private int amount;
 }

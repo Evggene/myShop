@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class Goods {
+public class Item {
     private UUID typeId;
     private String title;
     private String description;

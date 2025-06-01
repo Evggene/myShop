@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public record AddGoodsRequest(
+public record AddItemRequest(
         UUID id,
         String title,
         MultipartFile image,

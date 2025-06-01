@@ -5,14 +5,14 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="create-table-goods" author="your_name">
+    <changeSet id="create-table-item" author="your_name">
         <preConditions onFail="MARK_RAN">
             <not>
-                <tableExists tableName="goods"/>
+                <tableExists tableName="item"/>
             </not>
         </preConditions>
 
-        <createTable tableName="goods">
+        <createTable tableName="item">
             <column name="id" type="uuid">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -36,12 +36,12 @@
 
         <!-- Комментарии к таблице и полям -->
         <sql>
-            COMMENT ON TABLE goods IS 'Таблица для хранения информации о товарах';
-            COMMENT ON COLUMN goods.id IS 'Уникальный идентификатор товара';
-            COMMENT ON COLUMN goods.title IS 'Наименование товара (обязательное поле)';
-            COMMENT ON COLUMN goods.image_path IS 'Путь к изображению товара в файловой системе';
-            COMMENT ON COLUMN goods.cost IS 'Стоимость товара (числовая часть)';
-            COMMENT ON COLUMN goods.currency IS 'Валюта стоимости (3-буквенный код по ISO 4217: RUB, USD, EUR)';
+            COMMENT ON TABLE item IS 'Таблица для хранения информации о товарах';
+            COMMENT ON COLUMN item.id IS 'Уникальный идентификатор товара';
+            COMMENT ON COLUMN item.title IS 'Наименование товара (обязательное поле)';
+            COMMENT ON COLUMN item.image_path IS 'Путь к изображению товара в файловой системе';
+            COMMENT ON COLUMN item.cost IS 'Стоимость товара (числовая часть)';
+            COMMENT ON COLUMN item.currency IS 'Валюта стоимости (3-буквенный код по ISO 4217: RUB, USD, EUR)';
         </sql>
     </changeSet>
 </databaseChangeLog>
