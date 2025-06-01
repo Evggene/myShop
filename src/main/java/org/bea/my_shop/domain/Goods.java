@@ -8,8 +8,9 @@ import java.util.UUID;
 @Data
 @Builder
 public class Goods {
-    private UUID id;
+    private UUID typeId;
     private String title;
+    private String description;
     private String imagePath;
     private Money cost;
 }

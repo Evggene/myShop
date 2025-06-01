@@ -19,13 +19,19 @@
             <column name="title" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
             <column name="image_path" type="varchar(512)"/>
-            <column name="cost_amount" type="numeric(19,4)">
+            <column name="cost" type="numeric(19,2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="cost_currency" type="varchar(3)">
+            <column name="currency" type="varchar(3)">
                 <constraints nullable="false"/>
             </column>
+            <column name="created_at" type="TIMESTAMP"/>
+            <column name="updated_at" type="TIMESTAMP"/>
+            <column name="deleted_at" type="TIMESTAMP"/>
         </createTable>
 
         <!-- Комментарии к таблице и полям -->
@@ -34,8 +40,8 @@
             COMMENT ON COLUMN goods.id IS 'Уникальный идентификатор товара';
             COMMENT ON COLUMN goods.title IS 'Наименование товара (обязательное поле)';
             COMMENT ON COLUMN goods.image_path IS 'Путь к изображению товара в файловой системе';
-            COMMENT ON COLUMN goods.cost_amount IS 'Стоимость товара (числовая часть)';
-            COMMENT ON COLUMN goods.cost_currency IS 'Валюта стоимости (3-буквенный код по ISO 4217: RUB, USD, EUR)';
+            COMMENT ON COLUMN goods.cost IS 'Стоимость товара (числовая часть)';
+            COMMENT ON COLUMN goods.currency IS 'Валюта стоимости (3-буквенный код по ISO 4217: RUB, USD, EUR)';
         </sql>
     </changeSet>
 </databaseChangeLog>
