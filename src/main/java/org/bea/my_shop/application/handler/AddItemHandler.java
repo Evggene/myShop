@@ -19,14 +19,7 @@ public class AddItemHandler {
 
     public void add(AddItemRequest addItemRequest) {
         var rawItem = ItemMapper.to(addItemRequest);
-        var item = fillIdIfNeedAndAuditFields(rawItem);
-        itemRepository.save(item);
-    }
-
-    private ItemEntity fillIdIfNeedAndAuditFields(ItemEntity entity) {
-        entity.setId(entity.getId() == null ? UUID.randomUUID() : entity.getId());
-        entity.setCreatedAt(Instant.now(Clock.systemUTC()));
-        entity.setUpdatedAt(Instant.now(Clock.systemUTC()));
-        return entity;
+        var itemEntity = rawItem.createNewEntity();
+        itemRepository.save(itemEntity);
     }
 }

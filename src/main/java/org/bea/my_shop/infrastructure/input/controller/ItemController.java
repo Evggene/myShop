@@ -43,7 +43,7 @@ public class ItemController {
     }
 
     /**
-     GET "/items/{id}" - карточка товара
+     карточка товара
      Возвращает:
          используется модель для заполнения шаблона:
          "item" - товаров (id, title, decription, imgPath, count, price)
@@ -51,7 +51,7 @@ public class ItemController {
     @GetMapping(path = "items/{id}")
     public String search(@PathVariable("id") UUID id, Model model) {
         var res = searchItemHandler.findById(id);
-        model.addAttribute("items", res);
+        model.addAttribute("item", res);
         return "item";
     }
 

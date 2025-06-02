@@ -10,7 +10,7 @@ public class ItemMapper {
         return ItemEntity.builder()
                 .id(addItemRequests.id())
                 .title(addItemRequests.title())
-                .cost(addItemRequests.amount())
+                .price(addItemRequests.amount())
                 .description(addItemRequests.description())
                 .imagePath(addItemRequests.image().getOriginalFilename())
                 .build();
@@ -19,10 +19,11 @@ public class ItemMapper {
     public static Item to(ItemEntity entity) {
         return Item.builder()
                 .title(entity.getTitle())
-                .price(new Money(entity.getCost()))
+                .price(new Money(entity.getPrice()))
                 .description(entity.getDescription())
                 .imagePath(entity.getImagePath())
                 .id(entity.getId())
+                .count(entity.getItemCountEntity().getCount())
                 .build();
     }
 }

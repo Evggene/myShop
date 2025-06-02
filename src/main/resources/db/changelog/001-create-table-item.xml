@@ -23,15 +23,12 @@
                 <constraints nullable="false"/>
             </column>
             <column name="image_path" type="varchar(512)"/>
-            <column name="cost" type="numeric(19,2)">
+            <column name="price" type="numeric(19,2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="currency" type="varchar(3)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="created_at" type="TIMESTAMP"/>
-            <column name="updated_at" type="TIMESTAMP"/>
-            <column name="deleted_at" type="TIMESTAMP"/>
+            <column name="created_at" type="TIMESTAMPTZ"/>
+            <column name="updated_at" type="TIMESTAMPTZ"/>
+            <column name="deleted_at" type="TIMESTAMPTZ"/>
         </createTable>
 
         <!-- Комментарии к таблице и полям -->
@@ -40,8 +37,19 @@
             COMMENT ON COLUMN item.id IS 'Уникальный идентификатор товара';
             COMMENT ON COLUMN item.title IS 'Наименование товара (обязательное поле)';
             COMMENT ON COLUMN item.image_path IS 'Путь к изображению товара в файловой системе';
-            COMMENT ON COLUMN item.cost IS 'Стоимость товара (числовая часть)';
-            COMMENT ON COLUMN item.currency IS 'Валюта стоимости (3-буквенный код по ISO 4217: RUB, USD, EUR)';
+            COMMENT ON COLUMN item.price IS 'Стоимость товара (числовая часть)';
         </sql>
     </changeSet>
+
+    <changeSet id="create-item-count-table" author="your_name">
+        <createTable tableName="item_count">
+            <column name="item_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="count" type="integer" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
