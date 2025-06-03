@@ -19,7 +19,7 @@ public class AddItemHandler {
 
     public void add(AddItemRequest addItemRequest) {
         var rawItem = ItemMapper.to(addItemRequest);
-        var itemEntity = rawItem.createNewEntity();
+        var itemEntity = rawItem.createNewEntity(addItemRequest.amount());
         itemRepository.save(itemEntity);
     }
 }

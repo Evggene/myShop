@@ -1,9 +1,10 @@
 package org.bea.my_shop.infrastructure.input.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.bea.my_shop.application.handler.EditItemHandler;
 import org.bea.my_shop.application.handler.SearchItemHandler;
-import org.bea.my_shop.infrastructure.input.type.ActionType;
-import org.bea.my_shop.infrastructure.input.type.SearchType;
+import org.bea.my_shop.application.type.ActionType;
+import org.bea.my_shop.application.type.SearchType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class ItemController {
 
     private final SearchItemHandler searchItemHandler;
+    private final EditItemHandler editCartHandler;
 
     @GetMapping(path = "main/items")
     public String search(
@@ -36,9 +38,17 @@ public class ItemController {
      * Измменить количество товара в корзине
      */
     @PostMapping(value = "/main/items/{id}")
-    public String deletePost(
+    public String mainEditItems(
             @PathVariable("id") UUID id,
             @RequestParam(value = "sort", required = false) ActionType actionType) {
+        return "redirect:/main/items";
+    }
+
+    @PostMapping(value = "/items/{id}")
+    public String editItems(
+            @PathVariable("id") UUID id,
+            @RequestParam(value = "action", required = false) ActionType actionType) {
+        editCartHandler.edit(id, actionType);
         return "redirect:/main/items";
     }
 

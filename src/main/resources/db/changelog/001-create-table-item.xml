@@ -26,7 +26,7 @@
             <column name="price" type="numeric(19,2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="created_at" type="TIMESTAMPTZ"/>
+            <column name="created_at" type="TIMESTAMPTZ" defaultValue="NOW()"/>
             <column name="updated_at" type="TIMESTAMPTZ"/>
             <column name="deleted_at" type="TIMESTAMPTZ"/>
         </createTable>

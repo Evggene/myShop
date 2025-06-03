@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="your_name">
+
+        <createTable tableName="cart">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="cart_state" type="varchar(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMPTZ"/>
+            <column name="updated_at" type="TIMESTAMPTZ"/>
+            <column name="deleted_at" type="TIMESTAMPTZ"/>
+        </createTable>
+
+        <createTable tableName="cart_items">
+            <column name="cart_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_cart"
+                             referencedTableName="cart" referencedColumnNames="id"/>
+            </column>
+            <column name="item_id" type="uuid">
+                <constraints nullable="false" foreignKeyName="fk_item"
+                             referencedTableName="item" referencedColumnNames="id"/>
+            </column>
+            <column name="count" type="integer"/>
+        </createTable>
+
+        <addPrimaryKey tableName="cart_items" columnNames="cart_id, item_id"/>
+    </changeSet>
+
+</databaseChangeLog>

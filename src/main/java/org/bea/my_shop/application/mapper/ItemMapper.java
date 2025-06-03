@@ -10,7 +10,7 @@ public class ItemMapper {
         return ItemEntity.builder()
                 .id(addItemRequests.id())
                 .title(addItemRequests.title())
-                .price(addItemRequests.amount())
+                .price(addItemRequests.price())
                 .description(addItemRequests.description())
                 .imagePath(addItemRequests.image().getOriginalFilename())
                 .build();

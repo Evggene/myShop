@@ -1,6 +1,6 @@
 package org.bea.my_shop.domain;
 
-public enum OrderStateType {
+public enum CartStateType {
     PREPARE,
     BUY
 }

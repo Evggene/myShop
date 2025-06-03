@@ -10,5 +10,6 @@ public record AddItemRequest(
         String title,
         MultipartFile image,
         String description,
-        BigDecimal amount
+        Integer amount,
+        BigDecimal price
 ) { }

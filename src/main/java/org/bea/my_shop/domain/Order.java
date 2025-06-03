@@ -10,5 +10,5 @@ import java.util.UUID;
 @Builder
 public class Order {
     private UUID id;
-    Map<Cart, OrderStateType> cartsAndState;
+    Map<Cart, CartStateType> cartsAndState;
 }

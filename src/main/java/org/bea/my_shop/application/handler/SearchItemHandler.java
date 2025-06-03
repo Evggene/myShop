@@ -4,18 +4,16 @@ import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.domain.Item;
-import org.bea.my_shop.infrastructure.input.dto.ItemAndPageInfo;
+import org.bea.my_shop.application.dto.ItemAndPageInfo;
 import org.bea.my_shop.infrastructure.input.dto.PageOfItemsResponse;
-import org.bea.my_shop.infrastructure.input.type.SearchType;
+import org.bea.my_shop.application.type.SearchType;
 import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service

@@ -3,6 +3,7 @@ package org.bea.my_shop.infrastructure.output.db.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
@@ -25,7 +26,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ItemEntity extends AuditFields {
     @Id
-    @Column(name = "id")
+    @Column(columnDefinition = "uuid", updatable = false)
+    @GeneratedValue
     private UUID id;
     private String title;
     private String description;
@@ -35,18 +37,17 @@ public class ItemEntity extends AuditFields {
     @JoinColumn(name = "id", referencedColumnName = "item_id")
     private ItemCountEntity itemCountEntity;
 
-    public ItemEntity createNewEntity() {
-        fillIdIfNeed();
+    public ItemEntity createNewEntity(int count) {
         fillAuditFields();
-        initItemCount();
+        initItemCount(count);
         return this;
     }
 
-    private void initItemCount() {
+    private void initItemCount(int count) {
         if (this.itemCountEntity == null) {
             this.itemCountEntity = ItemCountEntity.builder()
                     .item(this)
-                    .count(0)
+                    .count(count)
                     .build();
         }
     }
