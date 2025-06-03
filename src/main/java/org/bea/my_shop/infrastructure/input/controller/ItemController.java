@@ -1,7 +1,7 @@
 package org.bea.my_shop.infrastructure.input.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.bea.my_shop.application.handler.EditItemHandler;
+import org.bea.my_shop.application.handler.EditCartHandler;
 import org.bea.my_shop.application.handler.SearchItemHandler;
 import org.bea.my_shop.application.type.ActionType;
 import org.bea.my_shop.application.type.SearchType;
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class ItemController {
 
     private final SearchItemHandler searchItemHandler;
-    private final EditItemHandler editCartHandler;
+    private final EditCartHandler editCartHandler;
 
     @GetMapping(path = "main/items")
     public String search(

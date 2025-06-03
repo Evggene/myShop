@@ -15,7 +15,7 @@ import java.util.UUID;
 @Service
 @Data
 @RequiredArgsConstructor
-public class EditItemHandler {
+public class EditCartHandler {
 
     private final ItemRepository itemRepository;
     private final CartRepository cartRepository;
@@ -49,7 +49,9 @@ public class EditItemHandler {
                 prepareCart.get().getPositions().computeIfPresent(itemEntity, (k, v) -> v - 1);
             }
             case DELETE -> {
-                throw new UnsupportedOperationException();
+                var count = prepareCart.get().getPositions().get(itemEntity);
+                prepareCart.get().getPositions().remove(itemEntity);
+                itemCount.setCount(itemCount.getCount() + count);
             }
         }
         itemRepository.save(itemEntity);
