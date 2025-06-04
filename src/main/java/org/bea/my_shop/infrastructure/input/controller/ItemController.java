@@ -1,7 +1,8 @@
 package org.bea.my_shop.infrastructure.input.controller;
 
+import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
-import org.bea.my_shop.application.handler.EditCartHandler;
+import org.bea.my_shop.application.handler.ActionCartHandler;
 import org.bea.my_shop.application.handler.SearchItemHandler;
 import org.bea.my_shop.application.type.ActionType;
 import org.bea.my_shop.application.type.SearchType;
@@ -19,7 +20,7 @@ import java.util.UUID;
 public class ItemController {
 
     private final SearchItemHandler searchItemHandler;
-    private final EditCartHandler editCartHandler;
+    private final ActionCartHandler actionCartHandler;
 
     @GetMapping(path = "main/items")
     public String search(
@@ -29,7 +30,8 @@ public class ItemController {
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             Model model) {
         var res = searchItemHandler.search(search, searchType, pageSize, pageNumber);
-        model.addAttribute("items", res.items());
+        var splittedForUI = Lists.partition(res.items(), 3);
+        model.addAttribute("items", splittedForUI);
         model.addAttribute("paging", res.pageInfo());
         return "main";
     }
@@ -48,7 +50,7 @@ public class ItemController {
     public String editItems(
             @PathVariable("id") UUID id,
             @RequestParam(value = "action", required = false) ActionType actionType) {
-        editCartHandler.edit(id, actionType);
+        actionCartHandler.handleAction(id, actionType);
         return "redirect:/main/items";
     }
 

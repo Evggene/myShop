@@ -3,6 +3,7 @@ package org.bea.my_shop.application.handler;
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.mapper.ItemMapper;
+import org.bea.my_shop.application.type.SortType;
 import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.application.dto.ItemAndPageInfo;
 import org.bea.my_shop.infrastructure.input.dto.PageOfItemsResponse;
@@ -22,7 +23,8 @@ public class SearchItemHandler {
 
     private final ItemRepository itemRepository;
 
-    public ItemAndPageInfo search(String searchRaw, SearchType searchTypeRaw, Integer itemSizeRaw, Integer pageNumberRaw) {
+    public ItemAndPageInfo search(
+            String searchRaw, SearchType searchTypeRaw, Integer itemSizeRaw, Integer pageNumberRaw) {
         var itemSize = itemSizeRaw == null ? 10 : itemSizeRaw;
         var search = searchRaw == null ? "" : searchRaw;
         var pageNumber = pageNumberRaw == null ? 0 : pageNumberRaw - 1;
@@ -31,18 +33,18 @@ public class SearchItemHandler {
         var sort = selectSortField(searchType);
         var pageRequest = PageRequest.of(pageNumber, itemSize, sort);
 
-        Page<ItemEntity> entities = itemRepository.findByTitleLikeIgnoreCase(search, pageRequest);
+        var entities = itemRepository.findByTitleLikeIgnoreCase(search, pageRequest);
         var items = entities.stream().map(ItemMapper::to).toList();
-        var splitted = Lists.partition(items, 3);
-        var page = new PageOfItemsResponse(entities.getTotalElements(), pageNumber + 1, itemSize, search, searchType.name());
-        return new ItemAndPageInfo(splitted, page);
+        var page = new PageOfItemsResponse(
+                entities.getTotalElements(), pageNumber + 1, itemSize, search, searchType.name());
+        return new ItemAndPageInfo(items, page);
     }
 
     private Sort selectSortField(SearchType searchType) {
         return switch (searchType) {
             case NO -> Sort.unsorted();
-            case ALPHA -> Sort.by("title");
-            case PRICE -> Sort.by("price");
+            case ALPHA -> Sort.by(SortType.TITLE.getValue());
+            case PRICE -> Sort.by(SortType.PRICE.getValue());
         };
     }
 

@@ -5,5 +5,5 @@ import org.bea.my_shop.infrastructure.input.dto.PageOfItemsResponse;
 
 import java.util.List;
 
-public record ItemAndPageInfo(List<List<Item>> items, PageOfItemsResponse pageInfo) {
+public record ItemAndPageInfo(List<Item> items, PageOfItemsResponse pageInfo) {
 }

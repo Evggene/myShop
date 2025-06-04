@@ -1,7 +1,7 @@
 package org.bea.my_shop.infrastructure.input.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.bea.my_shop.application.handler.EditCartHandler;
+import org.bea.my_shop.application.handler.ActionCartHandler;
 import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.application.type.ActionType;
 import org.bea.my_shop.domain.CartStateType;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.UUID;
 
 @Controller
@@ -24,7 +23,7 @@ import java.util.UUID;
 public class CartController {
 
     private final CartRepository cartRepository;
-    private final EditCartHandler editCartHandler;
+    private final ActionCartHandler actionCartHandler;
 
     /**
      * список товаров в корзине
@@ -84,7 +83,7 @@ public class CartController {
     public String editItems(
             @PathVariable("id") UUID id,
             @RequestParam(value = "action", required = false) ActionType actionType) {
-        editCartHandler.edit(id, actionType);
+        actionCartHandler.handleAction(id, actionType);
         return "redirect:/cart/items";
     }
 
