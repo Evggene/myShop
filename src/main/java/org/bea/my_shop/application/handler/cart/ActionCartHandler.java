@@ -1,4 +1,4 @@
-package org.bea.my_shop.application.handler;
+package org.bea.my_shop.application.handler.cart;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

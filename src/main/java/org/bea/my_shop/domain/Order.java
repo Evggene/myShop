@@ -3,6 +3,7 @@ package org.bea.my_shop.domain;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -10,5 +11,6 @@ import java.util.UUID;
 @Builder
 public class Order {
     private UUID id;
-    Map<Cart, CartStateType> cartsAndState;
+    Cart cart;
+    Money totalSum;
 }

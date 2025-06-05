@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create_order_table" author="your_name">
+        <createTable tableName="orders">
+            <column name="id" type="uuid" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="cart_id" type="uuid">
+                <constraints nullable="false" unique="true"
+                             foreignKeyName="fk_order_cart" references="cart(id)"/>
+            </column>
+            <column name="total_sum" type="numeric(19,2)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="order"
+                columnNames="cart_id"
+                constraintName="uk_order_cart_id"/>
+    </changeSet>
+
+</databaseChangeLog>

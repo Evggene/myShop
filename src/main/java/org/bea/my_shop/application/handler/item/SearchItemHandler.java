@@ -1,4 +1,4 @@
-package org.bea.my_shop.application.handler;
+package org.bea.my_shop.application.handler.item;
 
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;

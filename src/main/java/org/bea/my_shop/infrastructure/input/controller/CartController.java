@@ -1,12 +1,10 @@
 package org.bea.my_shop.infrastructure.input.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.bea.my_shop.application.handler.ActionCartHandler;
-import org.bea.my_shop.application.mapper.ItemMapper;
+import org.bea.my_shop.application.handler.cart.ActionCartHandler;
+import org.bea.my_shop.application.handler.cart.GetCartHandler;
+import org.bea.my_shop.application.handler.cart.OrderCartHandler;
 import org.bea.my_shop.application.type.ActionType;
-import org.bea.my_shop.domain.CartStateType;
-import org.bea.my_shop.domain.Item;
-import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,16 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
 public class CartController {
 
-    private final CartRepository cartRepository;
     private final ActionCartHandler actionCartHandler;
+    private final GetCartHandler getCartHandler;
+    private final OrderCartHandler orderCartHandler;
 
     /**
      * список товаров в корзине
@@ -35,42 +32,22 @@ public class CartController {
      */
     @GetMapping(path = "cart/items")
     public String getItemsInCart(Model model) {
-        var prepareCart = cartRepository.findFirstByCartState(CartStateType.PREPARE);
-        if (prepareCart.isEmpty()) {
-            model.addAttribute("items", null);
-            model.addAttribute("total", 0);
-            model.addAttribute("empty", true);
-        } else {
-            var total = prepareCart.get()
-                    .getPositions()
-                    .entrySet()
-                    .stream()
-                    .map(it -> it.getKey().getPrice().multiply(BigDecimal.valueOf(it.getValue())))
-                    .reduce(BigDecimal.ZERO, BigDecimal::add);
-            var items = prepareCart
-                    .get()
-                    .getPositions()
-                    .entrySet()
-                    .stream()
-                    .peek(it -> {
-                        it.getKey().getItemCountEntity().setCount(it.getValue());
-                    })
-                    .map(it -> ItemMapper.to(it.getKey()))
-                    .sorted(Comparator.comparing(Item::getTitle))
-                    .toList();
-            model.addAttribute("items", items);
-            model.addAttribute("total", total);
-            model.addAttribute("empty", false);
-        }
+        var res = getCartHandler.getCartStatePrepare();
+            model.addAttribute("items", res.items());
+            model.addAttribute("total", res.totalPrice());
+            model.addAttribute("empty", res.items().isEmpty());
+            model.addAttribute("cartId", res.cartId());
         return "cart";
     }
 
     /**
      * купить товары в корзине (выполняет покупку товаров в корзине и очищает ее)
      */
-    @PostMapping
-    public String buy() {
-        return "redirect:/orders/{id}?newOrder=true";
+    @PostMapping(value = "buy/{id}")
+    public String buy(
+            @PathVariable("id") UUID id) {
+        var newOrderId = orderCartHandler.orderCart(id);
+        return "redirect:/orders/" + newOrderId + "?newOrder=true";
     }
 
     /**
@@ -80,7 +57,7 @@ public class CartController {
      (PLUS - добавить один товар, MINUS - удалить один товар, DELETE - удалить товар из корзины)
      */
     @PostMapping(value = "cart/items/{id}")
-    public String editItems(
+    public String ationaItems(
             @PathVariable("id") UUID id,
             @RequestParam(value = "action", required = false) ActionType actionType) {
         actionCartHandler.handleAction(id, actionType);

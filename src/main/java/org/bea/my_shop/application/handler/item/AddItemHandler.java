@@ -1,4 +1,4 @@
-package org.bea.my_shop.application.handler;
+package org.bea.my_shop.application.handler.item;
 
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.infrastructure.input.dto.AddItemRequest;
