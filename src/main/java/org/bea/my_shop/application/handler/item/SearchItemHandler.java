@@ -1,6 +1,5 @@
 package org.bea.my_shop.application.handler.item;
 
-import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.application.type.SortType;
@@ -8,9 +7,7 @@ import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.application.dto.ItemAndPageInfo;
 import org.bea.my_shop.infrastructure.input.dto.PageOfItemsResponse;
 import org.bea.my_shop.application.type.SearchType;
-import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -34,7 +31,7 @@ public class SearchItemHandler {
         var pageRequest = PageRequest.of(pageNumber, itemSize, sort);
 
         var entities = itemRepository.findByTitleLikeIgnoreCase(search, pageRequest);
-        var items = entities.stream().map(ItemMapper::to).toList();
+        var items = entities.stream().map(ItemMapper::toModel).toList();
         var page = new PageOfItemsResponse(
                 entities.getTotalElements(), pageNumber + 1, itemSize, search, searchType.name());
         return new ItemAndPageInfo(items, page);
@@ -50,6 +47,6 @@ public class SearchItemHandler {
 
     public Item findById(UUID id) {
         var itemEntityOpt = itemRepository.findById(id);
-        return ItemMapper.to(itemEntityOpt.get());
+        return ItemMapper.toModel(itemEntityOpt.get());
     }
 }

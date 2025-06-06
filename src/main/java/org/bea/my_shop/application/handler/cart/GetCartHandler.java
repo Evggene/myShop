@@ -33,7 +33,7 @@ public class GetCartHandler {
                     // надо конвертировать в ItemInCartResponse
                     it.getKey().getItemCountEntity().setCount(it.getValue());
                 })
-                .map(it -> ItemMapper.to(it.getKey()))
+                .map(it -> ItemMapper.toModel(it.getKey()))
                 .sorted(Comparator.comparing(Item::getTitle))
                 .toList();
         return new ItemAndPriceInfo(prepareCart.getId(), items, total);
