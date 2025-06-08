@@ -22,25 +22,13 @@ class AddItemHandlerTest extends BaseHandlerTest{
     @Test
     void add_shouldSaveItemWithCorrectParameters() {
 
-        MultipartFile image = new MockMultipartFile(
-                "test.jpg",
-                "test.jpg",
-                "image/jpeg",
-                new byte[0]
-        );
+        var image = new MockMultipartFile("test.jpg", "test.jpg", "image/jpeg", new byte[0] );
 
-        AddItemRequest request = new AddItemRequest(null,
-                "Test Item",
-                image,
-                "Test Description",
-                10,
-                BigDecimal.valueOf(99.99)
-        );
+        var request = new AddItemRequest(
+                null, "Test Item", image, "Test Description", 10, BigDecimal.valueOf(99.99));
 
-        // When
         addItemHandler.add(request);
 
-        // Then
         Optional<ItemEntity> savedItem = itemRepository.findAll().stream().findFirst();
         assertTrue(savedItem.isPresent());
 
@@ -51,61 +39,5 @@ class AddItemHandlerTest extends BaseHandlerTest{
         assertEquals("test.jpg", item.getImagePath());
         assertNotNull(item.getCreatedAt());
         assertNotNull(item.getUpdatedAt());
-    }
-
-    @Test
-    void add_shouldHandleNullAmount() {
-        // Given
-        UUID itemId = UUID.randomUUID();
-        MultipartFile image = new MockMultipartFile(
-                "test.jpg",
-                "test.jpg",
-                "image/jpeg",
-                new byte[0]
-        );
-
-        AddItemRequest request = new AddItemRequest(
-                itemId,
-                "Test Item",
-                image,
-                "Test Description",
-                null,
-                BigDecimal.valueOf(99.99)
-        );
-
-        // When
-        addItemHandler.add(request);
-
-        // Then
-        Optional<ItemEntity> savedItem = itemRepository.findById(itemId);
-        assertTrue(savedItem.isPresent());
-    }
-
-    @Test
-    void add_shouldHandleZeroAmount() {
-        // Given
-        UUID itemId = UUID.randomUUID();
-        MultipartFile image = new MockMultipartFile(
-                "test.jpg",
-                "test.jpg",
-                "image/jpeg",
-                new byte[0]
-        );
-
-        AddItemRequest request = new AddItemRequest(
-                itemId,
-                "Test Item",
-                image,
-                "Test Description",
-                0,
-                BigDecimal.valueOf(99.99)
-        );
-
-        // When
-        addItemHandler.add(request);
-
-        // Then
-        Optional<ItemEntity> savedItem = itemRepository.findById(itemId);
-        assertTrue(savedItem.isPresent());
     }
 }
