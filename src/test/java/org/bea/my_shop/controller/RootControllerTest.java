@@ -24,10 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(RootController.class)
-public class RootControllerTest {
-
-    @Autowired
-    MockMvc mockMvc;
+public class RootControllerTest extends BaseControllerTest{
 
     @Test
     void root_shouldRedirectToItemsPage() throws Exception {
