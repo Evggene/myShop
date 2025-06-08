@@ -20,7 +20,7 @@
         </createTable>
 
         <addUniqueConstraint
-                tableName="order"
+                tableName="orders"
                 columnNames="cart_id"
                 constraintName="uk_order_cart_id"/>
     </changeSet>

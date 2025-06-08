@@ -37,7 +37,7 @@ public class ItemEntity extends AuditFields {
     @JoinColumn(name = "id", referencedColumnName = "item_id")
     private ItemCountEntity itemCountEntity;
 
-    public ItemEntity createNewEntity(int count) {
+    public ItemEntity setCountAndAuditFields(int count) {
         fillAuditFields();
         initItemCount(count);
         return this;
@@ -50,10 +50,6 @@ public class ItemEntity extends AuditFields {
                     .count(count)
                     .build();
         }
-    }
-
-    private void fillIdIfNeed() {
-        this.setId(this.getId() == null ? UUID.randomUUID() : this.getId());
     }
 
     private void fillAuditFields() {
