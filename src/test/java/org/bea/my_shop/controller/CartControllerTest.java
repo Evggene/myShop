@@ -31,7 +31,6 @@ class CartControllerTest extends BaseControllerTest {
 
     @Test
     void getItemsInCart_shouldReturnCartViewWithModelAttributes() throws Exception {
-        // Arrange
         UUID cartId = UUID.randomUUID();
         List<Item> items = List.of(
                 Item.builder()
@@ -56,7 +55,6 @@ class CartControllerTest extends BaseControllerTest {
         when(getCartHandler.getCartStatePrepare())
                 .thenReturn(new ItemAndPriceInfo(cartId, items, total));
 
-        // Act & Assert
         mockMvc.perform(get("/cart/items"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("cart"))
@@ -70,14 +68,12 @@ class CartControllerTest extends BaseControllerTest {
 
     @Test
     void buy_shouldProcessOrderAndRedirect() throws Exception {
-        // Arrange
         UUID cartId = UUID.randomUUID();
         UUID newOrderId = UUID.randomUUID();
 
         when(orderCartHandler.orderCart(cartId))
                 .thenReturn(newOrderId);
 
-        // Act & Assert
         mockMvc.perform(post("/buy/{id}", cartId))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/orders/" + newOrderId + "?newOrder=true"));
@@ -87,10 +83,8 @@ class CartControllerTest extends BaseControllerTest {
 
     @Test
     void actionItems_shouldHandlePlusAction() throws Exception {
-        // Arrange
         UUID itemId = UUID.randomUUID();
 
-        // Act & Assert
         mockMvc.perform(post("/cart/items/{id}", itemId)
                         .param("action", "PLUS"))
                 .andExpect(status().is3xxRedirection())
@@ -101,10 +95,8 @@ class CartControllerTest extends BaseControllerTest {
 
     @Test
     void actionItems_shouldHandleMinusAction() throws Exception {
-        // Arrange
         UUID itemId = UUID.randomUUID();
 
-        // Act & Assert
         mockMvc.perform(post("/cart/items/{id}", itemId)
                         .param("action", "MINUS"))
                 .andExpect(status().is3xxRedirection())
@@ -115,10 +107,8 @@ class CartControllerTest extends BaseControllerTest {
 
     @Test
     void actionItems_shouldHandleDeleteAction() throws Exception {
-        // Arrange
         UUID itemId = UUID.randomUUID();
 
-        // Act & Assert
         mockMvc.perform(post("/cart/items/{id}", itemId)
                         .param("action", "DELETE"))
                 .andExpect(status().is3xxRedirection())
@@ -129,10 +119,8 @@ class CartControllerTest extends BaseControllerTest {
 
     @Test
     void actionItems_shouldUseDefaultActionWhenNotSpecified() throws Exception {
-        // Arrange
         UUID itemId = UUID.randomUUID();
 
-        // Act & Assert
         mockMvc.perform(post("/cart/items/{id}", itemId))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/cart/items"));

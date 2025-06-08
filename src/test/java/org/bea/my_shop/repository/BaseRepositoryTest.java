@@ -1,6 +1,6 @@
 package org.bea.my_shop.repository;
 
-import org.bea.my_shop.configuration4.TestcontainersConfiguration;
+import org.bea.my_shop.configuration.TestcontainersConfiguration;
 import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
 import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
 import org.bea.my_shop.infrastructure.output.db.repository.OrderRepository;

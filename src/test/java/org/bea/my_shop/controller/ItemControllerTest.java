@@ -29,7 +29,6 @@ class ItemControllerTest extends BaseControllerTest{
 
     @Test
     void search_shouldReturnMainViewWithModelAttributes() throws Exception {
-        // Arrange
         Item item1 = Item.builder()
                 .id(UUID.randomUUID())
                 .title("Item 1")
@@ -46,7 +45,6 @@ class ItemControllerTest extends BaseControllerTest{
         when(searchItemHandler.search(anyString(), any(), anyInt(), anyInt()))
                 .thenReturn(new ItemAndPageInfo(List.of(item1, item2), pageInfo));
 
-        // Act & Assert
         mockMvc.perform(get("/main/items")
                         .param("search", "test")
                         .param("sort", "ALPHA")
@@ -60,22 +58,18 @@ class ItemControllerTest extends BaseControllerTest{
 
     @Test
     void search_shouldUseDefaultParameters() throws Exception {
-        // Arrange
         when(searchItemHandler.search(anyString(), any(), anyInt(), anyInt()))
                 .thenReturn(new ItemAndPageInfo(List.of(),
                         new PageOfItemsResponse(0L, 1, 10, "", "NO")));
 
-        // Act & Assert
         mockMvc.perform(get("/main/items"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void mainActionItems_shouldHandleActionAndRedirect() throws Exception {
-        // Arrange
         UUID itemId = UUID.randomUUID();
 
-        // Act & Assert
         mockMvc.perform(post("/main/items/{id}", itemId)
                         .param("action", "PLUS"))
                 .andExpect(status().is3xxRedirection())
@@ -86,10 +80,8 @@ class ItemControllerTest extends BaseControllerTest{
 
     @Test
     void editItems_shouldHandleActionAndRedirect() throws Exception {
-        // Arrange
         UUID itemId = UUID.randomUUID();
 
-        // Act & Assert
         mockMvc.perform(post("/items/{id}", itemId)
                         .param("action", "MINUS"))
                 .andExpect(status().is3xxRedirection())
@@ -100,7 +92,6 @@ class ItemControllerTest extends BaseControllerTest{
 
     @Test
     void getItemDetails_shouldReturnItemView() throws Exception {
-        // Arrange
         UUID itemId = UUID.randomUUID();
         Item item = Item.builder()
                 .id(itemId)
@@ -110,7 +101,6 @@ class ItemControllerTest extends BaseControllerTest{
 
         when(searchItemHandler.findById(itemId)).thenReturn(item);
 
-        // Act & Assert
         mockMvc.perform(get("/items/{id}", itemId))
                 .andExpect(status().isOk())
                 .andExpect(view().name("item"))

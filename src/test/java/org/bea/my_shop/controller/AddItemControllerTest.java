@@ -18,7 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(controllers = AddItemController.class)
 class AddItemControllerTest extends BaseControllerTest{
 
-
     @Test
     void addItemView_shouldReturnAddItemPage() throws Exception {
         mockMvc.perform(get("/item/add"))
@@ -28,7 +27,6 @@ class AddItemControllerTest extends BaseControllerTest{
 
     @Test
     void addItem_shouldProcessFormAndRedirect() throws Exception {
-        // Подготовка тестовых данных
         MockMultipartFile imageFile = new MockMultipartFile(
                 "image",
                 "test-image.jpg",
@@ -36,7 +34,6 @@ class AddItemControllerTest extends BaseControllerTest{
                 "test image content".getBytes()
         );
 
-        // Выполнение запроса и проверки
         mockMvc.perform(multipart("/item/add")
                         .file(imageFile)
                         .param("id", "550e8400-e29b-41d4-a716-446655440000")
@@ -48,14 +45,12 @@ class AddItemControllerTest extends BaseControllerTest{
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/item/add"));
 
-        // Проверка взаимодействия с моками
         verify(fileStorageService).copyImageToResources(any());
         verify(addItemHandler).add(any(AddItemRequest.class));
     }
 
     @Test
     void addItem_shouldBindFormDataCorrectly() throws Exception {
-        // Подготовка тестовых данных
         MockMultipartFile imageFile = new MockMultipartFile(
                 "image",
                 "test-image.jpg",
@@ -63,7 +58,6 @@ class AddItemControllerTest extends BaseControllerTest{
                 "test image content".getBytes()
         );
 
-        // Выполнение запроса
         mockMvc.perform(multipart("/item/add")
                 .file(imageFile)
                 .param("id", "550e8400-e29b-41d4-a716-446655440000")
@@ -73,7 +67,6 @@ class AddItemControllerTest extends BaseControllerTest{
                 .param("price", "99.99")
                 .contentType(MediaType.MULTIPART_FORM_DATA));
 
-        // Проверка параметров запроса
         ArgumentCaptor<AddItemRequest> requestCaptor = ArgumentCaptor.forClass(AddItemRequest.class);
         verify(addItemHandler).add(requestCaptor.capture());
 
