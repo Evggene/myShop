@@ -38,8 +38,8 @@ public class FileStorageService {
 
     private Mono<Path> getPath(FilePart imagePart) {
         return Mono.fromCallable(() ->
-                Path.of(rootPath.getRootPathTo(ResourceRootPathConfiguration.IMAGES) + File.separator + imagePart.filename())
-        ).onErrorResume(IOException.class, e -> Mono.error(new RuntimeException("Failed to create path", e)));
+                Path.of(rootPath.getRootPathTo(ResourceRootPathConfiguration.IMAGES) + File.separator + imagePart.filename()))
+                .onErrorResume(IOException.class, e -> Mono.error(new RuntimeException("Failed to create path", e)));
     }
 
     private Mono<Path> createDirectory(Path path) {
