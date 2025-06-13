@@ -2,12 +2,14 @@ package org.bea.my_shop.infrastructure.input.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.reactive.result.view.Rendering;
+import reactor.core.publisher.Mono;
 
 @Controller
 public class RootController {
 
     @GetMapping("/")
-    public String root() {
-        return "redirect:/main/items";
+    public Mono<Rendering> root() {
+        return Mono.just(Rendering.redirectTo("/main/items").build());
     }
 }
