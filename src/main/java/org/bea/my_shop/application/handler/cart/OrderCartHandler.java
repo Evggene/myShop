@@ -8,7 +8,6 @@ import org.bea.my_shop.infrastructure.output.db.entity.OrderEntity;
 import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
 import org.bea.my_shop.infrastructure.output.db.repository.OrderRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
