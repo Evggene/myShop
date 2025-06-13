@@ -9,12 +9,12 @@ public class PlusStrategy implements ActionStrategy {
     public ItemAndCartToEditInfo edit(ItemAndCartToEditInfo itemAndCartToEditInfo) {
         var itemEntity = itemAndCartToEditInfo.itemEntity();
         var cartEntity = itemAndCartToEditInfo.cartEntity();
-        var itemCount = itemEntity.getItemCountEntity();
+//        var itemCount = itemEntity.getItemCountEntity();
 
-        if (itemCount.getCount() == 0) {
-            return new ItemAndCartToEditInfo(null, null);
-        }
-        itemCount.setCount(itemCount.getCount() - 1);
+//        if (itemCount.getCount() == 0) {
+//            return new ItemAndCartToEditInfo(null, null);
+//        }
+//        itemCount.setCount(itemCount.getCount() - 1);
         cartEntity.getPositions().computeIfPresent(itemEntity, (k, v) -> v + 1);
         cartEntity.getPositions().putIfAbsent(itemEntity, 1);
         return itemAndCartToEditInfo;

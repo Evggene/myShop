@@ -1,6 +1,8 @@
-package org.bea.my_shop.application.configuration;
+package org.bea.my_shop.application;
 
 import lombok.RequiredArgsConstructor;
+import org.bea.my_shop.application.configuration.ResourceRootPathConfiguration;
+import org.bea.my_shop.domain.Money;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
@@ -18,27 +20,30 @@ public class FileStorageService {
 
     private final ResourceRootPathConfiguration rootPath;
 
-    public void copyImageToResourcesReactive(FilePart imagePart) throws IOException {
+    public Mono<String> copyImageToResources(FilePart imagePart) {
         if (imagePart.filename().isBlank()) {
-            return;
+            return Mono.empty();
         }
-        Path path = Path.of(
-                rootPath.getRootPathTo(ResourceRootPathConfiguration.IMAGES)
-                        + File.separator
-                        + imagePart.filename()
-        );
-        try {
-            Files.createDirectories(path.getParent());
-        } catch (IOException e) {
-            Mono.error(e);
-            return;
-        }
-        DataBufferUtils.write(
-                        imagePart.content(),
-                        path,
-                        StandardOpenOption.CREATE,
-                        StandardOpenOption.TRUNCATE_EXISTING
-                )
-                .then();
+        return getPath(imagePart)
+                .flatMap(path ->
+                        createDirectory(path)
+                                .then(DataBufferUtils.write(
+                                        imagePart.content(),
+                                        path,
+                                        StandardOpenOption.CREATE,
+                                        StandardOpenOption.TRUNCATE_EXISTING
+                                ))
+                                .thenReturn(Mono.just(path.getFileName()).toString()));
+    }
+
+    private Mono<Path> getPath(FilePart imagePart) {
+        return Mono.fromCallable(() ->
+                Path.of(rootPath.getRootPathTo(ResourceRootPathConfiguration.IMAGES) + File.separator + imagePart.filename())
+        ).onErrorResume(IOException.class, e -> Mono.error(new RuntimeException("Failed to create path", e)));
+    }
+
+    private Mono<Path> createDirectory(Path path) {
+        return Mono.fromCallable(() -> Files.createDirectories(path.getParent()))
+                .onErrorResume(IOException.class, e -> Mono.error(new RuntimeException("Failed to create directories", e)));
     }
 }

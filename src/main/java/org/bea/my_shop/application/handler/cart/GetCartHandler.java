@@ -29,10 +29,10 @@ public class GetCartHandler {
                 .getPositions()
                 .entrySet()
                 .stream()
-                .peek(it -> {
-                    // надо конвертировать в ItemInCartResponse
-                    it.getKey().getItemCountEntity().setCount(it.getValue());
-                })
+//                .peek(it -> {
+//                    // надо конвертировать в ItemInCartResponse
+//                    it.getKey().getItemCountEntity().setCount(it.getValue());
+//                })
                 .map(it -> ItemMapper.toModel(it.getKey()))
                 .sorted(Comparator.comparing(Item::getTitle))
                 .toList();

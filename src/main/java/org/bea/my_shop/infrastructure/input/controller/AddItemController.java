@@ -1,14 +1,19 @@
 package org.bea.my_shop.infrastructure.input.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.bea.my_shop.application.FileStorageService;
 import org.bea.my_shop.application.handler.item.AddItemHandler;
-import org.bea.my_shop.application.configuration.FileStorageService;
 import org.bea.my_shop.infrastructure.input.dto.AddItemRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.reactive.result.view.Rendering;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 
@@ -25,9 +30,10 @@ public class AddItemController {
     }
 
     @PostMapping(value = "/item/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String addItem(@ModelAttribute AddItemRequest addEditPostRequest) throws IOException {
-        fileStorageService.copyImageToResourcesReactive(addEditPostRequest.image());
-        addItemHandler.add(addEditPostRequest);
-        return "redirect:/item/add";
+    public Mono<Rendering> addItem(@ModelAttribute Mono<AddItemRequest> addEditPostRequest) {
+        return addEditPostRequest
+                .flatMap(it -> fileStorageService.copyImageToResources(it.image()))
+                .then(addItemHandler.add(addEditPostRequest))
+                .thenReturn(Rendering.redirectTo("/item/add").build());
     }
 }

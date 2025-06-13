@@ -6,21 +6,16 @@ import org.bea.my_shop.infrastructure.input.dto.AddItemRequest;
 import org.bea.my_shop.infrastructure.input.dto.ItemInCartRequest;
 import org.bea.my_shop.infrastructure.output.db.entity.ItemCountEntity;
 import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
+import reactor.core.publisher.Mono;
 
 public class ItemMapper {
-    public static ItemEntity toEntity(AddItemRequest addItemRequests) {
-        var a = ItemEntity.builder()
-                .id(addItemRequests.id())
+    public static Mono<ItemEntity> toEntity(AddItemRequest addItemRequests) {
+        return Mono.just(ItemEntity.builder()
                 .title(addItemRequests.title())
                 .price(addItemRequests.price())
                 .description(addItemRequests.description())
                 .imagePath(addItemRequests.image().filename())
-                .build();
-        var b = ItemCountEntity.builder()
-                .count(addItemRequests.amount())
-                .build();
-        a.setItemCountEntity(b);
-        return a;
+                .build());
     }
 
     public static Item toModel(ItemEntity entity) {
@@ -30,7 +25,7 @@ public class ItemMapper {
                 .description(entity.getDescription())
                 .imagePath(entity.getImagePath())
                 .id(entity.getId())
-                .count(entity.getItemCountEntity().getCount())
+//                .count(entity.getItemCountEntity().getCount())
                 .build();
     }
 
@@ -40,7 +35,7 @@ public class ItemMapper {
                 .title(entity.getTitle())
                 .description(entity.getDescription())
                 .imagePath(entity.getImagePath())
-                .count(entity.getItemCountEntity().getCount())
+//                .count(entity.getItemCountEntity().getCount())
                 .price(entity.getPrice())
                 .countInCart(countInCart)
                 .build();

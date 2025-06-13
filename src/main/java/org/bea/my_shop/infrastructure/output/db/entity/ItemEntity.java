@@ -8,7 +8,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,22 +22,18 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "item")
+@Table("item")
 @Setter
 @Getter
-@SuperBuilder
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class ItemEntity {
     @Id
-    @Column(columnDefinition = "uuid", updatable = false)
-    @GeneratedValue
-    private UUID id;
+    @Builder.Default
+    private UUID id = UUID.randomUUID();
     private String title;
     private String description;
     private String imagePath;
     private BigDecimal price;
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "item_id")
-    private ItemCountEntity itemCountEntity;
 }

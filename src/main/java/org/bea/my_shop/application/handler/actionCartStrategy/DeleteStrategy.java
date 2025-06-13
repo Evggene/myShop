@@ -9,11 +9,11 @@ public class DeleteStrategy implements ActionStrategy{
     public ItemAndCartToEditInfo edit(ItemAndCartToEditInfo itemAndCartToEditInfo) {
         var itemEntity = itemAndCartToEditInfo.itemEntity();
         var cartEntity = itemAndCartToEditInfo.cartEntity();
-        var itemCount = itemEntity.getItemCountEntity();
+//        var itemCount = itemEntity.getItemCountEntity();
 
         var count = cartEntity.getPositions().get(itemEntity);
         cartEntity.getPositions().remove(itemEntity);
-        itemCount.setCount(itemCount.getCount() + count);
+//        itemCount.setCount(itemCount.getCount() + count);
         return itemAndCartToEditInfo;
     }
 
