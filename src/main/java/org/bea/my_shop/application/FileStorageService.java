@@ -1,14 +1,16 @@
 package org.bea.my_shop.application.configuration;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.buffer.DataBufferUtils;
+import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 
 @Service
 @RequiredArgsConstructor
@@ -16,19 +18,27 @@ public class FileStorageService {
 
     private final ResourceRootPathConfiguration rootPath;
 
-    public void copyImageToResources(MultipartFile image) {
-        if (image.getOriginalFilename().isBlank()) {
+    public void copyImageToResourcesReactive(FilePart imagePart) throws IOException {
+        if (imagePart.filename().isBlank()) {
             return;
         }
+        Path path = Path.of(
+                rootPath.getRootPathTo(ResourceRootPathConfiguration.IMAGES)
+                        + File.separator
+                        + imagePart.filename()
+        );
         try {
-            var path = Path.of(
-                    rootPath.getRootPathTo(ResourceRootPathConfiguration.IMAGES)
-                            + File.separator
-                            + image.getOriginalFilename());
             Files.createDirectories(path.getParent());
-            Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            System.out.println(e);
+            Mono.error(e);
+            return;
         }
+        DataBufferUtils.write(
+                        imagePart.content(),
+                        path,
+                        StandardOpenOption.CREATE,
+                        StandardOpenOption.TRUNCATE_EXISTING
+                )
+                .then();
     }
 }

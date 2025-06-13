@@ -24,17 +24,17 @@ public class ResourceController {
     private final ResourceRootPathConfiguration resourceRootPathConfiguration;
     private final ItemRepository itemRepository;
 
-    @GetMapping("/images/{id}")
-    public ResponseEntity<Resource> getImage(@PathVariable("id") UUID id) throws IOException {
-        var post = itemRepository.findById(id);
-        if (post.isEmpty()) {
-            throw new RuntimeException("image not found");
-        }
-        var rootPath = resourceRootPathConfiguration.getRootPathTo(ResourceRootPathConfiguration.IMAGES);
-        Path imagePath = Paths.get(rootPath + File.separator + post.get().getImagePath());
-        Resource resource = new UrlResource(imagePath.toUri());
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(resource);
-    }
+//    @GetMapping("/images/{id}")
+//    public ResponseEntity<Resource> getImage(@PathVariable("id") UUID id) throws IOException {
+//        var post = itemRepository.findById(id);
+//        if (post.isEmpty()) {
+//            throw new RuntimeException("image not found");
+//        }
+//        var rootPath = resourceRootPathConfiguration.getRootPathTo(ResourceRootPathConfiguration.IMAGES);
+//        Path imagePath = Paths.get(rootPath + File.separator + post.get().getImagePath());
+//        Resource resource = new UrlResource(imagePath.toUri());
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.IMAGE_JPEG)
+//                .body(resource);
+//    }
 }

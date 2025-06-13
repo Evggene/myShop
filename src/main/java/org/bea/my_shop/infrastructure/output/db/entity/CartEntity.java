@@ -29,7 +29,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "cart")
 @NoArgsConstructor
-public class CartEntity extends AuditFields{
+public class CartEntity {
     @Id
     @GeneratedValue
     @Column(columnDefinition = "uuid", updatable = false)

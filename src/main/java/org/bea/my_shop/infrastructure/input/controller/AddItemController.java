@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.io.IOException;
+
 @Controller
 @RequiredArgsConstructor
 public class AddItemController {
@@ -23,8 +25,8 @@ public class AddItemController {
     }
 
     @PostMapping(value = "/item/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public String addItem(@ModelAttribute AddItemRequest addEditPostRequest) {
-        fileStorageService.copyImageToResources(addEditPostRequest.image());
+    public String addItem(@ModelAttribute AddItemRequest addEditPostRequest) throws IOException {
+        fileStorageService.copyImageToResourcesReactive(addEditPostRequest.image());
         addItemHandler.add(addEditPostRequest);
         return "redirect:/item/add";
     }

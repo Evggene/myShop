@@ -4,17 +4,23 @@ import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.domain.Money;
 import org.bea.my_shop.infrastructure.input.dto.AddItemRequest;
 import org.bea.my_shop.infrastructure.input.dto.ItemInCartRequest;
+import org.bea.my_shop.infrastructure.output.db.entity.ItemCountEntity;
 import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 
 public class ItemMapper {
     public static ItemEntity toEntity(AddItemRequest addItemRequests) {
-        return ItemEntity.builder()
+        var a = ItemEntity.builder()
                 .id(addItemRequests.id())
                 .title(addItemRequests.title())
                 .price(addItemRequests.price())
                 .description(addItemRequests.description())
-                .imagePath(addItemRequests.image().getOriginalFilename())
+                .imagePath(addItemRequests.image().filename())
                 .build();
+        var b = ItemCountEntity.builder()
+                .count(addItemRequests.amount())
+                .build();
+        a.setItemCountEntity(b);
+        return a;
     }
 
     public static Item toModel(ItemEntity entity) {

@@ -22,39 +22,39 @@ public class ItemController {
     private final SearchItemHandler searchItemHandler;
     private final ActionCartHandler actionCartHandler;
 
-    @GetMapping(path = "main/items")
-    public String search(
-            @RequestParam(value = "search", required = false) String search,
-            @RequestParam(value = "sort", required = false) SearchType searchType,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-            Model model) {
-        var res = searchItemHandler.search(search, searchType, pageSize, pageNumber);
-        var splittedForUI = Lists.partition(res.items(), 3);
-        model.addAttribute("items", splittedForUI);
-        model.addAttribute("paging", res.pageInfo());
-        return "main";
-    }
+//    @GetMapping(path = "main/items")
+//    public String search(
+//            @RequestParam(value = "search", required = false) String search,
+//            @RequestParam(value = "sort", required = false) SearchType searchType,
+//            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+//            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+//            Model model) {
+//        var res = searchItemHandler.search(search, searchType, pageSize, pageNumber);
+//        var splittedForUI = Lists.partition(res.items(), 3);
+//        model.addAttribute("items", splittedForUI);
+//        model.addAttribute("paging", res.pageInfo());
+//        return "main";
+//    }
 
     /**
      * Измменить количество товара в корзине
      */
-    @PostMapping(value = "/main/items/{id}")
-    public String mainActionItems(
-            @PathVariable("id") UUID id,
-            @RequestParam(value = "action", required = false) ActionType actionType) {
-        actionCartHandler.handleAction(id, actionType);
-        return "redirect:/main/items";
-    }
+//    @PostMapping(value = "/main/items/{id}")
+//    public String mainActionItems(
+//            @PathVariable("id") UUID id,
+//            @RequestParam(value = "action", required = false) ActionType actionType) {
+//        actionCartHandler.handleAction(id, actionType);
+//        return "redirect:/main/items";
+//    }
 
 
-    @PostMapping(value = "/items/{id}")
-    public String editItems(
-            @PathVariable("id") UUID id,
-            @RequestParam(value = "action", required = false) ActionType actionType) {
-        actionCartHandler.handleAction(id, actionType);
-        return "redirect:/items/" + id;
-    }
+//    @PostMapping(value = "/items/{id}")
+//    public String editItems(
+//            @PathVariable("id") UUID id,
+//            @RequestParam(value = "action", required = false) ActionType actionType) {
+//        actionCartHandler.handleAction(id, actionType);
+//        return "redirect:/items/" + id;
+//    }
 
     /**
      карточка товара
@@ -62,11 +62,11 @@ public class ItemController {
          используется модель для заполнения шаблона:
          "item" - товаров (id, title, decription, imgPath, count, price)
      */
-    @GetMapping(path = "items/{id}")
-    public String search(@PathVariable("id") UUID id, Model model) {
-        var res = searchItemHandler.findById(id);
-        model.addAttribute("item", res);
-        return "item";
-    }
+//    @GetMapping(path = "items/{id}")
+//    public String search(@PathVariable("id") UUID id, Model model) {
+//        var res = searchItemHandler.findById(id);
+//        model.addAttribute("item", res);
+//        return "item";
+//    }
 
 }

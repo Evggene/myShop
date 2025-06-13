@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -24,7 +25,7 @@ import java.util.UUID;
 @Getter
 @SuperBuilder
 @NoArgsConstructor
-public class ItemEntity extends AuditFields {
+public class ItemEntity {
     @Id
     @Column(columnDefinition = "uuid", updatable = false)
     @GeneratedValue
@@ -33,27 +34,8 @@ public class ItemEntity extends AuditFields {
     private String description;
     private String imagePath;
     private BigDecimal price;
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id", referencedColumnName = "item_id")
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "item_id")
     private ItemCountEntity itemCountEntity;
-
-    public ItemEntity setCountAndAuditFields(int count) {
-        fillAuditFields();
-        initItemCount(count);
-        return this;
-    }
-
-    private void initItemCount(int count) {
-        if (this.itemCountEntity == null) {
-            this.itemCountEntity = ItemCountEntity.builder()
-                    .item(this)
-                    .count(count)
-                    .build();
-        }
-    }
-
-    private void fillAuditFields() {
-        this.setCreatedAt(Instant.now(Clock.systemUTC()));
-        this.setUpdatedAt(Instant.now(Clock.systemUTC()));
-    }
 }

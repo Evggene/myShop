@@ -43,12 +43,12 @@ public class CartController {
     /**
      * купить товары в корзине (выполняет покупку товаров в корзине и очищает ее)
      */
-    @PostMapping(value = "buy/{id}")
-    public String buy(
-            @PathVariable("id") UUID id) {
-        var newOrderId = orderCartHandler.orderCart(id);
-        return "redirect:/orders/" + newOrderId + "?newOrder=true";
-    }
+//    @PostMapping(value = "buy/{id}")
+//    public String buy(
+//            @PathVariable("id") UUID id) {
+//        var newOrderId = orderCartHandler.orderCart(id);
+//        return "redirect:/orders/" + newOrderId + "?newOrder=true";
+//    }
 
     /**
      изменить количество товара в корзине
@@ -56,12 +56,12 @@ public class CartController {
      action - значение из перечисления PLUS|MINUS|DELETE
      (PLUS - добавить один товар, MINUS - удалить один товар, DELETE - удалить товар из корзины)
      */
-    @PostMapping(value = "cart/items/{id}")
-    public String ationaItems(
-            @PathVariable("id") UUID id,
-            @RequestParam(value = "action", required = false) ActionType actionType) {
-        actionCartHandler.handleAction(id, actionType);
-        return "redirect:/cart/items";
-    }
+//    @PostMapping(value = "cart/items/{id}")
+//    public String ationaItems(
+//            @PathVariable("id") UUID id,
+//            @RequestParam(value = "action", required = false) ActionType actionType) {
+//        actionCartHandler.handleAction(id, actionType);
+//        return "redirect:/cart/items";
+//    }
 
 }
