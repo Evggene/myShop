@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.reactive.result.view.Rendering;
+import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 
@@ -22,19 +24,22 @@ public class ItemController {
     private final SearchItemHandler searchItemHandler;
     private final ActionCartHandler actionCartHandler;
 
-//    @GetMapping(path = "main/items")
-//    public String search(
-//            @RequestParam(value = "search", required = false) String search,
-//            @RequestParam(value = "sort", required = false) SearchType searchType,
-//            @RequestParam(value = "pageSize", required = false) Integer pageSize,
-//            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-//            Model model) {
-//        var res = searchItemHandler.search(search, searchType, pageSize, pageNumber);
-//        var splittedForUI = Lists.partition(res.items(), 3);
-//        model.addAttribute("items", splittedForUI);
-//        model.addAttribute("paging", res.pageInfo());
-//        return "main";
-//    }
+    @GetMapping(path = "main/items")
+    public Mono<Rendering> search(
+            @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "sort", required = false) SearchType searchType,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber) {
+
+        return searchItemHandler.search(search, searchType, pageSize, pageNumber)
+                .map(it -> {
+                    var splittedForUI = Lists.partition(it.items(), 3);
+                    return Rendering.view("main")
+                            .modelAttribute("items", splittedForUI)
+                            .modelAttribute("paging", it.pageInfo())
+                            .build();
+                });
+    }
 
     /**
      * Измменить количество товара в корзине
@@ -62,11 +67,11 @@ public class ItemController {
          используется модель для заполнения шаблона:
          "item" - товаров (id, title, decription, imgPath, count, price)
      */
-//    @GetMapping(path = "items/{id}")
-//    public String search(@PathVariable("id") UUID id, Model model) {
-//        var res = searchItemHandler.findById(id);
-//        model.addAttribute("item", res);
-//        return "item";
-//    }
-
+    @GetMapping(path = "items/{id}")
+    public Mono<Rendering> search(@PathVariable("id") UUID id) {
+        return searchItemHandler.findById(id)
+                .map(it -> Rendering.view("item")
+                        .modelAttribute("item", it)
+                        .build());
+    }
 }

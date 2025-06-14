@@ -7,12 +7,17 @@ import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.application.dto.ItemAndPageInfo;
 import org.bea.my_shop.infrastructure.input.dto.PageOfItemsResponse;
 import org.bea.my_shop.application.type.SearchType;
+import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,22 +25,38 @@ public class SearchItemHandler {
 
     private final ItemRepository itemRepository;
 
-//    public ItemAndPageInfo search(
-//            String searchRaw, SearchType searchTypeRaw, Integer itemSizeRaw, Integer pageNumberRaw) {
-//        var itemSize = itemSizeRaw == null ? 10 : itemSizeRaw;
-//        var search = searchRaw == null ? "" : searchRaw;
-//        var pageNumber = pageNumberRaw == null ? 0 : pageNumberRaw - 1;
-//        var searchType = searchTypeRaw == null ? SearchType.NO : searchTypeRaw;
-//
-//        var sort = selectSortField(searchType);
-//       // var pageRequest = PageRequest.of(pageNumber, itemSize, sort);
-//
-//        var entities = itemRepository.findByTitleLikeIgnoreCase(search);
-//        var items = entities.stream().map(ItemMapper::toModel).toList();
-//        var page = new PageOfItemsResponse(
-//                entities.getTotalElements(), pageNumber + 1, itemSize, search, searchType.name());
-//        return new ItemAndPageInfo(items, page);
-//    }
+    public Mono<ItemAndPageInfo> search(
+            String searchRaw, SearchType searchTypeRaw, Integer itemSizeRaw, Integer pageNumberRaw) {
+
+        var search = searchRaw == null ? "" : searchRaw;
+        var searchType = searchTypeRaw == null ? SearchType.NO : searchTypeRaw;
+        var itemSize = itemSizeRaw == null ? 10 : itemSizeRaw;
+        var pageNumber = pageNumberRaw == null ? 0 : pageNumberRaw - 1;
+
+        var sort = selectSortField(searchType);
+        var pageRequest = PageRequest.of(pageNumber, itemSize, sort);
+
+        return itemRepository.findByTitleLikeIgnoreCase(search, pageRequest)
+                .collectList()
+                .zipWith(itemRepository.countByTitleLikeIgnoreCase(search))
+                .map(tuple -> {
+                    var entities = tuple.getT1();
+                    var totalElements = tuple.getT2();
+
+                    var items = entities.stream()
+                            .map(ItemMapper::toModel)
+                            .collect(Collectors.toList());
+
+                    var pageInfo = new PageOfItemsResponse(
+                            totalElements,
+                            pageNumber + 1,
+                            itemSize,
+                            search,
+                            searchType.name());
+
+                    return new ItemAndPageInfo(items, pageInfo);
+                });
+    }
 
     private Sort selectSortField(SearchType searchType) {
         return switch (searchType) {
@@ -45,8 +66,8 @@ public class SearchItemHandler {
         };
     }
 
-//    public Item findById(UUID id) {
-//        var itemEntityOpt = itemRepository.findById(id);
-//        return ItemMapper.toModel(itemEntityOpt);
-//    }
+    public Mono<Item> findById(UUID id) {
+        return itemRepository.findById(id)
+                .map(ItemMapper::toModel);
+    }
 }

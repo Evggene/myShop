@@ -48,6 +48,17 @@ public class ItemMapper {
                 });
     }
 
+    public static Item toModel(ItemEntity entity) {
+        return Item.builder()
+                .title(entity.getTitle())
+                .price(new Money(entity.getPrice()))
+                .description(entity.getDescription())
+                .imagePath(entity.getImagePath())
+                .id(entity.getId())
+//                .count(entity.getItemCountEntity().getCount())
+                .build();
+    }
+
     public static ItemInCartRequest toRequest(ItemEntity entity, Integer countInCart) {
         return ItemInCartRequest.builder()
                 .id(entity.getId())
