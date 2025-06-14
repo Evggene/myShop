@@ -1,6 +1,6 @@
 package org.bea.my_shop.service;
 
-import org.bea.my_shop.application.handler.ItemsPriceInCartCalculation;
+import org.bea.my_shop.application.service.ItemsPriceInCartCalculation;
 import org.bea.my_shop.infrastructure.output.db.entity.CartEntity;
 import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 import org.junit.jupiter.api.Test;

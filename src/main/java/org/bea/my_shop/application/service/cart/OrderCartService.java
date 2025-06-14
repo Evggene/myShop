@@ -1,19 +1,13 @@
-package org.bea.my_shop.application.handler.cart;
+package org.bea.my_shop.application.service.cart;
 
 import lombok.RequiredArgsConstructor;
-import org.bea.my_shop.application.exception.MyShopException;
-import org.bea.my_shop.application.handler.ItemsPriceInCartCalculation;
-import org.bea.my_shop.domain.CartStateType;
-import org.bea.my_shop.infrastructure.output.db.entity.OrderEntity;
 import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
 import org.bea.my_shop.infrastructure.output.db.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
-
 @Service
 @RequiredArgsConstructor
-public class OrderCartHandler {
+public class OrderCartService {
 
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
