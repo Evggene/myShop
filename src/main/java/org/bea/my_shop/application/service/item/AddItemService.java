@@ -24,8 +24,7 @@ public class AddItemService {
                     var id = UUID.randomUUID();
                     var itemEntity = ItemMapper.toEntity(addItemRequest, id);
                     var itemCountEntity = ItemMapper.toItemCountEntity(addItemRequest, id);
-                    itemHandler.save(itemEntity, itemCountEntity);
-                    return ItemMapper.toModel(itemEntity, itemCountEntity);
+                    return itemHandler.save(itemEntity, itemCountEntity);
                 });
     }
 }

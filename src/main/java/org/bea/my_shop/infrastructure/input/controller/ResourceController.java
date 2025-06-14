@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,17 +25,25 @@ public class ResourceController {
     private final ResourceRootPathConfiguration resourceRootPathConfiguration;
     private final ItemRepository itemRepository;
 
-//    @GetMapping("/images/{id}")
-//    public ResponseEntity<Resource> getImage(@PathVariable("id") UUID id) throws IOException {
-//        var post = itemRepository.findById(id);
-//        if (post.isEmpty()) {
-//            throw new RuntimeException("image not found");
-//        }
-//        var rootPath = resourceRootPathConfiguration.getRootPathTo(ResourceRootPathConfiguration.IMAGES);
-//        Path imagePath = Paths.get(rootPath + File.separator + post.get().getImagePath());
-//        Resource resource = new UrlResource(imagePath.toUri());
-//        return ResponseEntity.ok()
-//                .contentType(MediaType.IMAGE_JPEG)
-//                .body(resource);
-//    }
+    @GetMapping("/images/{id}")
+    public Mono<ResponseEntity<Resource>> getImage(@PathVariable("id") UUID id) {
+        return itemRepository.findById(id)
+                .switchIfEmpty(Mono.error(new RuntimeException("Image not found")))
+                .flatMap(post -> resourceRootPathConfiguration.getRootPathTo(ResourceRootPathConfiguration.IMAGES)
+                        .map(rootPath -> Paths.get(rootPath + File.separator + post.getImagePath()))
+                        .flatMap(imagePath ->
+                                Mono.fromCallable(() -> {
+                                            Resource resource = new UrlResource(imagePath.toUri());
+                                            if (!resource.exists() || !resource.isReadable()) {
+                                                throw new IOException("Image not accessible");
+                                            }
+                                            return resource;
+                                        })
+                                        .map(resource -> ResponseEntity.ok()
+                                                .contentType(MediaType.IMAGE_JPEG)
+                                                .body(resource))
+                                        .onErrorMap(IOException.class, e -> new RuntimeException("Failed to load image: " + e.getMessage()))
+                        )
+                );
+    }
 }

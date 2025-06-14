@@ -3,6 +3,7 @@ package org.bea.my_shop.application.configuration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,12 +21,19 @@ public class ResourceRootPathConfiguration {
 
     public static final String IMAGES = "resources/static";
 
-    public Path getRootPathTo(String folderName) throws IOException {
-        Path targetPath = Paths.get(folderName);
-
-        if (!Files.exists(targetPath)) {
-            Files.createDirectories(targetPath);
-        }
-        return targetPath.toAbsolutePath();
+    public Mono<Path> getRootPathTo(String folderName) {
+        return Mono.fromCallable(() -> Paths.get(folderName))
+                .flatMap(targetPath ->
+                        Mono.fromCallable(() -> Files.exists(targetPath))
+                                .flatMap(exists -> {
+                                    if (!exists) {
+                                        return Mono.fromCallable(() -> Files.createDirectories(targetPath))
+                                                .thenReturn(targetPath);
+                                    }
+                                    return Mono.just(targetPath);
+                                })
+                                .map(Path::toAbsolutePath)
+                                .onErrorResume(e -> Mono.error(new RuntimeException(
+                                        "Failed to create directory: " + folderName, e))));
     }
 }
