@@ -21,7 +21,7 @@ public class AddItemController {
 
     @GetMapping(path = "/item/add")
     public Mono<Rendering> addItemView() {
-        return Mono.just(Rendering.redirectTo("add-item").build());
+        return Mono.just(Rendering.view("add-item").build());
     }
 
     @PostMapping(value = "/item/add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

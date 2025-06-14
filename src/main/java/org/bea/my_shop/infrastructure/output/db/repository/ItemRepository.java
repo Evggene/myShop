@@ -1,5 +1,7 @@
 package org.bea.my_shop.infrastructure.output.db.repository;
 
+import org.bea.my_shop.application.mapper.ItemMapper;
+import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

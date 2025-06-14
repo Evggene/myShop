@@ -23,6 +23,10 @@
 //    private final CartRepository cartRepository;
 //    private final ActionStrategyContext actionStrategyContext;
 //
+//    // вызываем хендлер который возвращает доменные сущности
+//    // вызываем статегию, вчисляем
+//    // вызываем хендлер который пересохраняет доменные сущности
+//
 //    public void handleAction(UUID id, ActionType actionType) {
 //        itemRepository.findById(id)
 //                .zipWith(cartRepository.findFirstByCartState(CartStateType.PREPARE))

@@ -8,6 +8,7 @@ import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 import org.bea.my_shop.infrastructure.output.db.repository.ItemCountRepository;
 import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
@@ -19,13 +20,13 @@ public class ItemHandler {
     private final ItemRepository itemRepository;
     private final ItemCountRepository itemCountRepository;
 
-    public Mono<Item> save(Mono<ItemEntity> itemEntity, Mono<ItemCountEntity> itemCountEntity) {
-        return Mono.zip(itemEntity, itemCountEntity)
-                .map(it -> {
-                    itemRepository.save(it.getT1());
-                    itemCountRepository.save(it.getT2());
-                    return ItemMapper.toModel(itemEntity, itemCountEntity);
-                })
-                .flatMap(Function.identity());
+    public Mono<Item> save(Item item) {
+        return Mono.zip(
+                        ItemMapper.fromModelToEntity(item),
+                        ItemMapper.fromModelToItemCountEntity(item))
+                .flatMap(tuple ->
+                        itemRepository.save(tuple.getT1())
+                                .then(itemCountRepository.save(tuple.getT2())))
+                .thenReturn(item);
     }
 }

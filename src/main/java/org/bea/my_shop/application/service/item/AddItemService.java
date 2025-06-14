@@ -20,12 +20,9 @@ public class AddItemService {
 
     public Mono<Item> add(Mono<AddItemRequest> addItemRequest) {
         return addItemRequest
-                .flatMap(request -> {
-                    var id = UUID.randomUUID();
-                    var itemEntity = ItemMapper.toEntity(addItemRequest, id);
-                    var itemCountEntity = ItemMapper.toItemCountEntity(addItemRequest, id);
-                    return itemHandler.save(itemEntity, itemCountEntity);
-                });
+                .flatMap(req -> ItemMapper.fromRawToModel(
+                        UUID.randomUUID(), req.title(), req.description(), req.image().filename(), req.price(), req.amount()))
+                .flatMap(itemHandler::save);
     }
 }
 

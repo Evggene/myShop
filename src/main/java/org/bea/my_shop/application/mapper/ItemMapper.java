@@ -8,9 +8,45 @@ import org.bea.my_shop.infrastructure.output.db.entity.ItemCountEntity;
 import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 public class ItemMapper {
+
+    public static Mono<Item> fromRawToModel(
+            UUID id, String title, String description, String imagePath, BigDecimal price, int count) {
+        return Mono.just(
+                Item.builder()
+                        .id(id)
+                        .title(title)
+                        .description(description)
+                        .imagePath(imagePath)
+                        .price(new Money(price))
+                        .count(count)
+                        .build());
+    }
+
+    public static Mono<ItemEntity> fromModelToEntity(Item item) {
+        return Mono.just(
+                ItemEntity.builder()
+                        .id(item.getId())
+                        .title(item.getTitle())
+                        .description(item.getDescription())
+                        .imagePath(item.getImagePath())
+                        .price(item.getPrice().getPrice())
+                        .build()
+        );
+    }
+
+    public static Mono<ItemCountEntity> fromModelToItemCountEntity(Item item) {
+        return Mono.just(
+                ItemCountEntity.builder()
+                        .itemId(item.getId())
+                        .count(item.getCount())
+                        .build()
+        );
+    }
+
     public static Mono<ItemEntity> toEntity(Mono<AddItemRequest> addItemRequests, UUID id) {
         return addItemRequests.flatMap(it ->
                 Mono.just(ItemEntity.builder()
@@ -32,7 +68,7 @@ public class ItemMapper {
         );
     }
 
-    public static Mono<Item> toModel(Mono<ItemEntity> itemEntity, Mono<ItemCountEntity> itemCountEntity) {
+    public static Mono<Item> fromRawToModel(Mono<ItemEntity> itemEntity, Mono<ItemCountEntity> itemCountEntity) {
         return Mono.zip(itemEntity, itemCountEntity)
                 .map(tuple -> {
                     var entity = tuple.getT1();
@@ -48,7 +84,7 @@ public class ItemMapper {
                 });
     }
 
-    public static Item toModel(ItemEntity entity) {
+    public static Item fromRawToModel(ItemEntity entity) {
         return Item.builder()
                 .title(entity.getTitle())
                 .price(new Money(entity.getPrice()))

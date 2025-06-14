@@ -20,7 +20,7 @@ import java.util.UUID;
 public class ItemController {
 
     private final SearchItemService searchItemService;
-   // private final ActionCartService actionCartService;
+  //  private final ActionCartService actionCartService;
 
     @GetMapping(path = "main/items")
     public Mono<Rendering> search(
@@ -66,7 +66,7 @@ public class ItemController {
          "item" - товаров (id, title, decription, imgPath, count, price)
      */
     @GetMapping(path = "items/{id}")
-    public Mono<Rendering> search(@PathVariable("id") UUID id) {
+    public Mono<Rendering> findById(@PathVariable("id") UUID id) {
         return searchItemService.findById(id)
                 .map(it -> Rendering.view("item")
                         .modelAttribute("item", it)

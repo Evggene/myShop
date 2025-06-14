@@ -41,7 +41,7 @@ public class SearchItemService {
                     var totalElements = tuple.getT2();
 
                     var items = entities.stream()
-                            .map(ItemMapper::toModel)
+                            .map(ItemMapper::fromRawToModel)
                             .collect(Collectors.toList());
 
                     var pageInfo = new PageOfItemsResponse(
@@ -65,6 +65,6 @@ public class SearchItemService {
 
     public Mono<Item> findById(UUID id) {
         return itemRepository.findById(id)
-                .map(ItemMapper::toModel);
+                .map(ItemMapper::fromRawToModel);
     }
 }
