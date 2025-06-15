@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.domain.Money;
+import org.bea.my_shop.infrastructure.output.db.entity.ItemCountEntity;
 import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.r2dbc.core.DatabaseClient;
@@ -20,6 +21,15 @@ public class ItemRepositoryImpl {
 
     private final DatabaseClient client;
 
+    private final static String saveItemSql = """
+                INSERT INTO item (id, title, description, image_path, price)
+                VALUES (:id, :title, :description, :imagePath, :price)
+                """;
+
+    private final static String saveItemCountSql = """
+                INSERT INTO item_count (item_id, count)
+                VALUES (:itemId, :count)
+                """;
 
     public Flux<ItemEntity> findByTitleLikeIgnoreCase(String title, PageRequest pageRequest) {
         return null;
@@ -51,13 +61,18 @@ public class ItemRepositoryImpl {
     }
 
 
-    public Mono<Void> save(Item item) {
+    public Mono<Item> save(Item item) {
+        var itemEntity = ItemMapper.fromModelToEntity(item);
+        var saveItem = client.sql(saveItemSql)
+                .bindProperties(itemEntity)
+                .then();
+
         var itemCountEntity = ItemMapper.fromModelToItemCountEntity(item);
-        client.sql("INSERT INTO item_count (item_id, count) VALUES (:itemId, :count)")
+        var saveCount = client.sql(saveItemCountSql)
                 .bindProperties(itemCountEntity)
-                .then()
-                .subscribe();
-        return Mono.empty();
+                .then();
+
+        return saveItem.then(saveCount).thenReturn(item);
     }
 }
 

@@ -1,6 +1,7 @@
 package org.bea.my_shop.application.service.item;
 
 import lombok.RequiredArgsConstructor;
+import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.infrastructure.input.dto.AddItemRequest;
 import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.infrastructure.output.db.repository.ItemRepositoryImpl;
@@ -15,7 +16,7 @@ public class AddItemService {
 
     private final ItemRepositoryImpl itemRepository;
 
-    public Mono<Void> add(Mono<AddItemRequest> addItemRequest) {
+    public Mono<Item> add(Mono<AddItemRequest> addItemRequest) {
         return addItemRequest
                 .flatMap(req -> {
                     var item = ItemMapper.fromRawToModel(
