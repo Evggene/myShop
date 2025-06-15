@@ -7,8 +7,8 @@
 //import org.bea.my_shop.application.type.ActionType;
 //import org.bea.my_shop.domain.CartStateType;
 //import org.bea.my_shop.infrastructure.output.db.entity.CartEntity;
+//import org.bea.my_shop.infrastructure.output.db.handler.ItemHandler;
 //import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
-//import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
 //import org.springframework.stereotype.Service;
 //
 //import java.util.Optional;
@@ -19,16 +19,17 @@
 //@RequiredArgsConstructor
 //public class ActionCartService {
 //
-//    private final ItemRepository itemRepository;
+//    private final ItemHandler itemHandler;
 //    private final CartRepository cartRepository;
 //    private final ActionStrategyContext actionStrategyContext;
 //
 //    // вызываем хендлер который возвращает доменные сущности
+//    // надо найти товар икорзину толлько с текущим товаром
 //    // вызываем статегию, вчисляем
 //    // вызываем хендлер который пересохраняет доменные сущности
 //
 //    public void handleAction(UUID id, ActionType actionType) {
-//        itemRepository.findById(id)
+//        itemHandler.findById()
 //                .zipWith(cartRepository.findFirstByCartState(CartStateType.PREPARE))
 //                .map(it -> {
 //                    var itemEntity = it.getT1();

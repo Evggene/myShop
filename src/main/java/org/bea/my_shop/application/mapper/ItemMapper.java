@@ -13,38 +13,33 @@ import java.util.UUID;
 
 public class ItemMapper {
 
-    public static Mono<Item> fromRawToModel(
+    public static Item fromRawToModel(
             UUID id, String title, String description, String imagePath, BigDecimal price, int count) {
-        return Mono.just(
-                Item.builder()
-                        .id(id)
-                        .title(title)
-                        .description(description)
-                        .imagePath(imagePath)
-                        .price(new Money(price))
-                        .count(count)
-                        .build());
+        return Item.builder()
+                .id(id)
+                .title(title)
+                .description(description)
+                .imagePath(imagePath)
+                .price(new Money(price))
+                .count(count)
+                .build();
     }
 
-    public static Mono<ItemEntity> fromModelToEntity(Item item) {
-        return Mono.just(
-                ItemEntity.builder()
-                        .id(item.getId())
-                        .title(item.getTitle())
-                        .description(item.getDescription())
-                        .imagePath(item.getImagePath())
-                        .price(item.getPrice().getPrice())
-                        .build()
-        );
+    public static ItemEntity fromModelToEntity(Item item) {
+        return ItemEntity.builder()
+                .id(item.getId())
+                .title(item.getTitle())
+                .description(item.getDescription())
+                .imagePath(item.getImagePath())
+                .price(item.getPrice().getPrice())
+                .build();
     }
 
-    public static Mono<ItemCountEntity> fromModelToItemCountEntity(Item item) {
-        return Mono.just(
-                ItemCountEntity.builder()
-                        .itemId(item.getId())
-                        .count(item.getCount())
-                        .build()
-        );
+    public static ItemCountEntity fromModelToItemCountEntity(Item item) {
+        return ItemCountEntity.builder()
+                .itemId(item.getId())
+                .count(item.getCount())
+                .build();
     }
 
     public static Mono<ItemEntity> toEntity(Mono<AddItemRequest> addItemRequests, UUID id) {
@@ -68,20 +63,15 @@ public class ItemMapper {
         );
     }
 
-    public static Mono<Item> fromRawToModel(Mono<ItemEntity> itemEntity, Mono<ItemCountEntity> itemCountEntity) {
-        return Mono.zip(itemEntity, itemCountEntity)
-                .map(tuple -> {
-                    var entity = tuple.getT1();
-                    var countEntity = tuple.getT2();
-                    return Item.builder()
-                            .title(entity.getTitle())
-                            .price(new Money(entity.getPrice()))
-                            .description(entity.getDescription())
-                            .imagePath(entity.getImagePath())
-                            .id(entity.getId())
-                            .count(countEntity.getCount())
-                            .build();
-                });
+    public static Mono<Item> fromEntitiesToModel(ItemEntity itemEntity, ItemCountEntity itemCountEntity) {
+        return Mono.just(Item.builder()
+                .title(itemEntity.getTitle())
+                .price(new Money(itemEntity.getPrice()))
+                .description(itemEntity.getDescription())
+                .imagePath(itemEntity.getImagePath())
+                .id(itemEntity.getId())
+                .count(itemCountEntity.getCount())
+                .build());
     }
 
     public static Item fromRawToModel(ItemEntity entity) {

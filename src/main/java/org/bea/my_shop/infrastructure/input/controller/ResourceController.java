@@ -2,7 +2,7 @@ package org.bea.my_shop.infrastructure.input.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.configuration.ResourceRootPathConfiguration;
-import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
+import org.bea.my_shop.infrastructure.output.db.repository.ItemRepositoryImpl;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
@@ -14,7 +14,6 @@ import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
@@ -23,7 +22,7 @@ import java.util.UUID;
 public class ResourceController {
 
     private final ResourceRootPathConfiguration resourceRootPathConfiguration;
-    private final ItemRepository itemRepository;
+    private final ItemRepositoryImpl itemRepository;
 
     @GetMapping("/images/{id}")
     public Mono<ResponseEntity<Resource>> getImage(@PathVariable("id") UUID id) {

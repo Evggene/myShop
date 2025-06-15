@@ -31,17 +31,9 @@ import java.util.UUID;
 @NoArgsConstructor
 public class CartEntity {
     @Id
-    @GeneratedValue
-    @Column(columnDefinition = "uuid", updatable = false)
     private UUID id;
 
-    @ElementCollection
-    @CollectionTable(name = "cart_items", joinColumns = @JoinColumn(name = "cart_id"))
-    @MapKeyJoinColumn(name = "item_id")
-    @Column(name = "count")
     private Map<ItemEntity, Integer> positions = new HashMap<>();
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "cart_state", nullable = false)
-    private CartStateType cartState = CartStateType.PREPARE;
+    private CartStateType cartState;
 }

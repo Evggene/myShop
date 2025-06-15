@@ -7,7 +7,7 @@ import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.application.dto.ItemAndPageInfo;
 import org.bea.my_shop.infrastructure.input.dto.PageOfItemsResponse;
 import org.bea.my_shop.application.type.SearchType;
-import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
+import org.bea.my_shop.infrastructure.output.db.repository.ItemRepositoryImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SearchItemService {
 
-    private final ItemRepository itemRepository;
+    private final ItemRepositoryImpl itemRepository;
 
     public Mono<ItemAndPageInfo> search(
             String searchRaw, SearchType searchTypeRaw, Integer itemSizeRaw, Integer pageNumberRaw) {
@@ -64,7 +64,6 @@ public class SearchItemService {
     }
 
     public Mono<Item> findById(UUID id) {
-        return itemRepository.findById(id)
-                .map(ItemMapper::fromRawToModel);
+        return itemRepository.findById(id);
     }
 }

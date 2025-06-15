@@ -2,7 +2,6 @@ package org.bea.my_shop.repository;
 
 import org.bea.my_shop.configuration.TestcontainersConfiguration;
 import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
-import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
 import org.bea.my_shop.infrastructure.output.db.repository.OrderRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

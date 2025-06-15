@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
+import lombok.ToString;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,6 +21,7 @@ import java.util.UUID;
 @Builder
 @Setter
 @Getter
+@ToString
 @Table("item_count")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,5 +29,4 @@ public class ItemCountEntity {
     @Id
     private UUID itemId;
     private int count;
-
 }

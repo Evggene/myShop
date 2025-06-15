@@ -14,6 +14,6 @@ public interface CartRepository extends R2dbcRepository<CartEntity, UUID> {
      * У одного пользователя может быть только одна корзина в состоянии готовится
      * В однопользовательском режиме в базе может быть только одна корзина в состоянии готовится
      */
-    Mono<CartEntity> findFirstByCartState(CartStateType type);
+   // Mono<CartEntity> findFirstByCartStateWithDemandItem(CartStateType type, UUID itemId);
 
 }
