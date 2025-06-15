@@ -40,10 +40,6 @@ public class SearchItemService {
                     var entities = tuple.getT1();
                     var totalElements = tuple.getT2();
 
-                    var items = entities.stream()
-                            .map(ItemMapper::fromRawToModel)
-                            .collect(Collectors.toList());
-
                     var pageInfo = new PageOfItemsResponse(
                             totalElements,
                             pageNumber + 1,
@@ -51,7 +47,7 @@ public class SearchItemService {
                             search,
                             searchType.name());
 
-                    return new ItemAndPageInfo(items, pageInfo);
+                    return new ItemAndPageInfo(entities, pageInfo);
                 });
     }
 
