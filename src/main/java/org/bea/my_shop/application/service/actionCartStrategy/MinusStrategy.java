@@ -7,21 +7,21 @@ import org.springframework.stereotype.Component;
 public class MinusStrategy implements ActionStrategy {
     @Override
     public ItemAndCartToEditInfo edit(ItemAndCartToEditInfo itemAndCartToEditInfo) {
-        var itemEntity = itemAndCartToEditInfo.itemEntity();
-        var cartEntity = itemAndCartToEditInfo.cartEntity();
-//        var itemCount = itemEntity.getItemCountEntity();
+        var item = itemAndCartToEditInfo.item();
+        var cart = itemAndCartToEditInfo.cart();
+        var itemCount = item.getCount();
 
-        var count = cartEntity.getPositions().get(itemEntity);
+        var count = cart.getPositions().get(item);
         if (count == 0) {
             return new ItemAndCartToEditInfo(null, null);
         }
         if (count == 1) {
-//            itemCount.setCount(itemCount.getCount() + 1);
-            cartEntity.getPositions().remove(itemEntity);
+            item.setCount(itemCount + 1);
+            cart.getPositions().remove(item);
             return itemAndCartToEditInfo;
         }
-//        itemCount.setCount(itemCount.getCount() + 1);
-        cartEntity.getPositions().computeIfPresent(itemEntity, (k, v) -> v - 1);
+        item.setCount(itemCount + 1);
+        cart.getPositions().computeIfPresent(item, (k, v) -> v - 1);
         return itemAndCartToEditInfo;
     }
 

@@ -19,7 +19,9 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.bea.my_shop.domain.CartStateType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -33,7 +35,7 @@ public class CartEntity {
     @Id
     private UUID id;
 
-    private Map<ItemEntity, Integer> positions = new HashMap<>();
+    private List<CartItemsEntity> positions = new ArrayList<>();
 
     private CartStateType cartState;
 }

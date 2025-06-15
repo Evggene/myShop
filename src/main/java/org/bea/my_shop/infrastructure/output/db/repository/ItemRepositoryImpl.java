@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemRepositoryImpl {
+public class ItemRepositoryImpl implements ItemRepository{
 
     private final DatabaseClient client;
 
@@ -81,9 +81,9 @@ public class ItemRepositoryImpl {
 
     public Mono<Item> findById(UUID id) {
         return client.sql("""
-                SELECT i.id, i.title, i.description, i.image_path, i.price, ic.count
+                SELECT i.id, i.title, i.description, i.image_path as imagePath, i.price, ic.count
                 FROM item i
-                JOIN item_count ic ON i.id = ic.id
+                JOIN item_count ic ON i.id = ic.item_id
                 WHERE i.id = :id
             """)
                 .bind("id", id)

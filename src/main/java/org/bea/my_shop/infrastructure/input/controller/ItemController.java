@@ -2,17 +2,25 @@ package org.bea.my_shop.infrastructure.input.controller;
 
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
+import org.bea.my_shop.application.service.ItemsPriceInCartCalculation;
+import org.bea.my_shop.application.service.cart.ActionCartService;
 import org.bea.my_shop.application.service.item.SearchItemService;
 import org.bea.my_shop.application.type.ActionType;
 import org.bea.my_shop.application.type.SearchType;
+import org.bea.my_shop.domain.CartStateType;
+import org.bea.my_shop.infrastructure.input.dto.ActionTypeRequest;
+import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.result.view.Rendering;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Controller
@@ -20,7 +28,8 @@ import java.util.UUID;
 public class ItemController {
 
     private final SearchItemService searchItemService;
-  //  private final ActionCartService actionCartService;
+    private final ActionCartService actionCartService;
+    private final CartRepository cartRepository;
 
     @GetMapping(path = "main/items")
     public Mono<Rendering> search(
@@ -42,22 +51,22 @@ public class ItemController {
     /**
      * Измменить количество товара в корзине
      */
-//    @PostMapping(value = "/main/items/{id}")
-//    public Mono<Rendering> mainActionItems(
-//            @PathVariable("id") UUID id,
-//            @RequestParam(value = "action", required = false) ActionType actionType) {
-//        actionCartService.handleAction(id, actionType);
-//        return "redirect:/main/items";
-//    }
+    @PostMapping(value = "/main/items/{id}")
+    public Mono<Rendering> mainActionItems(
+            @PathVariable("id") UUID id,
+            @ModelAttribute ActionTypeRequest actionType) {
+        return actionCartService.handleAction(id, actionType.getAction())
+                .thenReturn(Rendering.redirectTo("/main/items").build());
+    }
 
 
-//    @PostMapping(value = "/items/{id}")
-//    public String editItems(
-//            @PathVariable("id") UUID id,
-//            @RequestParam(value = "action", required = false) ActionType actionType) {
-//        actionCartHandler.handleAction(id, actionType);
-//        return "redirect:/items/" + id;
-//    }
+    @PostMapping(value = "/items/{id}")
+    public Mono<Rendering> editItems(
+            @PathVariable("id") UUID id,
+            @ModelAttribute ActionTypeRequest actionType) {
+        return actionCartService.handleAction(id, actionType.getAction())
+                .thenReturn(Rendering.redirectTo("/items/" + id).build());
+    }
 
     /**
      карточка товара
