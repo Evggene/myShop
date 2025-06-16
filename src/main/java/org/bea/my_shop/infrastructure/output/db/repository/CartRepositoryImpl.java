@@ -1,7 +1,5 @@
 package org.bea.my_shop.infrastructure.output.db.repository;
 
-import io.r2dbc.spi.Statement;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.domain.Cart;
 import org.bea.my_shop.domain.CartStateType;
@@ -24,7 +22,7 @@ public class CartRepositoryImpl implements CartRepository {
 
     private final DatabaseClient client;
 
-    private final static String selectCartWithAllItems = """
+    private final static String selectCartWithItems = """
                 SELECT
                     c.id AS cart_id,
                     c.cart_state AS cart_state,
@@ -41,27 +39,20 @@ public class CartRepositoryImpl implements CartRepository {
                 LEFT JOIN item_count ic ON i.id = ic.item_id
             """;
     private final static String selectCartWithAllItemsByCartState =
-            selectCartWithAllItems + """
+            selectCartWithItems + """
                     WHERE c.cart_state = :cartState
                     """;
 
-    private final static String selectCartWithAllItemsById =
-            selectCartWithAllItems + """
+    private final static String selectCartWithAllItemsByCartId =
+            selectCartWithItems + """
                     WHERE c.id = :id
                     """;
 
     private final static String insertCart = """
-            INSERT INTO cart (id, cart_state) 
+            INSERT INTO cart (id, cart_state)
             VALUES (:id, :cartState)
-            ON CONFLICT (id) 
+            ON CONFLICT (id)
             DO UPDATE SET cart_state = EXCLUDED.cart_state
-            """;
-
-    private final static String insertCartItem = """
-            INSERT INTO cart_items (cart_id, item_id, count) 
-            VALUES (:cartId, :itemId, :count)
-            ON CONFLICT (cart_id, item_id) 
-            DO UPDATE SET count = EXCLUDED.count
             """;
 
     private final static String findCartWithoutItems = """
@@ -87,7 +78,7 @@ public class CartRepositoryImpl implements CartRepository {
 
     @Override
     public Mono<Cart> findByIdWithAllItems(UUID id) {
-        return client.sql(selectCartWithAllItemsById)
+        return client.sql(selectCartWithAllItemsByCartId)
                 .bind("id", id)
                 .fetch()
                 .all()
@@ -126,7 +117,7 @@ public class CartRepositoryImpl implements CartRepository {
                 .bind("id", cart.getId())
                 .bind("cartState", cart.getCartState().name())
                 .then();
-        var cartItem = saveCartItemsSimple(cart);
+        var cartItem = saveCartItems(cart);
         return Mono.when(cartS, cartItem).thenReturn(cart);
     }
 
@@ -136,16 +127,19 @@ public class CartRepositoryImpl implements CartRepository {
                 .bind("cartId", cartId)
                 .fetch()
                 .one()
-                .map(row -> {
-                    var cart = new Cart();
-                    cart.setId(UUID.fromString(row.get("id").toString()));
-                    cart.setCartState(CartStateType.valueOf(row.get("cart_state").toString()));
-                    cart.setPositions(new HashMap<>());
-                    return cart;
-                });
+                .map(this::buildCart);
     }
 
-    private Mono<Cart> saveCartItemsSimple(Cart cart) {
+    @Override
+    public Mono<UUID> deleteCartItems(UUID cartId) {
+        return client.sql("DELETE FROM cart_items WHERE cart_id = :cartId")
+                .bind("cartId", cartId)
+                .fetch()
+                .rowsUpdated()
+                .thenReturn(cartId);
+    }
+
+    private Mono<Cart> saveCartItems(Cart cart) {
         return Flux.fromIterable(cart.getPositions().entrySet())
                 .flatMap(entry -> client.sql("""
                                 INSERT INTO cart_items (cart_id, item_id, count)
@@ -168,5 +162,13 @@ public class CartRepositoryImpl implements CartRepository {
                 .cartState(CartStateType.PREPARE)
                 .positions(new HashMap<>())
                 .build();
+    }
+
+    private Cart buildCart(Map<String, Object> row) {
+        var cart = new Cart();
+        cart.setId(UUID.fromString(row.get("id").toString()));
+        cart.setCartState(CartStateType.valueOf(row.get("cart_state").toString()));
+        cart.setPositions(new HashMap<>());
+        return cart;
     }
 }

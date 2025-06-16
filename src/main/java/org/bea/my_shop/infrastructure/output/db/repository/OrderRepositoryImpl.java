@@ -34,6 +34,20 @@ public class OrderRepositoryImpl implements OrderRepository{
             total_sum = EXCLUDED.total_sum
         """;
 
+    private static String getAllSql = """
+                SELECT o.id AS order_id, 
+                       o.total_sum AS order_total_sum,
+                       c.id AS cart_id,
+                       c.cart_state AS cart_state
+                FROM orders o
+                JOIN cart c ON o.cart_id = c.id
+                """;
+
+    private static String getById =
+                getAllSql + """
+                where o.id = :id
+                """;
+
     @Override
     public Mono<Order> save(Order order) {
         var orderEntity = OrderMapper.fromModelToEntity(order);
@@ -44,22 +58,33 @@ public class OrderRepositoryImpl implements OrderRepository{
     }
 
     @Override
-    public Flux<Order> findAll() {
-        return client.sql("""
-            SELECT o.id AS order_id, 
-                   o.total_sum AS order_total_sum,
-                   c.id AS cart_id,
-                   c.cart_state AS cart_state
-            FROM orders o
-            JOIN cart c ON o.cart_id = c.id
-            """)
+    public Mono<Order> getById(UUID id) {
+        return client.sql(getById)
+                .bind("id", id)
+                .fetch()
+                .one()
+                .flatMap(orderRow -> {
+                    var order = buildOrder(orderRow);
+                    var cart = buildCart(orderRow, order);
+                    return loadCartItems(cart.getId())
+                            .collectMap(Function.identity(), Item::getCount)
+                            .map(itemsMap -> {
+                                cart.setPositions(new HashMap<>(itemsMap));
+                                return order;
+                            });
+                });
+    }
+
+    @Override
+    public Flux<Order> getAll() {
+        return client.sql(getAllSql)
                 .fetch()
                 .all()
                 .flatMap(orderRow -> {
                     var order = buildOrder(orderRow);
                     var cart = buildCart(orderRow, order);
                     return loadCartItems(cart.getId())
-                            .collectMap(Function.identity(), Item::getCount) // Map<ItemId, Count>
+                            .collectMap(Function.identity(), Item::getCount)
                             .map(itemsMap -> {
                                 cart.setPositions(new HashMap<>(itemsMap));
                                 return order;
@@ -76,7 +101,7 @@ public class OrderRepositoryImpl implements OrderRepository{
         return cart;
     }
 
-    private static Order buildOrder(Map<String, Object> orderRow) {
+    private Order buildOrder(Map<String, Object> orderRow) {
         var order = new Order();
         order.setId((UUID) orderRow.get("order_id"));
         order.setTotalSum(new Money((BigDecimal) orderRow.get("order_total_sum")));

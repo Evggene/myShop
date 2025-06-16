@@ -20,14 +20,8 @@
         </createTable>
 
         <createTable tableName="cart_items">
-            <column name="cart_id" type="uuid">
-                <constraints nullable="false" foreignKeyName="fk_cart"
-                             referencedTableName="cart" referencedColumnNames="id"/>
-            </column>
-            <column name="item_id" type="uuid">
-                <constraints nullable="false" foreignKeyName="fk_item"
-                             referencedTableName="item" referencedColumnNames="id"/>
-            </column>
+            <column name="cart_id" type="uuid"/>
+            <column name="item_id" type="uuid"/>
             <column name="count" type="integer"/>
         </createTable>
 

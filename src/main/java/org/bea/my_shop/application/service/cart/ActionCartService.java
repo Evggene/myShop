@@ -27,11 +27,6 @@ public class ActionCartService {
     private final ActionStrategyContext actionStrategyContext;
     private final ItemRepository itemRepository;
 
-    // вызываем хендлер который возвращает доменные сущности
-    // надо найти товар икорзину толлько с текущим товаром
-    // вызываем статегию, вчисляем
-    // вызываем хендлер который пересохраняет доменные сущности
-
     public Mono<ActionType> handleAction(UUID id, ActionType actionType) {
         return Mono.zip(itemRepository.findById(id), cartRepository.findFirstByCartStateWithAllItems(CartStateType.PREPARE))
                 .flatMap(it -> {
@@ -40,7 +35,8 @@ public class ActionCartService {
                     var toEdit = new ItemAndCartToEditInfo(item, cart);
                     return actionStrategyContext.execute(actionType, toEdit);
                 })
-                .flatMap(it -> Mono.when(cartRepository.save(it.cart()), itemRepository.save(it.item())))
+                .flatMap(it -> cartRepository.deleteCartItems(it.cart().getId())
+                        .then(Mono.when(cartRepository.save(it.cart()), itemRepository.save(it.item()))))
                 .thenReturn(actionType);
     }
 }
