@@ -85,14 +85,14 @@ public class ItemMapper {
                 .build();
     }
 
-    public static ItemInCartRequest toRequest(ItemEntity entity, Integer countInCart) {
+    public static ItemInCartRequest toRequest(Item entity, Integer countInCart) {
         return ItemInCartRequest.builder()
                 .id(entity.getId())
                 .title(entity.getTitle())
                 .description(entity.getDescription())
                 .imagePath(entity.getImagePath())
-//                .count(entity.getItemCountEntity().getCount())
-                .price(entity.getPrice())
+                .count(entity.getCount())
+                .price(entity.getPrice().getPrice())
                 .countInCart(countInCart)
                 .build();
     }

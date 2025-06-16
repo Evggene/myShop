@@ -3,6 +3,7 @@ package org.bea.my_shop.infrastructure.input.controller;
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.service.cart.ActionCartService;
 import org.bea.my_shop.application.service.cart.GetCartService;
+import org.bea.my_shop.application.service.cart.OrderCartService;
 import org.bea.my_shop.application.type.ActionType;
 import org.bea.my_shop.infrastructure.input.dto.ActionTypeRequest;
 import org.springframework.stereotype.Controller;
@@ -21,9 +22,9 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CartController {
 
-     private final ActionCartService actionCartService;
+    private final ActionCartService actionCartService;
     private final GetCartService getCartService;
-    // private final OrderCartHandler orderCartHandler;
+    private final OrderCartService orderCartService;
 
     /**
      * список товаров в корзине
@@ -47,18 +48,18 @@ public class CartController {
     /**
      * купить товары в корзине (выполняет покупку товаров в корзине и очищает ее)
      */
-//    @PostMapping(value = "buy/{id}")
-//    public String buy(
-//            @PathVariable("id") UUID id) {
-//        var newOrderId = orderCartHandler.orderCart(id);
-//        return "redirect:/orders/" + newOrderId + "?newOrder=true";
-//    }
+    @PostMapping(value = "buy/{id}")
+    public Mono<Rendering> buy(
+            @PathVariable("id") UUID id) {
+        return orderCartService.orderCart(id)
+                .map(it -> Rendering.redirectTo("/orders/" + it + "?newOrder=true").build());
+    }
 
     /**
-     изменить количество товара в корзине
-     Параматры:
-     action - значение из перечисления PLUS|MINUS|DELETE
-     (PLUS - добавить один товар, MINUS - удалить один товар, DELETE - удалить товар из корзины)
+     * изменить количество товара в корзине
+     * Параматры:
+     * action - значение из перечисления PLUS|MINUS|DELETE
+     * (PLUS - добавить один товар, MINUS - удалить один товар, DELETE - удалить товар из корзины)
      */
     @PostMapping(value = "cart/items/{id}")
     public Mono<Rendering> ationItems(

@@ -1,5 +1,6 @@
 package org.bea.my_shop.infrastructure.output.db.repository;
 
+import io.r2dbc.spi.Row;
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.domain.Item;
@@ -65,16 +66,10 @@ public class ItemRepositoryImpl implements ItemRepository{
                 .bind("title", searchPattern)
                 .bind("limit", pageRequest.getPageSize())
                 .bind("offset", pageRequest.getOffset())
-                .map((row, meta) -> Item.builder()
-                        .id(row.get("id", UUID.class))
-                        .title(row.get("title", String.class))
-                        .description(row.get("description", String.class))
-                        .imagePath(row.get("imagePath", String.class))
-                        .price(new Money(row.get("price", BigDecimal.class)))
-                        .count(row.get("count", Integer.class))
-                        .build())
+                .map((row, meta) -> buildItem(row))
                 .all();
     }
+
 
     private String getOrderByClause(Sort sort) {
         if (sort.isUnsorted()) {
@@ -94,15 +89,7 @@ public class ItemRepositoryImpl implements ItemRepository{
     public Mono<Item> findById(UUID id) {
         return client.sql(selectItem)
                 .bind("id", id)
-                .map((row, meta) ->
-                        Item.builder()
-                                .id(row.get("id", UUID.class))
-                                .title(row.get("title", String.class))
-                                .description(row.get("description", String.class))
-                                .imagePath(row.get("imagePath", String.class))
-                                .price(new Money(row.get("price", BigDecimal.class)))
-                                .count(row.get("count", Integer.class))
-                                .build())
+                .map((row, meta) -> buildItem(row))
                 .one();
     }
 
@@ -119,6 +106,17 @@ public class ItemRepositoryImpl implements ItemRepository{
                 .then();
 
         return Mono.when(saveItem, saveCount).thenReturn(item);
+    }
+
+    private Item buildItem(Row row) {
+        return Item.builder()
+                .id(row.get("id", UUID.class))
+                .title(row.get("title", String.class))
+                .description(row.get("description", String.class))
+                .imagePath(row.get("imagePath", String.class))
+                .price(new Money(row.get("price", BigDecimal.class)))
+                .count(row.get("count", Integer.class))
+                .build();
     }
 }
 

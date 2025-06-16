@@ -2,7 +2,12 @@ package org.bea.my_shop.infrastructure.input.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.service.OrderService;
+import org.bea.my_shop.domain.Order;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.reactive.result.view.Rendering;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Controller
 @RequiredArgsConstructor
@@ -18,15 +23,13 @@ public class OrderController {
          "id" - идентификатор заказа
          "items" - List<Item> - список товаров в заказе (id, title, decription, imgPath, count, price)
      */
- //   @GetMapping(path = "/orders")
-//    public String getOrders(Model model) {
-//        var ordersEntity = orderHandler.getAll();
-//        var orders = ordersEntity.stream()
-//                .map(OrderMapper::entityToRequest)
-//                .toList();
-//        model.addAttribute("orders", orders);
-//        return "orders";
-//    }
+    @GetMapping(path = "/orders")
+    public Mono<Rendering> getOrders() {
+        return orderService.getAll()
+                .map(orders -> Rendering.view("orders")
+                        .modelAttribute("orders", orders)
+                        .build());
+    }
 
     /**
      карточка заказа

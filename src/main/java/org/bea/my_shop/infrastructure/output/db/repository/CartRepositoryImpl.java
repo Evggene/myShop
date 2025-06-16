@@ -1,6 +1,7 @@
 package org.bea.my_shop.infrastructure.output.db.repository;
 
 import io.r2dbc.spi.Statement;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.domain.Cart;
 import org.bea.my_shop.domain.CartStateType;
@@ -23,7 +24,7 @@ public class CartRepositoryImpl implements CartRepository {
 
     private final DatabaseClient client;
 
-    private final static String selectCartWithAllItemsByCartState = """
+    private final static String selectCartWithAllItems = """
                 SELECT
                     c.id AS cart_id,
                     c.cart_state AS cart_state,
@@ -38,22 +39,36 @@ public class CartRepositoryImpl implements CartRepository {
                 JOIN cart_items ci ON c.id = ci.cart_id
                 JOIN item i ON ci.item_id = i.id
                 LEFT JOIN item_count ic ON i.id = ic.item_id
-                WHERE c.cart_state = :cartState
-                """;
+            """;
+    private final static String selectCartWithAllItemsByCartState =
+            selectCartWithAllItems + """
+                    WHERE c.cart_state = :cartState
+                    """;
+
+    private final static String selectCartWithAllItemsById =
+            selectCartWithAllItems + """
+                    WHERE c.id = :id
+                    """;
 
     private final static String insertCart = """
-                INSERT INTO cart (id, cart_state) 
-                VALUES (:id, :cartState)
-                ON CONFLICT (id) 
-                DO UPDATE SET cart_state = EXCLUDED.cart_state
-                """;
+            INSERT INTO cart (id, cart_state) 
+            VALUES (:id, :cartState)
+            ON CONFLICT (id) 
+            DO UPDATE SET cart_state = EXCLUDED.cart_state
+            """;
 
     private final static String insertCartItem = """
-                INSERT INTO cart_items (cart_id, item_id, count) 
-                VALUES (:cartId, :itemId, :count)
-                ON CONFLICT (cart_id, item_id) 
-                DO UPDATE SET count = EXCLUDED.count
-                """;
+            INSERT INTO cart_items (cart_id, item_id, count) 
+            VALUES (:cartId, :itemId, :count)
+            ON CONFLICT (cart_id, item_id) 
+            DO UPDATE SET count = EXCLUDED.count
+            """;
+
+    private final static String findCartWithoutItems = """
+            SELECT id, cart_state
+            FROM cart
+            WHERE id = :cartId
+            """;
 
     @Override
     public Mono<Cart> findFirstByCartStateWithAllItems(CartStateType type) {
@@ -64,16 +79,20 @@ public class CartRepositoryImpl implements CartRepository {
                 .collectList()
                 .flatMap(rows -> {
                     if (rows.isEmpty()) {
-                        var emptyCart = Cart.builder()
-                                .id(UUID.randomUUID())
-                                .cartState(CartStateType.PREPARE)
-                                .positions(new HashMap<>())
-                                .build();
-                        return Mono.just(emptyCart);
+                        return Mono.just(buildNewEmptyCart());
                     }
-                    Cart cart = buildCart(rows);
-                    return Mono.just(cart);
+                    return Mono.just(buildCart(rows));
                 });
+    }
+
+    @Override
+    public Mono<Cart> findByIdWithAllItems(UUID id) {
+        return client.sql(selectCartWithAllItemsById)
+                .bind("id", id)
+                .fetch()
+                .all()
+                .collectList()
+                .flatMap(rows -> Mono.just(buildCart(rows)));
     }
 
     private Cart buildCart(List<Map<String, Object>> rows) {
@@ -107,19 +126,33 @@ public class CartRepositoryImpl implements CartRepository {
                 .bind("id", cart.getId())
                 .bind("cartState", cart.getCartState().name())
                 .then();
-
         var cartItem = saveCartItemsSimple(cart);
         return Mono.when(cartS, cartItem).thenReturn(cart);
+    }
+
+    @Override
+    public Mono<Cart> findByIdWithoutItems(UUID cartId) {
+        return client.sql(findCartWithoutItems)
+                .bind("cartId", cartId)
+                .fetch()
+                .one()
+                .map(row -> {
+                    var cart = new Cart();
+                    cart.setId(UUID.fromString(row.get("id").toString()));
+                    cart.setCartState(CartStateType.valueOf(row.get("cart_state").toString()));
+                    cart.setPositions(new HashMap<>());
+                    return cart;
+                });
     }
 
     private Mono<Cart> saveCartItemsSimple(Cart cart) {
         return Flux.fromIterable(cart.getPositions().entrySet())
                 .flatMap(entry -> client.sql("""
-                INSERT INTO cart_items (cart_id, item_id, count)
-                VALUES (:cartId, :itemId, :count)
-                ON CONFLICT (cart_id, item_id) 
-                DO UPDATE SET count = :count
-                """)
+                                INSERT INTO cart_items (cart_id, item_id, count)
+                                VALUES (:cartId, :itemId, :count)
+                                ON CONFLICT (cart_id, item_id) 
+                                DO UPDATE SET count = :count
+                                """)
                         .bind("cartId", cart.getId())
                         .bind("itemId", entry.getKey().getId())
                         .bind("count", entry.getValue())
@@ -127,5 +160,13 @@ public class CartRepositoryImpl implements CartRepository {
                 )
                 .then()
                 .thenReturn(cart);
+    }
+
+    private Cart buildNewEmptyCart() {
+        return Cart.builder()
+                .id(UUID.randomUUID())
+                .cartState(CartStateType.PREPARE)
+                .positions(new HashMap<>())
+                .build();
     }
 }

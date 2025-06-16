@@ -7,6 +7,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import org.springframework.data.relational.core.mapping.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,16 +24,12 @@ import java.util.UUID;
 @Table(name = "orders")
 @Setter
 @Getter
-@SuperBuilder
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class OrderEntity {
     @Id
-    @Column(columnDefinition = "uuid", updatable = false)
-    @GeneratedValue
     private UUID id;
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "cart_id")
-    private CartEntity cart;
+    private UUID cartId;
     private BigDecimal totalSum;
 }

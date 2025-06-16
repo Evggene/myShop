@@ -16,4 +16,7 @@ public interface CartRepository {
 
     Mono<Cart> save(Cart cart);
 
+    Mono<Cart> findByIdWithoutItems(UUID cartId);
+
+    Mono<Cart> findByIdWithAllItems(UUID id);
 }
