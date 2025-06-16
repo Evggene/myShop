@@ -1,7 +1,7 @@
 package org.bea.my_shop.application.mapper;
 
 import org.bea.my_shop.domain.Order;
-import org.bea.my_shop.infrastructure.input.dto.OrderRequest;
+import org.bea.my_shop.infrastructure.input.dto.OrderResponse;
 import org.bea.my_shop.infrastructure.output.db.entity.OrderEntity;
 
 public class OrderMapper {
@@ -14,7 +14,7 @@ public class OrderMapper {
         return entity;
     }
 
-    public static OrderRequest entityToRequest(Order entity) {
+    public static OrderResponse entityToRequest(Order entity) {
         var itemsRequest = entity
                 .getCart()
                 .getPositions()
@@ -22,7 +22,7 @@ public class OrderMapper {
                 .stream()
                 .map(it -> ItemMapper.toRequest(it.getKey(), it.getValue()))
                 .toList();
-        return OrderRequest.builder()
+        return OrderResponse.builder()
                 .id(entity.getId())
                 .items(itemsRequest)
                 .totalSum(entity.getTotalSum().getPrice())

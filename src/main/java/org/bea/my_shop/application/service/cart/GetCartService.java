@@ -27,21 +27,15 @@ public class GetCartService {
     public Mono<ItemAndPriceInfo> getCartStatePrepare() {
         return cartRepository.findFirstByCartStateWithAllItems(CartStateType.PREPARE)
                 .map(cart -> {
-                    System.out.println(cart);
-                    // Вычисляем общую стоимость
-                    BigDecimal total = ItemsPriceInCartCalculation.calculate(cart);
-
-                    // Преобразуем позиции корзины в список товаров
-                    List<Item> items = cart.getPositions().entrySet().stream()
+                    var total = ItemsPriceInCartCalculation.calculate(cart);
+                    var items = cart.getPositions().entrySet().stream()
                             .peek(entry -> {
-                                // Устанавливаем актуальное количество из корзины
-                                Item item = entry.getKey();
+                                var item = entry.getKey();
                                 item.setCount(entry.getValue());
                             })
                             .map(Map.Entry::getKey)
                             .sorted(Comparator.comparing(Item::getTitle))
                             .collect(Collectors.toList());
-
                     return new ItemAndPriceInfo(cart.getId(), items, total);
                 })
                 .switchIfEmpty(Mono.just(new ItemAndPriceInfo(null, Collections.emptyList(), BigDecimal.ZERO)));

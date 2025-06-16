@@ -34,8 +34,6 @@ import java.util.UUID;
 public class CartEntity {
     @Id
     private UUID id;
-
     private List<CartItemsEntity> positions = new ArrayList<>();
-
     private CartStateType cartState;
 }

@@ -9,8 +9,8 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class OrderRequest {
+public class OrderResponse {
     private UUID id;
-    private List<ItemInCartRequest> items;
+    private List<ItemInCartResponse> items;
     private BigDecimal totalSum;
 }

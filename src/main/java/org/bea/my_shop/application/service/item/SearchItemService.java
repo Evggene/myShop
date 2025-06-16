@@ -1,7 +1,6 @@
 package org.bea.my_shop.application.service.item;
 
 import lombok.RequiredArgsConstructor;
-import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.application.type.SortType;
 import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.application.dto.ItemAndPageInfo;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +44,6 @@ public class SearchItemService {
                             itemSize,
                             search,
                             searchType.name());
-
                     return new ItemAndPageInfo(entities, pageInfo);
                 });
     }
@@ -60,6 +57,6 @@ public class SearchItemService {
     }
 
     public Mono<Item> findById(UUID id) {
-        return itemRepository.findById(id);
+        return itemRepository.getById(id);
     }
 }

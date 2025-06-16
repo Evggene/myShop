@@ -21,7 +21,6 @@ import java.util.UUID;
 @Builder
 @Setter
 @Getter
-@ToString
 @Table("item_count")
 @NoArgsConstructor
 @AllArgsConstructor

@@ -122,15 +122,6 @@ public class CartRepositoryImpl implements CartRepository {
     }
 
     @Override
-    public Mono<Cart> findByIdWithoutItems(UUID cartId) {
-        return client.sql(findCartWithoutItems)
-                .bind("cartId", cartId)
-                .fetch()
-                .one()
-                .map(this::buildCart);
-    }
-
-    @Override
     public Mono<UUID> deleteCartItems(UUID cartId) {
         return client.sql("DELETE FROM cart_items WHERE cart_id = :cartId")
                 .bind("cartId", cartId)

@@ -24,18 +24,20 @@ public class OrderCartService {
 
     public Mono<UUID> orderCart(UUID cartId) {
         return cartRepository.findByIdWithAllItems(cartId)
+                .switchIfEmpty(Mono.error(new MyShopException("Cart not found: " + cartId)))
                 .flatMap(cart -> {
                     cart.setCartState(CartStateType.BUY);
                     return cartRepository.save(cart);
                 })
                 .flatMap(savedCart -> {
-                    Order order = Order.builder()
-                            .id(UUID.randomUUID())
-                            .cart(savedCart)
-                            .totalSum(new Money(ItemsPriceInCartCalculation.calculate(savedCart)))
-                            .build();
-                    return orderRepository.save(order);
+                        Order order = Order.builder()
+                                .id(UUID.randomUUID())
+                                .cart(savedCart)
+                                .totalSum(new Money(ItemsPriceInCartCalculation.calculate(savedCart)))
+                                .build();
+                        return orderRepository.save(order);
                 })
-                .map(Order::getId); // Возвращаем исходный cartId
+                .map(Order::getId)
+                .onErrorResume(Mono::error);
     }
 }

@@ -13,12 +13,7 @@ import java.util.UUID;
 public interface CartRepository {
 
     Mono<Cart> findFirstByCartStateWithAllItems(CartStateType type);
-
     Mono<Cart> save(Cart cart);
-
     Mono<UUID> deleteCartItems(UUID cartId);
-
-    Mono<Cart> findByIdWithoutItems(UUID cartId);
-
     Mono<Cart> findByIdWithAllItems(UUID id);
 }

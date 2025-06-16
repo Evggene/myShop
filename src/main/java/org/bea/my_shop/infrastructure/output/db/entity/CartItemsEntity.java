@@ -14,7 +14,6 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@SuperBuilder
 @Entity
 @Table(name = "cart_items")
 @IdClass(CartItemsEntity.Keys.class)

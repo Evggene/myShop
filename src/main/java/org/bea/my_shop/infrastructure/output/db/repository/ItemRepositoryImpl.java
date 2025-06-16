@@ -86,7 +86,7 @@ public class ItemRepositoryImpl implements ItemRepository{
                 .one();
     }
 
-    public Mono<Item> findById(UUID id) {
+    public Mono<Item> getById(UUID id) {
         return client.sql(selectItem)
                 .bind("id", id)
                 .map((row, meta) -> buildItem(row))

@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class ItemInCartRequest {
+public class ItemInCartResponse {
     private UUID id;
     private String title;
     private String description;

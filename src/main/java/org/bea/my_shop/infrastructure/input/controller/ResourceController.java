@@ -26,7 +26,7 @@ public class ResourceController {
 
     @GetMapping("/images/{id}")
     public Mono<ResponseEntity<Resource>> getImage(@PathVariable("id") UUID id) {
-        return itemRepository.findById(id)
+        return itemRepository.getById(id)
                 .switchIfEmpty(Mono.error(new RuntimeException("Image not found")))
                 .flatMap(post -> resourceRootPathConfiguration.getRootPathTo(ResourceRootPathConfiguration.IMAGES)
                         .map(rootPath -> Paths.get(rootPath + File.separator + post.getImagePath()))
