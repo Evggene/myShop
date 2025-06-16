@@ -2,6 +2,7 @@ package org.bea.my_shop.application.service.actionCartStrategy;
 
 import org.bea.my_shop.application.type.ActionType;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -17,8 +18,8 @@ public class ActionStrategyContext {
                 .collect(Collectors.toMap(ActionStrategy::getType, Function.identity()));
     }
 
-    public ItemAndCartToEditInfo execute(ActionType actionType, ItemAndCartToEditInfo itemAndCartToEditInfo) {
+    public Mono<ItemAndCartToEditInfo> execute(ActionType actionType, ItemAndCartToEditInfo itemAndCartToEditInfo) {
         var strategy = strategies.get(actionType);
-        return strategy.edit(itemAndCartToEditInfo);
+        return Mono.just(strategy.edit(itemAndCartToEditInfo));
     }
 }

@@ -56,7 +56,7 @@ public class ItemController {
             @PathVariable("id") UUID id,
             @ModelAttribute ActionTypeRequest actionType) {
         return actionCartService.handleAction(id, actionType.getAction())
-                .thenReturn(Rendering.redirectTo("/main/items").build());
+                .map(it -> Rendering.redirectTo("/main/items").build());
     }
 
 
@@ -65,7 +65,7 @@ public class ItemController {
             @PathVariable("id") UUID id,
             @ModelAttribute ActionTypeRequest actionType) {
         return actionCartService.handleAction(id, actionType.getAction())
-                .thenReturn(Rendering.redirectTo("/items/" + id).build());
+                .map(it -> Rendering.redirectTo("/items/" + id).build());
     }
 
     /**

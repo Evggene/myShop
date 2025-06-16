@@ -32,19 +32,14 @@ public class ActionCartService {
     // вызываем статегию, вчисляем
     // вызываем хендлер который пересохраняет доменные сущности
 
-    public Mono<Void> handleAction(UUID id, ActionType actionType) {
-        cartRepository.findFirstByCartStateWithAllItems(CartStateType.PREPARE)
-                .map(it -> {
+    public Mono<Cart> handleAction(UUID id, ActionType actionType) {
+        return cartRepository.findFirstByCartStateWithAllItems(CartStateType.PREPARE)
+                .flatMap(it -> {
                     System.out.println(it);
                     var item = it.getPositions().keySet().stream().filter(key -> id.equals(key.getId())).findFirst().get();
                     var toEdit = new ItemAndCartToEditInfo(item, it);
                     return actionStrategyContext.execute(actionType, toEdit);
                 })
-                .flatMap(edited -> {
-                    itemRepository.save(edited.item());
-                    cartRepository.save(edited.cart());
-                    return Mono.empty();
-                });
-        return Mono.empty();
+                .flatMap(it -> cartRepository.save(it.cart()));
     }
 }

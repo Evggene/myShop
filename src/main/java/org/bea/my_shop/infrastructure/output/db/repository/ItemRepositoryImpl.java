@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.domain.Money;
-import org.bea.my_shop.infrastructure.output.db.entity.ItemCountEntity;
-import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.r2dbc.core.DatabaseClient;
@@ -32,19 +30,31 @@ public class ItemRepositoryImpl implements ItemRepository{
                 VALUES (:itemId, :count)
                 """;
 
+    private final static String selectItem = """
+                    SELECT i.id, i.title, i.description, i.image_path as imagePath, i.price, ic.count
+                    FROM item i
+                    JOIN item_count ic ON i.id = ic.item_id
+                    WHERE i.id = :id
+                """;
+
+    private final static String countItem = """
+                SELECT COUNT(*)
+                FROM item
+                WHERE LOWER(title) LIKE LOWER(:title)
+                """;
+
     public Flux<Item> findByTitleLikeIgnoreCase(String title, PageRequest pageRequest) {
-
         var searchPattern = "%" + title.toLowerCase() + "%";
-
-        return client.sql("""
-            SELECT
-                i.id, i.title, i.description, i.image_path AS imagePath, i.price, ic.count
-            FROM item i
-            JOIN item_count ic ON i.id = ic.item_id
-            WHERE LOWER(i.title) LIKE LOWER(:title)
-            ORDER BY i.""" + getOrderByClause(pageRequest.getSort()) + """
-             LIMIT :limit OFFSET :offset
-            """)
+        String sql1 = """
+                SELECT
+                    i.id, i.title, i.description, i.image_path AS imagePath, i.price, ic.count
+                FROM item i
+                JOIN item_count ic ON i.id = ic.item_id
+                WHERE LOWER(i.title) LIKE LOWER(:title)
+                ORDER BY i.""" + getOrderByClause(pageRequest.getSort()) + """
+                 LIMIT :limit OFFSET :offset
+                """;
+        return client.sql(sql1)
                 .bind("title", searchPattern)
                 .bind("limit", pageRequest.getPageSize())
                 .bind("offset", pageRequest.getOffset())
@@ -68,24 +78,14 @@ public class ItemRepositoryImpl implements ItemRepository{
 
     public Mono<Integer> countByTitleLikeIgnoreCase(String title) {
         String searchPattern = "%" + title.toLowerCase() + "%";
-
-        return client.sql("""
-            SELECT COUNT(*)
-            FROM item
-            WHERE LOWER(title) LIKE LOWER(:title)
-            """)
+        return client.sql(countItem)
                 .bind("title", searchPattern)
                 .map((row, meta) -> row.get(0, Integer.class))
                 .one();
     }
 
     public Mono<Item> findById(UUID id) {
-        return client.sql("""
-                SELECT i.id, i.title, i.description, i.image_path as imagePath, i.price, ic.count
-                FROM item i
-                JOIN item_count ic ON i.id = ic.item_id
-                WHERE i.id = :id
-            """)
+        return client.sql(selectItem)
                 .bind("id", id)
                 .map((row, meta) ->
                         Item.builder()
@@ -111,7 +111,7 @@ public class ItemRepositoryImpl implements ItemRepository{
                 .bindProperties(itemCountEntity)
                 .then();
 
-        return saveItem.then(saveCount).thenReturn(item);
+        return Mono.when(saveItem, saveCount).thenReturn(item);
     }
 }
 
