@@ -7,16 +7,16 @@ import org.springframework.stereotype.Component;
 public class PlusStrategy implements ActionStrategy {
     @Override
     public ItemAndCartToEditInfo edit(ItemAndCartToEditInfo itemAndCartToEditInfo) {
-        var itemEntity = itemAndCartToEditInfo.item();
-        var cartEntity = itemAndCartToEditInfo.cart();
-        var itemCount = itemEntity.getCount();
+        var item = itemAndCartToEditInfo.item();
+        var cart = itemAndCartToEditInfo.cart();
+        var itemCount = item.getCount();
 
         if (itemCount == 0) {
             return new ItemAndCartToEditInfo(null, null);
         }
-        itemEntity.setCount(itemCount - 1);
-        cartEntity.getPositions().computeIfPresent(itemEntity, (k, v) -> v + 1);
-        cartEntity.getPositions().putIfAbsent(itemEntity, 1);
+        item.setCount(itemCount - 1);
+        cart.getPositions().computeIfPresent(item, (k, v) -> v + 1);
+        cart.getPositions().putIfAbsent(item, 1);
         return itemAndCartToEditInfo;
     }
 

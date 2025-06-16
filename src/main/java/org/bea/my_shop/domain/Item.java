@@ -13,7 +13,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"count", "price", "imagePath"})
+@EqualsAndHashCode(exclude = {"count", "price", "imagePath", "description", "title"})
 public class Item {
     private UUID id;
     private String title;

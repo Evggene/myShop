@@ -1,5 +1,6 @@
 package org.bea.my_shop.infrastructure.output.db.repository;
 
+import io.r2dbc.spi.Statement;
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.domain.Cart;
 import org.bea.my_shop.domain.CartStateType;
@@ -7,6 +8,7 @@ import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.domain.Money;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.math.BigDecimal;
@@ -37,8 +39,6 @@ public class CartRepositoryImpl implements CartRepository {
                 JOIN item i ON ci.item_id = i.id
                 LEFT JOIN item_count ic ON i.id = ic.item_id
                 WHERE c.cart_state = :cartState
-                ORDER BY c.id
-                LIMIT 1
                 """;
 
     private final static String insertCart = """
@@ -55,13 +55,6 @@ public class CartRepositoryImpl implements CartRepository {
                 DO UPDATE SET count = EXCLUDED.count
                 """;
 
-    private final static String insertItemCount = """
-                INSERT INTO item_count (item_id, count) 
-                VALUES (:itemId, :count)
-                ON CONFLICT (item_id) 
-                DO UPDATE SET count = EXCLUDED.count
-                """;
-
     @Override
     public Mono<Cart> findFirstByCartStateWithAllItems(CartStateType type) {
         return client.sql(selectCartWithAllItemsByCartState)
@@ -71,7 +64,12 @@ public class CartRepositoryImpl implements CartRepository {
                 .collectList()
                 .flatMap(rows -> {
                     if (rows.isEmpty()) {
-                        return Mono.empty();
+                        var emptyCart = Cart.builder()
+                                .id(UUID.randomUUID())
+                                .cartState(CartStateType.PREPARE)
+                                .positions(new HashMap<>())
+                                .build();
+                        return Mono.just(emptyCart);
                     }
                     Cart cart = buildCart(rows);
                     return Mono.just(cart);
@@ -110,25 +108,24 @@ public class CartRepositoryImpl implements CartRepository {
                 .bind("cartState", cart.getCartState().name())
                 .then();
 
-        var cartItem = saveCartItemsWithStockUpdate(cart);
-        var item = cart.getPositions().entrySet().stream().findFirst().get();
-        var itemCount = updateItemCount(cart, item.getKey().getId(), item.getKey().getCount());
-        return Mono.when(cartS, cartItem, itemCount).thenReturn(cart);
+        var cartItem = saveCartItemsSimple(cart);
+        return Mono.when(cartS, cartItem).thenReturn(cart);
     }
 
-    private Mono<Cart> saveCartItemsWithStockUpdate(Cart cart) {
-        var item = cart.getPositions().entrySet().stream().findFirst().get();
-        return client.sql(insertCartItem)
-                .bind("cartId", cart.getId())
-                .bind("itemId", item.getKey().getId())
-                .bind("count", item.getValue())
-                .then().thenReturn(cart);
-    }
-
-    private Mono<Cart> updateItemCount(Cart cart, UUID itemId, int newCount) {
-        return client.sql(insertItemCount)
-                .bind("itemId", itemId)
-                .bind("count", newCount)
-                .then().thenReturn(cart);
+    private Mono<Cart> saveCartItemsSimple(Cart cart) {
+        return Flux.fromIterable(cart.getPositions().entrySet())
+                .flatMap(entry -> client.sql("""
+                INSERT INTO cart_items (cart_id, item_id, count)
+                VALUES (:cartId, :itemId, :count)
+                ON CONFLICT (cart_id, item_id) 
+                DO UPDATE SET count = :count
+                """)
+                        .bind("cartId", cart.getId())
+                        .bind("itemId", entry.getKey().getId())
+                        .bind("count", entry.getValue())
+                        .then()
+                )
+                .then()
+                .thenReturn(cart);
     }
 }

@@ -20,15 +20,22 @@ public class ItemRepositoryImpl implements ItemRepository{
 
     private final DatabaseClient client;
 
-    private final static String saveItemSql = """
-                INSERT INTO item (id, title, description, image_path, price)
-                VALUES (:id, :title, :description, :imagePath, :price)
-                """;
+    private static final String saveItemSql = """
+        INSERT INTO item (id, title, description, image_path, price)
+        VALUES (:id, :title, :description, :imagePath, :price)
+        ON CONFLICT (id) DO UPDATE SET
+            title = EXCLUDED.title,
+            description = EXCLUDED.description,
+            image_path = EXCLUDED.image_path,
+            price = EXCLUDED.price
+        """;
 
-    private final static String saveItemCountSql = """
-                INSERT INTO item_count (item_id, count)
-                VALUES (:itemId, :count)
-                """;
+    private static final String saveItemCountSql = """
+        INSERT INTO item_count (item_id, count)
+        VALUES (:itemId, :count)
+        ON CONFLICT (item_id) DO UPDATE SET
+            count = EXCLUDED.count
+        """;
 
     private final static String selectItem = """
                     SELECT i.id, i.title, i.description, i.image_path as imagePath, i.price, ic.count
@@ -91,7 +98,7 @@ public class ItemRepositoryImpl implements ItemRepository{
                         Item.builder()
                                 .id(row.get("id", UUID.class))
                                 .title(row.get("title", String.class))
-                                .title(row.get("description", String.class))
+                                .description(row.get("description", String.class))
                                 .imagePath(row.get("imagePath", String.class))
                                 .price(new Money(row.get("price", BigDecimal.class)))
                                 .count(row.get("count", Integer.class))
