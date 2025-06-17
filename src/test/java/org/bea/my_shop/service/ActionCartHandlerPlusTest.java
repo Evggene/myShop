@@ -1,34 +1,52 @@
-//package org.bea.my_shop.service;
-//
-//import org.bea.my_shop.application.handler.actionCartStrategy.ActionStrategyContext;
-//import org.bea.my_shop.application.handler.actionCartStrategy.PlusStrategy;
-//import org.bea.my_shop.application.handler.cart.ActionCartHandler;
-//import org.bea.my_shop.application.type.ActionType;
-//import org.bea.my_shop.domain.CartStateType;
-//import org.bea.my_shop.infrastructure.output.db.entity.CartEntity;
-//import org.bea.my_shop.infrastructure.output.db.entity.ItemCountEntity;
-//import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
-//import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
-//import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-//import org.springframework.context.annotation.Import;
-//
-//import java.math.BigDecimal;
-//import java.util.Map;
-//import java.util.Optional;
-//import java.util.UUID;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//class ActionCartHandlerPlusTest extends BaseHandlerTest {
-//
-//    @Autowired
-//    ActionCartHandler actionCartHandler;
-//    private UUID itemId;
-//
+package org.bea.my_shop.service;
+
+
+import org.bea.my_shop.application.service.cart.ActionCartService;
+import org.bea.my_shop.application.type.ActionType;
+import org.bea.my_shop.configuration.BaseServiceTest;
+import org.bea.my_shop.domain.CartStateType;
+import org.bea.my_shop.domain.Item;
+import org.bea.my_shop.domain.Money;
+import org.bea.my_shop.infrastructure.output.db.entity.CartEntity;
+import org.bea.my_shop.infrastructure.output.db.entity.ItemCountEntity;
+import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
+import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
+import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
+
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class ActionCartHandlerPlusTest extends BaseServiceTest {
+
+    @Autowired
+    ActionCartService actionCartHandler;
+    @Autowired
+    ItemRepository itemRepository;
+    private UUID itemId;
+
+    @Test
+    void a() {
+        Item item = Item.builder()
+                .id(UUID.randomUUID())
+                .title("Test Item")
+                .description("Test Description")
+                .imagePath("/test.jpg")
+                .price(new Money(new BigDecimal("99.99")))
+                .count(5)
+                .build();
+        itemRepository.save(item);
+
+    }
+
 //    @BeforeEach
 //    void setUp() {
 //        // Создаем тестовый товар
@@ -116,4 +134,4 @@
 //        CartEntity cart = cartOpt.get();
 //        assertEquals(1, cart.getPositions().size());
 //    }
-//}
+}

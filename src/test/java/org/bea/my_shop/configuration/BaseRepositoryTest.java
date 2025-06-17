@@ -14,11 +14,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-@Testcontainers
 @DataR2dbcTest
 @Import({ItemRepositoryImpl.class, CartRepositoryImpl.class, OrderRepositoryImpl.class})
-@ActiveProfiles("test")
-public class BaseRepositoryTest {
+public class BaseRepositoryTest extends BaseTest{
 
 	@Autowired
 	protected DatabaseClient databaseClient;
@@ -29,12 +27,5 @@ public class BaseRepositoryTest {
 	protected CartRepositoryImpl cartRepository;
 	@Autowired
 	protected OrderRepositoryImpl orderRepository;
-
-	@Container
-	protected static final PostgreSQLContainer<?> postgresContainer =
-		new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
-				.withDatabaseName("db")
-				.withUsername("user")
-				.withPassword("pass");
 
 }
