@@ -3,7 +3,7 @@
 //import org.bea.my_shop.application.service.item.AddItemService;
 //import org.bea.my_shop.application.service.item.SearchItemService;
 //import org.bea.my_shop.configuration.HandlerConfiguration;
-//import org.bea.my_shop.repository.BaseRepositoryTest;
+//import org.bea.my_shop.configuration.BaseRepositoryTest;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.context.annotation.Import;
 //

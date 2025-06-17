@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
 public class TestMyShopApplication {
 
 }

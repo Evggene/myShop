@@ -1,45 +1,157 @@
-//package org.bea.my_shop.repository;
-//
-//import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
-//import org.junit.jupiter.api.Assertions;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.data.domain.PageRequest;
-//
-//import java.math.BigDecimal;
-//
-//public class ItemRepositoryTest extends BaseRepositoryTest{
-//
-//    @Test
-//    void saveTest() {
-//        var saved = createAndSaveItemEntity();
-//
-//        var fromDb = itemRepository.findById(saved.getId());
-//        var retrievedItem = fromDb.get();
-//        Assertions.assertEquals("test description", retrievedItem.getDescription());
-//        Assertions.assertEquals("test title", retrievedItem.getTitle());
-//        Assertions.assertEquals(BigDecimal.ONE, retrievedItem.getPrice());
-//        Assertions.assertEquals("test path", retrievedItem.getImagePath());
-//        Assertions.assertEquals(4, retrievedItem.getItemCountEntity().getCount());
-//        Assertions.assertNotNull(retrievedItem.getCreatedAt(), "Created date should be set");
-//        Assertions.assertNotNull(retrievedItem.getUpdatedAt(), "Updated date should be set");
-//    }
-//
-//    @Test
-//    void findByTitleLikeIgnoreCaseTest_success() {
-//       var entity = createAndSaveItemEntity();
-//        var res = itemRepository.findByTitleLikeIgnoreCase("title", PageRequest.of(0, 10));
-//        Assertions.assertEquals(res.getTotalElements(), 1);
-//    }
-//
-//    @Test
-//    void findByTitleLikeIgnoreCaseTest_not_found() {
-//        var entity = createAndSaveItemEntity();
-//        var res = itemRepository.findByTitleLikeIgnoreCase("qwer", PageRequest.of(0, 10));
-//        Assertions.assertEquals(res.getTotalElements(), 0);
-//    }
-//
-//    private ItemEntity createAndSaveItemEntity() {
-//        var entity = EntityUtil.createItemEntity("test title");
-//        return itemRepository.save(entity);
-//    }
-//}
+package org.bea.my_shop.repository;
+
+import org.bea.my_shop.configuration.BaseRepositoryTest;
+import org.bea.my_shop.domain.Item;
+import org.bea.my_shop.domain.Money;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
+
+import java.math.BigDecimal;
+import java.util.UUID;
+
+class ItemRepositoryTest extends BaseRepositoryTest {
+
+    @BeforeEach
+    void setUp() {
+        clearData().block();
+    }
+
+    private Mono<Void> clearData() {
+        return databaseClient.sql("DELETE FROM item_count")
+                .then()
+                .then(databaseClient.sql("DELETE FROM item")
+                        .then());
+    }
+
+    @Test
+    void save_ShouldSaveItemWithCount() {
+        Item item = Item.builder()
+                .id(UUID.randomUUID())
+                .title("Test Item")
+                .description("Test Description")
+                .imagePath("/test.jpg")
+                .price(new Money(new BigDecimal("99.99")))
+                .count(5)
+                .build();
+
+        StepVerifier.create(itemRepository.save(item))
+                .expectNextMatches(saved ->
+                        saved.getId().equals(item.getId()) &&
+                                saved.getTitle().equals("Test Item") &&
+                                saved.getCount() == 5
+                )
+                .verifyComplete();
+
+        // Проверка в БД
+        StepVerifier.create(
+                        databaseClient.sql("SELECT count FROM item_count WHERE item_id = :id")
+                                .bind("id", item.getId())
+                                .map((row, meta) -> row.get("count", Integer.class))
+                                .one()
+                )
+                .expectNext(5)
+                .verifyComplete();
+    }
+
+    @Test
+    void getById_ShouldReturnItemWithCount() {
+        // Подготовка
+        UUID itemId = UUID.randomUUID();
+        insertTestItem(itemId, "iPhone", "Smartphone", "/iphone.jpg",
+                new BigDecimal("999.99"), 10).block();
+
+        // Действие + проверка
+        StepVerifier.create(itemRepository.getById(itemId))
+                .expectNextMatches(item ->
+                        item.getId().equals(itemId) &&
+                                item.getTitle().equals("iPhone") &&
+                                item.getCount() == 10
+                )
+                .verifyComplete();
+    }
+
+    @Test
+    void findByTitleLikeIgnoreCase_ShouldFindMatchingItems() {
+        // Подготовка
+        insertTestItem(UUID.randomUUID(), "iPhone 13", "Apple smartphone",
+                "/iphone13.jpg", new BigDecimal("999.99"), 5).block();
+        insertTestItem(UUID.randomUUID(), "Samsung Galaxy phone", "Android phone",
+                "/galaxy.jpg", new BigDecimal("899.99"), 3).block();
+        insertTestItem(UUID.randomUUID(), "MacBook Pro", "Laptop",
+                "/macbook.jpg", new BigDecimal("1999.99"), 2).block();
+
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("title"));
+
+        // Действие + проверка
+        StepVerifier.create(itemRepository.findByTitleLikeIgnoreCase("phone", pageRequest))
+                .expectNextCount(2) // iPhone и Galaxy
+                .verifyComplete();
+    }
+
+    @Test
+    void countByTitleLikeIgnoreCase_ShouldReturnCorrectCount() {
+        // Подготовка
+        insertTestItem(UUID.randomUUID(), "iPhone 13", "Phone",
+                "/iphone.jpg", new BigDecimal("999.99"), 5).block();
+        insertTestItem(UUID.randomUUID(), "iPhone 12", "Phone",
+                "/iphone.jpg", new BigDecimal("899.99"), 3).block();
+        insertTestItem(UUID.randomUUID(), "MacBook Pro", "Laptop",
+                "/macbook.jpg", new BigDecimal("1999.99"), 2).block();
+
+        // Действие + проверка
+        StepVerifier.create(itemRepository.countByTitleLikeIgnoreCase("iphone"))
+                .expectNext(2)
+                .verifyComplete();
+    }
+
+    @Test
+    void findByTitleLikeIgnoreCase_ShouldApplyPaginationAndSorting() {
+        // Подготовка
+        insertTestItem(UUID.randomUUID(), "B Product", "Desc",
+                "/b.jpg", new BigDecimal("100"), 1).block();
+        insertTestItem(UUID.randomUUID(), "A Product", "Desc",
+                "/a.jpg", new BigDecimal("200"), 2).block();
+        insertTestItem(UUID.randomUUID(), "C Product", "Desc",
+                "/c.jpg", new BigDecimal("300"), 3).block();
+
+        PageRequest pageRequest = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "title"));
+
+        // Действие + проверка
+        StepVerifier.create(itemRepository.findByTitleLikeIgnoreCase("%", pageRequest))
+                .expectNextMatches(item -> item.getTitle().equals("A Product"))
+                .expectNextMatches(item -> item.getTitle().equals("B Product"))
+                .verifyComplete();
+    }
+
+    @Test
+    void getById_ShouldReturnEmptyForNonExistingItem() {
+        // Действие + проверка
+        StepVerifier.create(itemRepository.getById(UUID.randomUUID()))
+                .verifyComplete(); // Ожидаем пустой результат
+    }
+
+    private Mono<Void> insertTestItem(UUID id, String title, String description,
+                                      String imagePath, BigDecimal price, int count) {
+        return databaseClient.sql("""
+            INSERT INTO item (id, title, description, image_path, price)
+            VALUES (:id, :title, :desc, :path, :price)
+            """)
+                .bind("id", id)
+                .bind("title", title)
+                .bind("desc", description)
+                .bind("path", imagePath)
+                .bind("price", price)
+                .then()
+                .then(databaseClient.sql("""
+                INSERT INTO item_count (item_id, count)
+                VALUES (:id, :count)
+                """)
+                        .bind("id", id)
+                        .bind("count", count)
+                        .then());
+    }
+}
