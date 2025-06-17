@@ -1,104 +1,76 @@
-//package org.bea.my_shop.service;
-//
-//import org.bea.my_shop.application.service.ItemsPriceInCartCalculation;
-//import org.bea.my_shop.infrastructure.output.db.entity.CartEntity;
-//import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
-//import org.junit.jupiter.api.Test;
-//
-//import java.math.BigDecimal;
-//import java.util.HashMap;
-//import java.util.Map;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//class ItemsPriceInCartCalculationTest {
-//
-//    @Test
-//    void calculate_shouldReturnZeroForEmptyCart() {
-//        // Given
-//        CartEntity cart = new CartEntity();
-//        cart.setPositions(new HashMap<>());
-//
-//        // When
-//        BigDecimal result = ItemsPriceInCartCalculation.calculate(cart);
-//
-//        // Then
-//        assertEquals(BigDecimal.ZERO, result);
-//    }
-//
-//    @Test
-//    void calculate_shouldSumSingleItem() {
-//        // Given
-//        ItemEntity item = createItem("Test Item", new BigDecimal("100.00"));
-//
-//        CartEntity cart = new CartEntity();
-//        cart.setPositions(Map.of(item, 1));
-//
-//        // When
-//        BigDecimal result = ItemsPriceInCartCalculation.calculate(cart);
-//
-//        // Then
-//        assertEquals(new BigDecimal("100.00"), result);
-//    }
-//
-//    @Test
-//    void calculate_shouldSumMultipleItems() {
-//        // Given
-//        ItemEntity item1 = createItem("Item 1", new BigDecimal("50.00"));
-//        ItemEntity item2 = createItem("Item 2", new BigDecimal("75.50"));
-//
-//        CartEntity cart = new CartEntity();
-//        cart.setPositions(Map.of(
-//                item1, 2, // 50 * 2 = 100
-//                item2, 3  // 75.50 * 3 = 226.50
-//        ));
-//
-//        // When
-//        BigDecimal result = ItemsPriceInCartCalculation.calculate(cart);
-//
-//        // Then
-//        assertEquals(new BigDecimal("326.50"), result);
-//    }
-//
-//    @Test
-//    void calculate_shouldHandleNegativeQuantity() {
-//        // Given
-//        ItemEntity item = createItem("Test Item", new BigDecimal("100.00"));
-//
-//        CartEntity cart = new CartEntity();
-//        cart.setPositions(Map.of(item, -2));
-//
-//        // When
-//        BigDecimal result = ItemsPriceInCartCalculation.calculate(cart);
-//
-//        // Then
-//        assertEquals(new BigDecimal("-200.00"), result);
-//    }
-//
-//    @Test
-//    void calculate_shouldHandleNullCart() {
-//        // When & Then
-//        assertThrows(NullPointerException.class, () -> {
-//            ItemsPriceInCartCalculation.calculate(null);
-//        });
-//    }
-//
-//    @Test
-//    void calculate_shouldHandleNullPositions() {
-//        // Given
-//        CartEntity cart = new CartEntity();
-//        cart.setPositions(null);
-//
-//        // When & Then
-//        assertThrows(NullPointerException.class, () -> {
-//            ItemsPriceInCartCalculation.calculate(cart);
-//        });
-//    }
-//
-//    private ItemEntity createItem(String title, BigDecimal price) {
-//        ItemEntity item = new ItemEntity();
-//        item.setTitle(title);
-//        item.setPrice(price);
-//        return item;
-//    }
-//}
+package org.bea.my_shop.service;
+
+import org.bea.my_shop.application.service.ItemsPriceInCartCalculation;
+import org.bea.my_shop.domain.Cart;
+import org.bea.my_shop.domain.Item;
+import org.bea.my_shop.domain.Money;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+class ItemsPriceInCartCalculationTest {
+
+    @Test
+    void calculate_ShouldReturnZeroForEmptyCart() {
+        Cart emptyCart = new Cart();
+        emptyCart.setPositions(Collections.emptyMap());
+
+        BigDecimal result = ItemsPriceInCartCalculation.calculate(emptyCart);
+
+        assertEquals(BigDecimal.ZERO, result);
+    }
+
+    @Test
+    void calculate_ShouldReturnCorrectSumForSingleItem() {
+        Item item = new Item();
+        item.setPrice(new Money(new BigDecimal("100.50")));
+
+        Cart cart = new Cart();
+        cart.setPositions(Map.of(item, 2));
+
+        BigDecimal result = ItemsPriceInCartCalculation.calculate(cart);
+
+        assertEquals(new BigDecimal("201.00"), result);
+    }
+
+    @Test
+    void calculate_ShouldReturnCorrectSumForMultipleItems() {
+        // Arrange
+        Item item1 = new Item();
+        item1.setId(UUID.randomUUID());
+        item1.setPrice(new Money(new BigDecimal("50.25")));
+
+        Item item2 = new Item();
+        item1.setId(UUID.randomUUID());
+        item2.setPrice(new Money(new BigDecimal("30.10")));
+
+        Cart cart = new Cart();
+        cart.setPositions(Map.of(
+                item1, 3, // 50.25 * 3 = 150.75
+                item2, 2  // 30.10 * 2 =  60.20
+        ));
+
+        BigDecimal result = ItemsPriceInCartCalculation.calculate(cart);
+
+        assertEquals(new BigDecimal("210.95"), result);
+    }
+
+    @Test
+    void calculate_ShouldHandleZeroQuantity() {
+        Item item = new Item();
+        item.setPrice(new Money(new BigDecimal("100.00")));
+
+        Cart cart = new Cart();
+        cart.setPositions(Map.of(item, 0));
+
+        BigDecimal result = ItemsPriceInCartCalculation.calculate(cart);
+
+        assertEquals(0, result.compareTo(BigDecimal.ZERO));
+    }
+}

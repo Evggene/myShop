@@ -3,80 +3,106 @@ package org.bea.my_shop.mapper;
 import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.domain.Money;
-import org.bea.my_shop.infrastructure.input.dto.AddItemRequest;
+import org.bea.my_shop.infrastructure.input.dto.ItemInCartResponse;
 import org.bea.my_shop.infrastructure.output.db.entity.ItemCountEntity;
 import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ItemMapperTest {
 
+    private static final UUID TEST_ID = UUID.fromString("123e4567-e89b-12d3-a456-426614174000");
+    private static final String TEST_TITLE = "Test Item";
+    private static final String TEST_DESCRIPTION = "Test Description";
+    private static final String TEST_IMAGE_PATH = "/images/test.jpg";
+    private static final BigDecimal TEST_PRICE = BigDecimal.valueOf(99.99);
+    private static final int TEST_COUNT = 10;
+    private static final int TEST_COUNT_IN_CART = 2;
+
     @Test
-    void toEntity_shouldMapAddItemRequestToItemEntity() {
-        var id = UUID.randomUUID();
-        var image = new MockMultipartFile("test.jpg", "test.jpg", "image/jpeg", new byte[0]);
-        var request = new AddItemRequest(id, "Test Item", image, "Test Description", 10, BigDecimal.valueOf(99.99));
+    void fromRawToModel_ShouldMapCorrectly() {
+        var result = ItemMapper.fromRawToModel(
+                TEST_ID, TEST_TITLE, TEST_DESCRIPTION, TEST_IMAGE_PATH, TEST_PRICE, TEST_COUNT);
 
-        var entity = ItemMapper.toEntity(request);
-
-        assertNotNull(entity);
-        assertEquals(id, entity.getId());
-        assertEquals("Test Item", entity.getTitle());
-        assertEquals(BigDecimal.valueOf(99.99), entity.getPrice());
-        assertEquals("Test Description", entity.getDescription());
-        assertEquals("test.jpg", entity.getImagePath());
+        assertThat(result)
+                .isNotNull()
+                .satisfies(item -> {
+                    assertThat(item.getId()).isEqualTo(TEST_ID);
+                    assertThat(item.getTitle()).isEqualTo(TEST_TITLE);
+                    assertThat(item.getDescription()).isEqualTo(TEST_DESCRIPTION);
+                    assertThat(item.getImagePath()).isEqualTo(TEST_IMAGE_PATH);
+                    assertThat(item.getPrice().getPrice()).isEqualTo(TEST_PRICE);
+                    assertThat(item.getCount()).isEqualTo(TEST_COUNT);
+                });
     }
 
     @Test
-    void toModel_shouldMapItemEntityToItem() {
-        var entity = createItemEntity();
+    void fromModelToEntity_ShouldMapCorrectly() {
+        var item = buildItem();
 
-        var item = ItemMapper.toModel(entity);
+        var result = ItemMapper.fromModelToEntity(item);
 
-        assertNotNull(item);
-        assertEquals(entity.getId(), item.getId());
-        assertEquals("Test Item", item.getTitle());
-        assertEquals("Test Description", item.getDescription());
-        assertEquals("test.jpg", item.getImagePath());
-        assertEquals(new Money(BigDecimal.valueOf(99.99)), item.getPrice());
-        assertEquals(5, item.getCount());
+        assertThat(result)
+                .isNotNull()
+                .satisfies(entity -> {
+                    assertThat(entity.getId()).isEqualTo(TEST_ID);
+                    assertThat(entity.getTitle()).isEqualTo(TEST_TITLE);
+                    assertThat(entity.getDescription()).isEqualTo(TEST_DESCRIPTION);
+                    assertThat(entity.getImagePath()).isEqualTo(TEST_IMAGE_PATH);
+                    assertThat(entity.getPrice()).isEqualTo(TEST_PRICE);
+                });
     }
 
     @Test
-    void toRequest_shouldMapItemEntityToItemInCartRequest() {
+    void fromModelToItemCountEntity_ShouldMapCorrectly() {
+        var item = Item.builder()
+                .id(TEST_ID)
+                .count(TEST_COUNT)
+                .build();
 
-        var entity = createItemEntity();
-        var request = ItemMapper.toRequest(entity, 2);
+        var result = ItemMapper.fromModelToItemCountEntity(item);
+
+        assertThat(result)
+                .isNotNull()
+                .satisfies(entity -> {
+                    assertThat(entity.getItemId()).isEqualTo(TEST_ID);
+                    assertThat(entity.getCount()).isEqualTo(TEST_COUNT);
+                });
+    }
+
+    @Test
+    void toRequest_ShouldMapCorrectly() {
+        var item = buildItem();
+
+        var result = ItemMapper.toRequest(item, TEST_COUNT_IN_CART);
 
         // Then
-        assertNotNull(request);
-        assertEquals(entity.getId(), request.getId());
-        assertEquals("Test Item", request.getTitle());
-        assertEquals("Test Description", request.getDescription());
-        assertEquals("test.jpg", request.getImagePath());
-        assertEquals(5, request.getCount());
-        assertEquals(BigDecimal.valueOf(99.99), request.getPrice());
-        assertEquals(2, request.getCountInCart());
+        assertThat(result)
+                .isNotNull()
+                .satisfies(response -> {
+                    assertThat(response.getId()).isEqualTo(TEST_ID);
+                    assertThat(response.getTitle()).isEqualTo(TEST_TITLE);
+                    assertThat(response.getDescription()).isEqualTo(TEST_DESCRIPTION);
+                    assertThat(response.getImagePath()).isEqualTo(TEST_IMAGE_PATH);
+                    assertThat(response.getPrice()).isEqualTo(TEST_PRICE);
+                    assertThat(response.getCount()).isEqualTo(TEST_COUNT);
+                    assertThat(response.getCountInCart()).isEqualTo(TEST_COUNT_IN_CART);
+                });
     }
 
-    private ItemEntity createItemEntity() {
-        var id = UUID.randomUUID();
-        var countEntity = ItemCountEntity.builder()
-                .count(5)
-                .build();
-        return ItemEntity.builder()
-                .id(id)
-                .title("Test Item")
-                .price(BigDecimal.valueOf(99.99))
-                .description("Test Description")
-                .imagePath("test.jpg")
-                .itemCountEntity(countEntity)
+    private static Item buildItem() {
+        return Item.builder()
+                .id(TEST_ID)
+                .title(TEST_TITLE)
+                .description(TEST_DESCRIPTION)
+                .imagePath(TEST_IMAGE_PATH)
+                .price(new Money(TEST_PRICE))
+                .count(TEST_COUNT)
                 .build();
     }
+
 }

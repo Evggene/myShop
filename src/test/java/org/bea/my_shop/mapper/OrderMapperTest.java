@@ -1,109 +1,80 @@
-//package org.bea.my_shop.mapper;
-//
-//import org.bea.my_shop.application.mapper.OrderMapper;
-//import org.bea.my_shop.infrastructure.input.dto.ItemInCartRequest;
-//import org.bea.my_shop.infrastructure.input.dto.OrderRequest;
-//import org.bea.my_shop.infrastructure.output.db.entity.CartEntity;
-//import org.bea.my_shop.infrastructure.output.db.entity.ItemCountEntity;
-//import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
-//import org.bea.my_shop.infrastructure.output.db.entity.OrderEntity;
-//import org.junit.jupiter.api.Test;
-//
-//import java.math.BigDecimal;
-//import java.util.HashMap;
-//import java.util.List;
-//import java.util.Map;
-//import java.util.UUID;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//class OrderMapperTest {
-//
-//    @Test
-//    void entityToRequest_shouldMapOrderEntityToOrderRequest() {
-//        UUID itemId1 = UUID.randomUUID();
-//        UUID itemId2 = UUID.randomUUID();
-//        UUID orderId = UUID.randomUUID();
-//        BigDecimal totalSum = new BigDecimal("199.98");
-//
-//        ItemEntity item1 = ItemEntity.builder()
-//                .id(itemId1)
-//                .title("Item 1")
-//                .price(new BigDecimal("99.99"))
-//                .description("Description 1")
-//                .imagePath("image1.jpg")
-//                .itemCountEntity(ItemCountEntity.builder().build())
-//                .build();
-//
-//        ItemEntity item2 = ItemEntity.builder()
-//                .id(itemId2)
-//                .title("Item 2")
-//                .price(new BigDecimal("50.00"))
-//                .description("Description 2")
-//                .imagePath("image2.jpg")
-//                .itemCountEntity(ItemCountEntity.builder().build())
-//                .build();
-//
-//        Map<ItemEntity, Integer> positions = new HashMap<>();
-//        positions.put(item1, 1);
-//        positions.put(item2, 2);
-//
-//        CartEntity cart = CartEntity.builder()
-//                .positions(positions)
-//                .build();
-//
-//        OrderEntity orderEntity = OrderEntity.builder()
-//                .id(orderId)
-//                .cart(cart)
-//                .totalSum(totalSum)
-//                .build();
-//
-//        OrderRequest orderRequest = OrderMapper.entityToRequest(orderEntity);
-//
-//        assertNotNull(orderRequest);
-//        assertEquals(orderId, orderRequest.getId());
-//        assertEquals(totalSum, orderRequest.getTotalSum());
-//
-//        List<ItemInCartRequest> items = orderRequest.getItems();
-//        assertNotNull(items);
-//        assertEquals(2, items.size());
-//
-//        ItemInCartRequest itemRequest1 = items.stream()
-//                .filter(item -> item.getId().equals(itemId1))
-//                .findFirst()
-//                .orElseThrow();
-//        assertEquals(1, itemRequest1.getCountInCart());
-//        assertEquals("Item 1", itemRequest1.getTitle());
-//
-//        ItemInCartRequest itemRequest2 = items.stream()
-//                .filter(item -> item.getId().equals(itemId2))
-//                .findFirst()
-//                .orElseThrow();
-//        assertEquals(2, itemRequest2.getCountInCart());
-//        assertEquals("Item 2", itemRequest2.getTitle());
-//    }
-//
-//    @Test
-//    void entityToRequest_shouldHandleEmptyCart() {
-//        UUID orderId = UUID.randomUUID();
-//        BigDecimal totalSum = new BigDecimal("0.00");
-//
-//        CartEntity cart = CartEntity.builder()
-//                .positions(new HashMap<>())
-//                .build();
-//
-//        OrderEntity orderEntity = OrderEntity.builder()
-//                .id(orderId)
-//                .cart(cart)
-//                .totalSum(totalSum)
-//                .build();
-//
-//        OrderRequest orderRequest = OrderMapper.entityToRequest(orderEntity);
-//
-//        assertNotNull(orderRequest);
-//        assertEquals(orderId, orderRequest.getId());
-//        assertEquals(totalSum, orderRequest.getTotalSum());
-//        assertNotNull(orderRequest.getItems());
-//        assertTrue(orderRequest.getItems().isEmpty());
-//    }
-//}
+package org.bea.my_shop.mapper;
+
+import org.bea.my_shop.application.mapper.OrderMapper;
+import org.bea.my_shop.domain.*;
+import org.bea.my_shop.infrastructure.input.dto.OrderResponse;
+import org.bea.my_shop.infrastructure.output.db.entity.OrderEntity;
+import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class OrderMapperTest {
+
+    @Test
+    void fromModelToEntity_ShouldMapCorrectly() {
+        UUID orderId = UUID.randomUUID();
+        UUID cartId = UUID.randomUUID();
+        BigDecimal totalSum = new BigDecimal("150.50");
+
+        Cart cart = new Cart();
+        cart.setId(cartId);
+
+        Order order = new Order();
+        order.setId(orderId);
+        order.setCart(cart);
+        order.setTotalSum(new Money(totalSum));
+
+        OrderEntity entity = OrderMapper.fromModelToEntity(order);
+
+        assertNotNull(entity);
+        assertEquals(orderId, entity.getId());
+        assertEquals(cartId, entity.getCartId());
+        assertEquals(totalSum, entity.getTotalSum());
+    }
+
+    @Test
+    void entityToRequest_ShouldMapCorrectly() {
+        UUID orderId = UUID.randomUUID();
+        BigDecimal totalSum = new BigDecimal("200.00");
+
+        Item item1 = new Item();
+        item1.setId(UUID.randomUUID());
+        item1.setTitle("Item 1");
+        item1.setPrice(new Money(new BigDecimal("50.00")));
+
+        Item item2 = new Item();
+        item2.setId(UUID.randomUUID());
+        item2.setTitle("Item 2");
+        item2.setPrice(new Money(new BigDecimal("30.00")));
+
+        Cart cart = new Cart();
+        cart.setPositions(Map.of(
+                item1, 3,
+                item2, 1
+        ));
+
+        Order order = new Order();
+        order.setId(orderId);
+        order.setTotalSum(new Money(totalSum));
+        order.setCart(cart);
+
+        OrderResponse response = OrderMapper.entityToRequest(order);
+
+        assertNotNull(response);
+        assertEquals(orderId, response.getId());
+        assertEquals(totalSum, response.getTotalSum());
+        assertEquals(2, response.getItems().size());
+
+        // Проверка первого товара
+        var firstItem = response.getItems().get(0);
+        assertTrue(
+                firstItem.getId().equals(item1.getId()) ||
+                        firstItem.getId().equals(item2.getId())
+        );
+    }
+
+}
