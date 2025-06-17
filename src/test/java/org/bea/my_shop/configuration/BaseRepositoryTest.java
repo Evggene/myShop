@@ -1,6 +1,8 @@
 package org.bea.my_shop.configuration;
 
+import org.bea.my_shop.infrastructure.output.db.repository.CartRepositoryImpl;
 import org.bea.my_shop.infrastructure.output.db.repository.ItemRepositoryImpl;
+import org.bea.my_shop.infrastructure.output.db.repository.OrderRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 import org.springframework.context.annotation.Import;
@@ -14,7 +16,7 @@ import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 @DataR2dbcTest
-@Import(ItemRepositoryImpl.class)
+@Import({ItemRepositoryImpl.class, CartRepositoryImpl.class, OrderRepositoryImpl.class})
 @ActiveProfiles("test")
 public class BaseRepositoryTest {
 
@@ -23,9 +25,16 @@ public class BaseRepositoryTest {
 
 	@Autowired
 	protected ItemRepositoryImpl itemRepository;
+	@Autowired
+	protected CartRepositoryImpl cartRepository;
+	@Autowired
+	protected OrderRepositoryImpl orderRepository;
 
 	@Container
 	protected static final PostgreSQLContainer<?> postgresContainer =
-		new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"));
+		new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
+				.withDatabaseName("db")
+				.withUsername("user")
+				.withPassword("pass");
 
 }

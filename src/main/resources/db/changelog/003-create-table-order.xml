@@ -11,18 +11,11 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="cart_id" type="uuid">
-                <constraints nullable="false" unique="true"
-                             foreignKeyName="fk_order_cart" references="cart(id)"/>
             </column>
             <column name="total_sum" type="numeric(19,2)">
                 <constraints nullable="true"/>
             </column>
         </createTable>
-
-        <addUniqueConstraint
-                tableName="orders"
-                columnNames="cart_id"
-                constraintName="uk_order_cart_id"/>
     </changeSet>
 
 </databaseChangeLog>
