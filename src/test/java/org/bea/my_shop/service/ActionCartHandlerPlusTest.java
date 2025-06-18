@@ -28,10 +28,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class ActionCartHandlerPlusTest extends BaseServiceTest {
 
     @Autowired
-    ActionCartService actionCartHandler;
+    ActionCartService actionCartService;
     @Autowired
     ItemRepository itemRepository;
-    private UUID itemId;
 
     @Test
     void a() {

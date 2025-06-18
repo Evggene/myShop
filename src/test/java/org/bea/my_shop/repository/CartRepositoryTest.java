@@ -77,7 +77,7 @@ class CartRepositoryTest extends BaseRepositoryTest {
     void save_shouldUpdateCart() {
         var item = new Item();
         item.setId(testItemId);
-        Cart cart = new Cart();
+        var cart = new Cart();
         cart.setId(testCartId);
         cart.setCartState(CartStateType.BUY);
         var pos = new HashMap<Item, Integer>(){{put(item, 5);}};
@@ -120,26 +120,5 @@ class CartRepositoryTest extends BaseRepositoryTest {
                     Assertions.assertTrue(cart.getPositions().isEmpty());
                 })
                 .verifyComplete();
-    }
-
-    private Mono<Void> insertTestItem(UUID id, String title, String description,
-                                      String imagePath, BigDecimal price, int count) {
-        return databaseClient.sql("""
-            INSERT INTO item (id, title, description, image_path, price)
-            VALUES (:id, :title, :desc, :path, :price)
-            """)
-                .bind("id", id)
-                .bind("title", title)
-                .bind("desc", description)
-                .bind("path", imagePath)
-                .bind("price", price)
-                .then()
-                .then(databaseClient.sql("""
-                INSERT INTO item_count (item_id, count)
-                VALUES (:id, :count)
-                """)
-                        .bind("id", id)
-                        .bind("count", count)
-                        .then());
     }
 }

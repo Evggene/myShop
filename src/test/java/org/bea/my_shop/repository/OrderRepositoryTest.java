@@ -16,10 +16,6 @@ import java.util.UUID;
 
 class OrderRepositoryTest extends BaseRepositoryTest {
 
-    private UUID orderId = UUID.randomUUID();
-    private UUID cartId = UUID.randomUUID();
-    private UUID itemId = UUID.randomUUID();
-
     @BeforeEach
     void setup() {
                 databaseClient.sql("DELETE FROM orders").then()
@@ -46,7 +42,7 @@ class OrderRepositoryTest extends BaseRepositoryTest {
         order.setTotalSum(new Money(new BigDecimal("99.99")));
 
         var cart = new Cart();
-        cart.setId(cartId);
+        cart.setId(UUID.randomUUID());
         cart.setCartState(CartStateType.BUY);
         cart.setPositions(new HashMap<>(){{put(item, 5);}});
         order.setCart(cart);
@@ -77,7 +73,7 @@ class OrderRepositoryTest extends BaseRepositoryTest {
         order.setTotalSum(new Money(new BigDecimal("99.99")));
 
         var cart = new Cart();
-        cart.setId(cartId);
+        cart.setId(UUID.randomUUID());
         cart.setCartState(CartStateType.BUY);
         cart.setPositions(new HashMap<>(){{put(item, 5);}});
         order.setCart(cart);
@@ -101,5 +97,4 @@ class OrderRepositoryTest extends BaseRepositoryTest {
                 .as(StepVerifier::create)
                 .verifyComplete();
     }
-
 }

@@ -29,7 +29,7 @@ class ItemRepositoryTest extends BaseRepositoryTest {
 
     @Test
     void save_ShouldSaveItemWithCount() {
-        Item item = Item.builder()
+        var item = Item.builder()
                 .id(UUID.randomUUID())
                 .title("Test Item")
                 .description("Test Description")
@@ -46,7 +46,6 @@ class ItemRepositoryTest extends BaseRepositoryTest {
                 )
                 .verifyComplete();
 
-        // Проверка в БД
         StepVerifier.create(
                         databaseClient.sql("SELECT count FROM item_count WHERE item_id = :id")
                                 .bind("id", item.getId())
@@ -59,12 +58,10 @@ class ItemRepositoryTest extends BaseRepositoryTest {
 
     @Test
     void getById_ShouldReturnItemWithCount() {
-        // Подготовка
-        UUID itemId = UUID.randomUUID();
+        var itemId = UUID.randomUUID();
         insertTestItem(itemId, "iPhone", "Smartphone", "/iphone.jpg",
                 new BigDecimal("999.99"), 10).block();
 
-        // Действие + проверка
         StepVerifier.create(itemRepository.getById(itemId))
                 .expectNextMatches(item ->
                         item.getId().equals(itemId) &&
@@ -76,7 +73,6 @@ class ItemRepositoryTest extends BaseRepositoryTest {
 
     @Test
     void findByTitleLikeIgnoreCase_ShouldFindMatchingItems() {
-        // Подготовка
         insertTestItem(UUID.randomUUID(), "iPhone 13", "Apple smartphone",
                 "/iphone13.jpg", new BigDecimal("999.99"), 5).block();
         insertTestItem(UUID.randomUUID(), "Samsung Galaxy phone", "Android phone",
@@ -84,9 +80,8 @@ class ItemRepositoryTest extends BaseRepositoryTest {
         insertTestItem(UUID.randomUUID(), "MacBook Pro", "Laptop",
                 "/macbook.jpg", new BigDecimal("1999.99"), 2).block();
 
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("title"));
+        var pageRequest = PageRequest.of(0, 10, Sort.by("title"));
 
-        // Действие + проверка
         StepVerifier.create(itemRepository.findByTitleLikeIgnoreCase("phone", pageRequest))
                 .expectNextCount(2) // iPhone и Galaxy
                 .verifyComplete();
@@ -94,7 +89,6 @@ class ItemRepositoryTest extends BaseRepositoryTest {
 
     @Test
     void countByTitleLikeIgnoreCase_ShouldReturnCorrectCount() {
-        // Подготовка
         insertTestItem(UUID.randomUUID(), "iPhone 13", "Phone",
                 "/iphone.jpg", new BigDecimal("999.99"), 5).block();
         insertTestItem(UUID.randomUUID(), "iPhone 12", "Phone",
@@ -102,7 +96,6 @@ class ItemRepositoryTest extends BaseRepositoryTest {
         insertTestItem(UUID.randomUUID(), "MacBook Pro", "Laptop",
                 "/macbook.jpg", new BigDecimal("1999.99"), 2).block();
 
-        // Действие + проверка
         StepVerifier.create(itemRepository.countByTitleLikeIgnoreCase("iphone"))
                 .expectNext(2)
                 .verifyComplete();
@@ -110,7 +103,6 @@ class ItemRepositoryTest extends BaseRepositoryTest {
 
     @Test
     void findByTitleLikeIgnoreCase_ShouldApplyPaginationAndSorting() {
-        // Подготовка
         insertTestItem(UUID.randomUUID(), "B Product", "Desc",
                 "/b.jpg", new BigDecimal("100"), 1).block();
         insertTestItem(UUID.randomUUID(), "A Product", "Desc",
@@ -118,9 +110,8 @@ class ItemRepositoryTest extends BaseRepositoryTest {
         insertTestItem(UUID.randomUUID(), "C Product", "Desc",
                 "/c.jpg", new BigDecimal("300"), 3).block();
 
-        PageRequest pageRequest = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "title"));
+        var pageRequest = PageRequest.of(0, 2, Sort.by(Sort.Direction.ASC, "title"));
 
-        // Действие + проверка
         StepVerifier.create(itemRepository.findByTitleLikeIgnoreCase("%", pageRequest))
                 .expectNextMatches(item -> item.getTitle().equals("A Product"))
                 .expectNextMatches(item -> item.getTitle().equals("B Product"))
@@ -129,9 +120,8 @@ class ItemRepositoryTest extends BaseRepositoryTest {
 
     @Test
     void getById_ShouldReturnEmptyForNonExistingItem() {
-        // Действие + проверка
         StepVerifier.create(itemRepository.getById(UUID.randomUUID()))
-                .verifyComplete(); // Ожидаем пустой результат
+                .verifyComplete();
     }
 
     private Mono<Void> insertTestItem(UUID id, String title, String description,
