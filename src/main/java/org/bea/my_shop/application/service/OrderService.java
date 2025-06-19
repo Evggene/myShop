@@ -18,13 +18,13 @@ public class OrderService {
 
     public Mono<List<OrderResponse>> getAll() {
         return orderRepository.getAll()
-                .map(OrderMapper::entityToRequest)
+                .map(OrderMapper::fromEntityToRequest)
                 .collectList();
     }
 
     public Mono<OrderResponse> getById(UUID id) {
         return orderRepository.getById(id)
-                .map(OrderMapper::entityToRequest);
+                .map(OrderMapper::fromEntityToRequest);
     }
 
 }

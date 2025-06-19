@@ -62,7 +62,7 @@ class OrderMapperTest {
         order.setTotalSum(new Money(totalSum));
         order.setCart(cart);
 
-        OrderResponse response = OrderMapper.entityToRequest(order);
+        OrderResponse response = OrderMapper.fromEntityToRequest(order);
 
         assertNotNull(response);
         assertEquals(orderId, response.getId());

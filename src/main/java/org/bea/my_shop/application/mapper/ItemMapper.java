@@ -40,7 +40,7 @@ public class ItemMapper {
                 .build();
     }
 
-    public static ItemInCartResponse toRequest(Item item, Integer countInCart) {
+    public static ItemInCartResponse fromModelToRequest(Item item, Integer countInCart) {
         return ItemInCartResponse.builder()
                 .id(item.getId())
                 .title(item.getTitle())

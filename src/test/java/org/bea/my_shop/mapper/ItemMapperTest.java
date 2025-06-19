@@ -3,9 +3,6 @@ package org.bea.my_shop.mapper;
 import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.domain.Money;
-import org.bea.my_shop.infrastructure.input.dto.ItemInCartResponse;
-import org.bea.my_shop.infrastructure.output.db.entity.ItemCountEntity;
-import org.bea.my_shop.infrastructure.output.db.entity.ItemEntity;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -78,7 +75,7 @@ class ItemMapperTest {
     void toRequest_ShouldMapCorrectly() {
         var item = buildItem();
 
-        var result = ItemMapper.toRequest(item, TEST_COUNT_IN_CART);
+        var result = ItemMapper.fromModelToRequest(item, TEST_COUNT_IN_CART);
 
         // Then
         assertThat(result)

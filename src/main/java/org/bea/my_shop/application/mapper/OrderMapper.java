@@ -14,13 +14,13 @@ public class OrderMapper {
         return entity;
     }
 
-    public static OrderResponse entityToRequest(Order entity) {
+    public static OrderResponse fromEntityToRequest(Order entity) {
         var itemsRequest = entity
                 .getCart()
                 .getPositions()
                 .entrySet()
                 .stream()
-                .map(it -> ItemMapper.toRequest(it.getKey(), it.getValue()))
+                .map(it -> ItemMapper.fromModelToRequest(it.getKey(), it.getValue()))
                 .toList();
         return OrderResponse.builder()
                 .id(entity.getId())
