@@ -2,15 +2,11 @@ package org.bea.my_shop.infrastructure.input.controller;
 
 import com.google.common.collect.Lists;
 import lombok.RequiredArgsConstructor;
-import org.bea.my_shop.application.service.ItemsPriceInCartCalculation;
 import org.bea.my_shop.application.service.cart.ActionCartService;
 import org.bea.my_shop.application.service.item.SearchItemService;
-import org.bea.my_shop.application.type.ActionType;
 import org.bea.my_shop.application.type.SearchType;
-import org.bea.my_shop.domain.CartStateType;
 import org.bea.my_shop.infrastructure.input.dto.ActionTypeRequest;
-import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
-import org.springframework.http.MediaType;
+import org.bea.my_shop.application.port.output.CartRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.reactive.result.view.Rendering;
 import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @Controller

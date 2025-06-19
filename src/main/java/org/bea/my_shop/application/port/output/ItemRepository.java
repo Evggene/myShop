@@ -1,4 +1,4 @@
-package org.bea.my_shop.infrastructure.output.db.repository;
+package org.bea.my_shop.application.port.output;
 
 import org.bea.my_shop.domain.Item;
 import org.springframework.data.domain.PageRequest;

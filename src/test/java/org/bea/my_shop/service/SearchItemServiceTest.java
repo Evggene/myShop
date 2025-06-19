@@ -1,10 +1,8 @@
 package org.bea.my_shop.service;
 
 import org.bea.my_shop.application.service.item.SearchItemService;
-import org.bea.my_shop.configuration.BaseRepositoryTest;
 import org.bea.my_shop.application.type.SearchType;
 import org.bea.my_shop.configuration.BaseServiceTest;
-import org.bea.my_shop.configuration.BaseTest;
 import org.bea.my_shop.infrastructure.output.db.repository.ItemRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

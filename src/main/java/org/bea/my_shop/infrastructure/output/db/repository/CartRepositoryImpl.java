@@ -1,6 +1,7 @@
 package org.bea.my_shop.infrastructure.output.db.repository;
 
 import lombok.RequiredArgsConstructor;
+import org.bea.my_shop.application.port.output.CartRepository;
 import org.bea.my_shop.domain.Cart;
 import org.bea.my_shop.domain.CartStateType;
 import org.bea.my_shop.domain.Item;

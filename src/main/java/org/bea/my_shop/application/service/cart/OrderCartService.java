@@ -6,10 +6,8 @@ import org.bea.my_shop.application.service.ItemsPriceInCartCalculation;
 import org.bea.my_shop.domain.CartStateType;
 import org.bea.my_shop.domain.Money;
 import org.bea.my_shop.domain.Order;
-import org.bea.my_shop.infrastructure.output.db.entity.OrderEntity;
-import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
-import org.bea.my_shop.infrastructure.output.db.repository.OrderRepository;
-import org.bea.my_shop.infrastructure.output.db.repository.OrderRepositoryImpl;
+import org.bea.my_shop.application.port.output.CartRepository;
+import org.bea.my_shop.application.port.output.OrderRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

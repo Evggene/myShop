@@ -6,7 +6,6 @@ import org.bea.my_shop.application.service.actionCartStrategy.ActionStrategyCont
 import org.bea.my_shop.application.type.ActionType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Arrays;
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ActionStrategyContextCompletenessTest extends TestMyShopApplication {
+class ActionStrategyContextTest extends TestMyShopApplication {
 
     @Autowired
     private ActionStrategyContext actionStrategyContext;

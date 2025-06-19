@@ -3,6 +3,7 @@ package org.bea.my_shop.infrastructure.output.db.repository;
 import io.r2dbc.spi.Row;
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.mapper.ItemMapper;
+import org.bea.my_shop.application.port.output.ItemRepository;
 import org.bea.my_shop.domain.Item;
 import org.bea.my_shop.domain.Money;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +18,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class ItemRepositoryImpl implements ItemRepository{
+public class ItemRepositoryImpl implements ItemRepository {
 
     private final DatabaseClient client;
 

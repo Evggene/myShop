@@ -1,8 +1,8 @@
 package org.bea.my_shop.infrastructure.output.db.repository;
 
 import lombok.RequiredArgsConstructor;
-import org.bea.my_shop.application.mapper.ItemMapper;
 import org.bea.my_shop.application.mapper.OrderMapper;
+import org.bea.my_shop.application.port.output.OrderRepository;
 import org.bea.my_shop.domain.Cart;
 import org.bea.my_shop.domain.CartStateType;
 import org.bea.my_shop.domain.Item;
@@ -21,7 +21,7 @@ import java.util.function.Function;
 
 @Repository
 @RequiredArgsConstructor
-public class OrderRepositoryImpl implements OrderRepository{
+public class OrderRepositoryImpl implements OrderRepository {
 
     private final DatabaseClient client;
 

@@ -7,8 +7,8 @@ import org.bea.my_shop.application.service.actionCartStrategy.ActionStrategyCont
 import org.bea.my_shop.application.service.actionCartStrategy.ItemAndCartToEditInfo;
 import org.bea.my_shop.application.type.ActionType;
 import org.bea.my_shop.domain.CartStateType;
-import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
-import org.bea.my_shop.infrastructure.output.db.repository.ItemRepository;
+import org.bea.my_shop.application.port.output.CartRepository;
+import org.bea.my_shop.application.port.output.ItemRepository;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 

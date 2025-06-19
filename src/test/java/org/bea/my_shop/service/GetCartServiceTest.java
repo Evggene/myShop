@@ -1,13 +1,8 @@
 package org.bea.my_shop.service;
 
-import org.bea.my_shop.application.service.cart.GetCartService;
-import org.bea.my_shop.configuration.BaseRepositoryTest;
 import org.bea.my_shop.configuration.BaseServiceTest;
-import org.bea.my_shop.infrastructure.output.db.repository.CartRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 

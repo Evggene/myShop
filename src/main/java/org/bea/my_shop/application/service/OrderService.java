@@ -3,7 +3,7 @@ package org.bea.my_shop.application.service;
 import lombok.RequiredArgsConstructor;
 import org.bea.my_shop.application.mapper.OrderMapper;
 import org.bea.my_shop.infrastructure.input.dto.OrderResponse;
-import org.bea.my_shop.infrastructure.output.db.repository.OrderRepository;
+import org.bea.my_shop.application.port.output.OrderRepository;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
