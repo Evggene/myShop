@@ -155,12 +155,4 @@ public class CartRepositoryImpl implements CartRepository {
                 .positions(new HashMap<>())
                 .build();
     }
-
-    private Cart buildCart(Map<String, Object> row) {
-        var cart = new Cart();
-        cart.setId(UUID.fromString(row.get("id").toString()));
-        cart.setCartState(CartStateType.valueOf(row.get("cart_state").toString()));
-        cart.setPositions(new HashMap<>());
-        return cart;
-    }
 }

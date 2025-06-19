@@ -34,8 +34,8 @@ public class OrderRepositoryImpl implements OrderRepository {
             total_sum = EXCLUDED.total_sum
         """;
 
-    private static String getAllSql = """
-                SELECT o.id AS order_id, 
+    private static final String getAllSql = """
+                SELECT o.id AS order_id,
                        o.total_sum AS order_total_sum,
                        c.id AS cart_id,
                        c.cart_state AS cart_state
@@ -43,7 +43,7 @@ public class OrderRepositoryImpl implements OrderRepository {
                 JOIN cart c ON o.cart_id = c.id
                 """;
 
-    private static String getById =
+    private static final String getById =
                 getAllSql + """
                 where o.id = :id
                 """;
