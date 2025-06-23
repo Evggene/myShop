@@ -12,7 +12,12 @@
 	<artifactId>my-shop</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>my-shop</name>
-	<packaging>jar</packaging>
+	<packaging>pom</packaging>
+
+	<modules>
+		<module>showcase</module>
+		<module>payment</module>
+	</modules>
 
 	<properties>
 		<java.version>21</java.version>
