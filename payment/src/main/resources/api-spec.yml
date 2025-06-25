@@ -1,0 +1,146 @@
+openapi: 3.0.0
+info:
+  title: Order Service API
+  description: API для оформления заказов и обработки платежей
+  version: 1.0.0
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+  - url: https://sandbox.api.example.com/v1
+    description: Sandbox server for testing
+paths:
+  /orders:
+    post:
+      tags:
+        - Orders
+      summary: Создание нового заказа
+      description: |
+        Принимает данные для оформления заказа, взаимодействует с платежным сервисом
+        и возвращает данные созданного заказа при успешной оплате.
+      operationId: createOrder
+      requestBody:
+        description: Данные для оформления заказа
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+      responses:
+        '201':
+          description: Заказ успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '400':
+          description: Неверные входные данные
+        '402':
+          description: Ошибка оплаты
+        '500':
+          description: Внутренняя ошибка сервера
+components:
+  schemas:
+    OrderRequest:
+      type: object
+      required:
+        - items
+        - payment_method
+        - shipping_address
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          description: Список товаров в заказе
+          minItems: 1
+        payment_method:
+          type: string
+          enum: [credit_card, paypal, bank_transfer]
+          description: Способ оплаты
+        shipping_address:
+          $ref: '#/components/schemas/Address'
+        customer_note:
+          type: string
+          description: Комментарий к заказу
+          maxLength: 500
+    OrderItem:
+      type: object
+      required:
+        - product_id
+        - quantity
+      properties:
+        product_id:
+          type: string
+          format: uuid
+          description: Идентификатор товара
+        quantity:
+          type: integer
+          minimum: 1
+          description: Количество
+        price:
+          type: number
+          format: float
+          minimum: 0
+          description: Цена за единицу (если отличается от базовой)
+    Address:
+      type: object
+      required:
+        - street
+        - city
+        - postal_code
+        - country
+      properties:
+        street:
+          type: string
+          description: Улица и номер дома
+        city:
+          type: string
+          description: Город
+        postal_code:
+          type: string
+          description: Почтовый индекс
+        country:
+          type: string
+          description: Страна (код ISO 3166-1 alpha-2)
+        apartment:
+          type: string
+          description: Квартира/офис
+    OrderResponse:
+      type: object
+      properties:
+        order_id:
+          type: string
+          format: uuid
+          description: Идентификатор заказа
+        status:
+          type: string
+          enum: [created, paid, processing, shipped, completed, cancelled]
+          description: Статус заказа
+        total_amount:
+          type: number
+          format: float
+          description: Общая сумма заказа
+        currency:
+          type: string
+          default: RUB
+          description: Валюта заказа
+        payment_confirmation:
+          type: string
+          description: Номер подтверждения платежа
+        estimated_delivery:
+          type: string
+          format: date
+          description: Предполагаемая дата доставки
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        shipping_address:
+          $ref: '#/components/schemas/Address'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - BearerAuth: []
