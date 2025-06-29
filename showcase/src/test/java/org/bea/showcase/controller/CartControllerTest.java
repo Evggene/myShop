@@ -56,8 +56,9 @@ class CartControllerTest extends BaseControllerTest {
     @Test
     void buy_ShouldRedirectToOrderPage() {
         UUID orderId = UUID.randomUUID();
+        Order order = new Order();
         Mockito.when(orderCartService.orderCart(testCartId))
-                .thenReturn(Mono.just(orderId));
+                .thenReturn(Mono.just(order));
 
         webTestClient.post()
                 .uri("/buy/" + testCartId)

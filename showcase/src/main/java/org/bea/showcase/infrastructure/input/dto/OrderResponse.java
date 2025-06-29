@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@CacheConfig(cacheNames = "orders", cacheManager = "redisCacheManager")
 public class OrderResponse {
     private UUID id;
     private List<ItemInCartResponse> items;
