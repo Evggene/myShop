@@ -60,7 +60,7 @@ public class CartController {
                     if (Boolean.TRUE.equals(result)) {
                         return Rendering.redirectTo("/orders/" + id + "?newOrder=true").build();
                     }
-                    return Rendering.redirectTo("/orders/" + id + "?error=true").build();
+                    return Rendering.view("error-page").modelAttribute("error", result).build();
                 });
     }
 

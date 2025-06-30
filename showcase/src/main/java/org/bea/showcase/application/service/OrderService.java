@@ -41,20 +41,18 @@ public class OrderService {
 
 
     public Mono<Boolean> tryPay(UUID orderId) {
-        return orderCartService.orderCart(orderId)
-                .thenReturn(true);
-//        return getCartService.getCartStatePrepare()
-//                .switchIfEmpty(Mono.error(new MyShopException(orderId.toString())))
-//                .flatMap(order ->
-//                        orderWebClient.tryPay(TechnicalUserProperty.technicalUserId, order.totalPrice())
-//                        .flatMap(newBalance -> {
-//                            System.out.println(newBalance);
-//                            if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
-//                                return Mono.just(false);
-//                            }
-//                            return orderCartService.orderCart(orderId)
-//                                    .thenReturn(true);
-//                        }))
-//                .onErrorResume(e -> Mono.just(false));
+        return getCartService.getCartStatePrepare()
+                .switchIfEmpty(Mono.error(new MyShopException(orderId.toString())))
+                .flatMap(order ->
+                        orderWebClient.tryPay(TechnicalUserProperty.technicalUserId, order.totalPrice())
+                        .flatMap(newBalance -> {
+                            System.out.println(newBalance);
+                            if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
+                                return Mono.just(false);
+                            }
+                            return orderCartService.orderCart(orderId)
+                                    .thenReturn(true);
+                        }))
+                .onErrorResume(e -> Mono.error(new MyShopException(e.getMessage())));
     }
 }
