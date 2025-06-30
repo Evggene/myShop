@@ -6,6 +6,7 @@ import org.bea.showcase.application.exception.MyShopException;
 import org.bea.showcase.application.mapper.OrderMapper;
 import org.bea.showcase.application.service.cart.GetCartService;
 import org.bea.showcase.application.service.cart.OrderCartService;
+import org.bea.showcase.domain.Order;
 import org.bea.showcase.infrastructure.input.dto.OrderResponse;
 import org.bea.showcase.application.port.output.OrderRepository;
 import org.bea.showcase.infrastructure.output.client.OrderWebClient;
@@ -40,18 +41,16 @@ public class OrderService {
     }
 
 
-    public Mono<Boolean> tryPay(UUID orderId) {
+    public Mono<Order> tryPay(UUID orderId) {
         return getCartService.getCartStatePrepare()
                 .switchIfEmpty(Mono.error(new MyShopException(orderId.toString())))
                 .flatMap(order ->
                         orderWebClient.tryPay(TechnicalUserProperty.technicalUserId, order.totalPrice())
-                        .flatMap(newBalance -> {
-                            System.out.println(newBalance);
-                            if (newBalance.compareTo(BigDecimal.ZERO) < 0) {
-                                return Mono.just(false);
+                        .flatMap(bool -> {
+                            if (bool) {
+                                return orderCartService.orderCart(orderId);
                             }
-                            return orderCartService.orderCart(orderId)
-                                    .thenReturn(true);
+                            return Mono.error(new MyShopException("На счете недостаточно средстd"));
                         }))
                 .onErrorResume(e -> Mono.error(new MyShopException(e.getMessage())));
     }

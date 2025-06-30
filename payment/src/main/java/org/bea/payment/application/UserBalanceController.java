@@ -24,7 +24,7 @@ public class UserBalanceController {
     private final UserBalanceService userBalanceService;
 
     @PostMapping("/try-pay")
-    public Mono<BigDecimal> tryPay(@RequestBody UserBalanceRequest userBalanceRequest) {
+    public Mono<Boolean> tryPay(@RequestBody UserBalanceRequest userBalanceRequest) {
         return userBalanceService.findById(userBalanceRequest.getUserId())
                 .flatMap(existingBalance -> {
                     var newBalance = existingBalance.getBalance().subtract(userBalanceRequest.getBalance());
@@ -34,10 +34,10 @@ public class UserBalanceController {
                         // Если баланс валидный - сохраняем и возвращаем новый баланс
                         existingBalance.setBalance(newBalance);
                         return userBalanceService.save(existingBalance)
-                                .map(UserBalance::getBalance);
+                                .thenReturn(Boolean.TRUE);
                     }
                     // Если баланс отрицательный - возвращаем текущий без сохранения
-                    return Mono.just(existingBalance.getBalance());
+                    return Mono.just(Boolean.FALSE);
                 })
                 .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
     }

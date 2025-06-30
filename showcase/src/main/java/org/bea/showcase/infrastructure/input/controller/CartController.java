@@ -5,6 +5,7 @@ import org.bea.showcase.application.service.OrderService;
 import org.bea.showcase.application.service.cart.ActionCartService;
 import org.bea.showcase.application.service.cart.GetCartService;
 import org.bea.showcase.application.service.cart.OrderCartService;
+import org.bea.showcase.domain.Order;
 import org.bea.showcase.infrastructure.input.dto.ActionTypeRequest;
 import org.bea.showcase.infrastructure.output.client.OrderWebClient;
 import org.springframework.http.HttpStatus;
@@ -56,12 +57,7 @@ public class CartController {
     @PostMapping(value = "buy/{id}")
     public Mono<Rendering> buy(@PathVariable("id") UUID id) {
         return orderService.tryPay(id)
-                .map(result -> {
-                    if (Boolean.TRUE.equals(result)) {
-                        return Rendering.redirectTo("/orders/" + id + "?newOrder=true").build();
-                    }
-                    return Rendering.view("error-page").modelAttribute("error", result).build();
-                });
+                .map(result -> Rendering.redirectTo("/orders/" + result.getId() + "?newOrder=true").build());
     }
 
 

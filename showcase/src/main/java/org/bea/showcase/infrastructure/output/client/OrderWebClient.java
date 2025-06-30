@@ -47,7 +47,7 @@ public class OrderWebClient {
                 .retryWhen(Retry.backoff(3, Duration.ofMillis(100)));
     }
 
-    public Mono<BigDecimal> tryPay(UUID userId, BigDecimal sum) {
+    public Mono<Boolean> tryPay(UUID userId, BigDecimal sum) {
         return webClient.post()
                 .uri("/payment/try-pay", userId)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -59,7 +59,7 @@ public class OrderWebClient {
                         response -> response.bodyToMono(String.class)
                                 .flatMap(error -> Mono.error(new RuntimeException("Failed to get balance: " + error)))
                 )
-                .bodyToMono(BigDecimal.class)
+                .bodyToMono(Boolean.class)
                 .timeout(Duration.ofSeconds(5))
                 .retryWhen(Retry.backoff(3, Duration.ofMillis(100)))
                 .onErrorResume(e -> Mono.error(new MyShopException(e.getCause().getMessage())));
