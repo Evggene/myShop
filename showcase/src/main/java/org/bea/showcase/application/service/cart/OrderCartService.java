@@ -31,7 +31,7 @@ public class OrderCartService {
                     return cartRepository.save(cart);
                 })
                 .flatMap(savedCart -> {
-                        Order order = Order.builder()
+                        var order = Order.builder()
                                 .id(UUID.randomUUID())
                                 .cart(savedCart)
                                 .totalSum(new Money(ItemsPriceInCartCalculation.calculate(savedCart)))

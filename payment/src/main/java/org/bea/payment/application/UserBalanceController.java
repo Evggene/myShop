@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 
@@ -22,15 +23,26 @@ public class UserBalanceController {
 
     private final UserBalanceService userBalanceService;
 
-    @PostMapping
-    public Mono<UserBalance> createUserBalance(@RequestBody UserBalance userBalance) {
-        if (userBalance.getUserId() == null) {
-            userBalance.setUserId(UUID.randomUUID());
-        }
-        return userBalanceService.save(userBalance);
+    @PostMapping("/try-pay")
+    public Mono<BigDecimal> tryPay(@RequestBody UserBalanceRequest userBalanceRequest) {
+        return userBalanceService.findById(userBalanceRequest.getUserId())
+                .flatMap(existingBalance -> {
+                    var newBalance = existingBalance.getBalance().subtract(userBalanceRequest.getBalance());
+
+                    // Проверяем что итоговый баланс не отрицательный
+                    if (newBalance.compareTo(BigDecimal.ZERO) >= 0) {
+                        // Если баланс валидный - сохраняем и возвращаем новый баланс
+                        existingBalance.setBalance(newBalance);
+                        return userBalanceService.save(existingBalance)
+                                .map(UserBalance::getBalance);
+                    }
+                    // Если баланс отрицательный - возвращаем текущий без сохранения
+                    return Mono.just(existingBalance.getBalance());
+                })
+                .switchIfEmpty(Mono.error(new RuntimeException("User not found")));
     }
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/balance")
     public Mono<UserBalance> getUserBalance(@PathVariable UUID userId) {
         return userBalanceService.findById(userId)
                 .switchIfEmpty(Mono.error(new RuntimeException("User not found with id: " + userId)));
@@ -41,9 +53,9 @@ public class UserBalanceController {
         return userBalanceService.getAll();
     }
 
-    @GetMapping("/test-data")
+    @GetMapping("/create-data")
     public Mono<UserBalance> createTestData() {
-        UserBalance testUser = new UserBalance(UUID.randomUUID(), 1000.0);
+        var testUser = new UserBalance(TechnicalUserProperty.technicalUserId, BigDecimal.valueOf(1000));
         return userBalanceService.save(testUser);
     }
 }

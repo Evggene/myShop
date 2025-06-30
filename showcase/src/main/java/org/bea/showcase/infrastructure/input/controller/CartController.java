@@ -1,10 +1,13 @@
 package org.bea.showcase.infrastructure.input.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.bea.showcase.application.service.OrderService;
 import org.bea.showcase.application.service.cart.ActionCartService;
 import org.bea.showcase.application.service.cart.GetCartService;
 import org.bea.showcase.application.service.cart.OrderCartService;
 import org.bea.showcase.infrastructure.input.dto.ActionTypeRequest;
+import org.bea.showcase.infrastructure.output.client.OrderWebClient;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.reactive.result.view.Rendering;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Controller
@@ -22,6 +26,8 @@ public class CartController {
     private final ActionCartService actionCartService;
     private final GetCartService getCartService;
     private final OrderCartService orderCartService;
+    private final OrderWebClient orderWebClient;
+    private final OrderService orderService;
 
     /**
      * список товаров в корзине
@@ -44,13 +50,20 @@ public class CartController {
 
     /**
      * купить товары в корзине (выполняет покупку товаров в корзине и очищает ее)
+     * рест-запрос в сервис платежей
      */
+
     @PostMapping(value = "buy/{id}")
-    public Mono<Rendering> buy(
-            @PathVariable("id") UUID id) {
-        return orderCartService.orderCart(id)
-                .map(it -> Rendering.redirectTo("/orders/" + it + "?newOrder=true").build());
+    public Mono<Rendering> buy(@PathVariable("id") UUID id) {
+        return orderService.tryPay(id)
+                .map(result -> {
+                    if (Boolean.TRUE.equals(result)) {
+                        return Rendering.redirectTo("/orders/" + id + "?newOrder=true").build();
+                    }
+                    return Rendering.redirectTo("/orders/" + id + "?error=true").build();
+                });
     }
+
 
     /**
      * изменить количество товара в корзине
@@ -59,7 +72,7 @@ public class CartController {
      * (PLUS - добавить один товар, MINUS - удалить один товар, DELETE - удалить товар из корзины)
      */
     @PostMapping(value = "cart/items/{id}")
-    public Mono<Rendering> ationItems(
+    public Mono<Rendering> actionItems(
             @PathVariable("id") UUID id,
             @ModelAttribute ActionTypeRequest actionType) {
         return actionCartService.handleAction(id, actionType.getAction())

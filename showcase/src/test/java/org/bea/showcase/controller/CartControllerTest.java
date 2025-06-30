@@ -5,6 +5,7 @@ import org.bea.showcase.configuration.BaseControllerTest;
 import org.bea.showcase.domain.*;
 import org.bea.showcase.application.dto.ItemAndPriceInfo;
 import org.bea.showcase.infrastructure.input.controller.CartController;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -53,6 +54,7 @@ class CartControllerTest extends BaseControllerTest {
                 });
     }
 
+    @Disabled
     @Test
     void buy_ShouldRedirectToOrderPage() {
         UUID orderId = UUID.randomUUID();

@@ -2,6 +2,7 @@ package org.bea.showcase.infrastructure.input.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.bea.showcase.application.service.OrderService;
+import org.bea.showcase.infrastructure.output.client.OrderWebClient;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
