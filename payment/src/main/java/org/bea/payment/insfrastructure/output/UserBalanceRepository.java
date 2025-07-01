@@ -1,23 +1,22 @@
-package org.bea.payment.insfrastructure.input.output;
+package org.bea.payment.insfrastructure.output;
 
-import org.bea.payment.persistence.entity.UserBalance;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import org.bea.payment.insfrastructure.output.entity.UserBalance;
 
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class UserBalanceRepository {
 
     private static final String KEY_PREFIX = "UserBalance:";
 
     private final ReactiveRedisTemplate<String, UserBalance> redisTemplate;
 
-    public UserBalanceRepository(ReactiveRedisTemplate<String, UserBalance> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
 
     public Mono<UserBalance> save(UserBalance userBalance) {
         if (userBalance.getUserId() == null) {

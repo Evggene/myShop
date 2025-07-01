@@ -1,4 +1,4 @@
-package org.bea.payment.persistence.entity;
+package org.bea.payment.insfrastructure.output.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

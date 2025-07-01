@@ -1,6 +1,6 @@
 package org.bea.payment.application.config;
 
-import org.bea.payment.persistence.entity.UserBalance;
+import org.bea.payment.insfrastructure.output.entity.UserBalance;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;
@@ -15,21 +15,13 @@ public class RedisConfig {
     @Bean
     public ReactiveRedisTemplate<String, UserBalance> reactiveRedisTemplate(
             ReactiveRedisConnectionFactory connectionFactory) {
-
-        // Сериализатор для ключей (String)
         StringRedisSerializer keySerializer = new StringRedisSerializer();
-
-        // Сериализатор для значений (JSON)
         Jackson2JsonRedisSerializer<UserBalance> valueSerializer =
                 new Jackson2JsonRedisSerializer<>(UserBalance.class);
-
-        // Конфигурация сериализации
         RedisSerializationContext.RedisSerializationContextBuilder<String, UserBalance> builder =
                 RedisSerializationContext.newSerializationContext(keySerializer);
-
         RedisSerializationContext<String, UserBalance> context =
                 builder.value(valueSerializer).build();
-
         return new ReactiveRedisTemplate<>(connectionFactory, context);
     }
 }

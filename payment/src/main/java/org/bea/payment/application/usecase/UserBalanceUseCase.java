@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.bea.payment.insfrastructure.input.dto.UserBalanceRequest;
-import org.bea.payment.persistence.entity.UserBalance;
+import org.bea.payment.insfrastructure.output.entity.UserBalance;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import reactor.core.publisher.Flux;
