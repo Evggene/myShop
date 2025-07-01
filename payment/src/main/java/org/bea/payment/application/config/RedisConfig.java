@@ -1,6 +1,6 @@
-package org.bea.payment.application;
+package org.bea.payment.application.config;
 
-import org.bea.payment.persistence.UserBalance;
+import org.bea.payment.persistence.entity.UserBalance;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.ReactiveRedisConnectionFactory;

@@ -1,4 +1,4 @@
-package org.bea.payment.application;
+package org.bea.payment.application.config;
 
 import java.util.UUID;
 

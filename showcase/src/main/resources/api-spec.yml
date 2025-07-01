@@ -1,146 +1,107 @@
-openapi: 3.0.0
+openapi: 3.0.1
 info:
-  title: Order Service API
-  description: API для оформления заказов и обработки платежей
+  title: API сервиса платежей
+  description: API для управления балансами пользователей и обработки платежей
   version: 1.0.0
 servers:
-  - url: https://api.example.com/v1
-    description: Production server
-  - url: https://sandbox.api.example.com/v1
-    description: Sandbox server for testing
+  - url: http://localhost:8080
+    description: Локальный сервер разработки
+tags:
+  - name: Сервис платежей
+    description: API для управления балансами пользователей и платежей
 paths:
-  /orders:
+  /payment/try-pay:
     post:
       tags:
-        - Orders
-      summary: Создание нового заказа
-      description: |
-        Принимает данные для оформления заказа, взаимодействует с платежным сервисом
-        и возвращает данные созданного заказа при успешной оплате.
-      operationId: createOrder
+        - Сервис платежей
+      summary: Попытка совершить платеж
+      description: Списание указанной суммы с баланса пользователя, если доступно достаточно средств
       requestBody:
-        description: Данные для оформления заказа
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OrderRequest'
+              $ref: '#/components/schemas/UserBalanceRequest'
       responses:
-        '201':
-          description: Заказ успешно создан
+        '200':
+          description: Платеж успешно обработан
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OrderResponse'
+                type: boolean
+        '404':
+          description: Пользователь не найден
         '400':
-          description: Неверные входные данные
-        '402':
-          description: Ошибка оплаты
-        '500':
-          description: Внутренняя ошибка сервера
+          description: Неверный запрос
+  /payment/{userId}/balance:
+    get:
+      tags:
+        - Сервис платежей
+      summary: Получить баланс пользователя
+      description: Получение текущего баланса для указанного пользователя
+      parameters:
+        - name: userId
+          in: path
+          description: ID пользователя
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 123e4567-e89b-12d3-a456-426614174000
+      responses:
+        '200':
+          description: Баланс успешно получен
+          content:
+            application/json:
+              schema:
+                type: number
+                format: double
+                example: 1000.00
+        '404':
+          description: Пользователь не найден
+  /payment/create-data:
+    get:
+      tags:
+        - Сервис платежей
+      summary: Создать тестовые данные
+      description: Создание тестового пользователя с начальным балансом для тестирования
+      responses:
+        '200':
+          description: Тестовый пользователь успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserBalance'
 components:
   schemas:
-    OrderRequest:
+    UserBalance:
       type: object
-      required:
-        - items
-        - payment_method
-        - shipping_address
+      description: Информация о балансе пользователя
       properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderItem'
-          description: Список товаров в заказе
-          minItems: 1
-        payment_method:
-          type: string
-          enum: [credit_card, paypal, bank_transfer]
-          description: Способ оплаты
-        shipping_address:
-          $ref: '#/components/schemas/Address'
-        customer_note:
-          type: string
-          description: Комментарий к заказу
-          maxLength: 500
-    OrderItem:
-      type: object
-      required:
-        - product_id
-        - quantity
-      properties:
-        product_id:
+        userId:
           type: string
           format: uuid
-          description: Идентификатор товара
-        quantity:
-          type: integer
-          minimum: 1
-          description: Количество
-        price:
+          description: Уникальный идентификатор пользователя
+          example: 123e4567-e89b-12d3-a456-426614174000
+        balance:
           type: number
-          format: float
-          minimum: 0
-          description: Цена за единицу (если отличается от базовой)
-    Address:
+          format: double
+          description: Текущий баланс пользователя
+          example: 1000.00
+    UserBalanceRequest:
       type: object
+      description: Запрос на проведение платежа
       required:
-        - street
-        - city
-        - postal_code
-        - country
+        - userId
+        - balance
       properties:
-        street:
-          type: string
-          description: Улица и номер дома
-        city:
-          type: string
-          description: Город
-        postal_code:
-          type: string
-          description: Почтовый индекс
-        country:
-          type: string
-          description: Страна (код ISO 3166-1 alpha-2)
-        apartment:
-          type: string
-          description: Квартира/офис
-    OrderResponse:
-      type: object
-      properties:
-        order_id:
+        userId:
           type: string
           format: uuid
-          description: Идентификатор заказа
-        status:
-          type: string
-          enum: [created, paid, processing, shipped, completed, cancelled]
-          description: Статус заказа
-        total_amount:
+          description: ID пользователя, совершающего платеж
+          example: 123e4567-e89b-12d3-a456-426614174000
+        balance:
           type: number
-          format: float
-          description: Общая сумма заказа
-        currency:
-          type: string
-          default: RUB
-          description: Валюта заказа
-        payment_confirmation:
-          type: string
-          description: Номер подтверждения платежа
-        estimated_delivery:
-          type: string
-          format: date
-          description: Предполагаемая дата доставки
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderItem'
-        shipping_address:
-          $ref: '#/components/schemas/Address'
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-security:
-  - BearerAuth: []
+          format: double
+          description: Сумма для списания с баланса пользователя
+          example: 100.50

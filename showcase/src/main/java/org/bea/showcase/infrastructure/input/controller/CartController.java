@@ -26,8 +26,6 @@ public class CartController {
 
     private final ActionCartService actionCartService;
     private final GetCartService getCartService;
-    private final OrderCartService orderCartService;
-    private final OrderWebClient orderWebClient;
     private final OrderService orderService;
 
     /**
