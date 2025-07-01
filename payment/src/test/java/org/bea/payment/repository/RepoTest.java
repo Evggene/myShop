@@ -17,15 +17,20 @@ import org.bea.payment.insfrastructure.output.entity.UserBalance;
 
 class RepoTest extends BaseRepositoryTest {
 
+    @BeforeEach
+    public void init() {
+        redisTemplate.keys("*")
+                .flatMap(redisTemplate::delete)
+                .then()
+                .block();
+    }
+
     @Test
     void save_ShouldSaveAndReturnUserBalance() {
-        // Given
-        UserBalance userBalance = new UserBalance(UUID.randomUUID(), BigDecimal.valueOf(1000));
+        var userBalance = new UserBalance(UUID.randomUUID(), BigDecimal.valueOf(1000));
 
-        // When
-        Mono<UserBalance> result = repository.save(userBalance);
+        var result = repository.save(userBalance);
 
-        // Then
         StepVerifier.create(result)
                 .expectNextMatches(saved ->
                         saved.getUserId().equals(userBalance.getUserId()) &&
@@ -35,15 +40,12 @@ class RepoTest extends BaseRepositoryTest {
 
     @Test
     void findById_ShouldReturnSavedUserBalance() {
-        // Given
-        UUID userId = UUID.randomUUID();
-        UserBalance userBalance = new UserBalance(userId, BigDecimal.valueOf(500));
+        var userId = UUID.randomUUID();
+        var userBalance = new UserBalance(userId, BigDecimal.valueOf(500));
         repository.save(userBalance).block();
 
-        // When
-        Mono<UserBalance> result = repository.findById(userId);
+        var result = repository.findById(userId);
 
-        // Then
         StepVerifier.create(result)
                 .expectNextMatches(found ->
                         found.getUserId().equals(userId) &&
@@ -53,25 +55,20 @@ class RepoTest extends BaseRepositoryTest {
 
     @Test
     void findById_ShouldReturnEmptyWhenNotFound() {
-        // When
-        Mono<UserBalance> result = repository.findById(UUID.randomUUID());
+        var result = repository.findById(UUID.randomUUID());
 
-        // Then
         StepVerifier.create(result)
                 .verifyComplete();
     }
 
     @Test
     void deleteById_ShouldRemoveUserBalance() {
-        // Given
-        UUID userId = UUID.randomUUID();
+        var userId = UUID.randomUUID();
         UserBalance userBalance = new UserBalance(userId, BigDecimal.valueOf(300));
         repository.save(userBalance).block();
 
-        // When
-        Mono<Boolean> result = repository.deleteById(userId);
+        var result = repository.deleteById(userId);
 
-        // Then
         StepVerifier.create(result)
                 .expectNext(true)
                 .verifyComplete();
@@ -82,33 +79,27 @@ class RepoTest extends BaseRepositoryTest {
 
     @Test
     void getAll_ShouldReturnAllSavedUserBalances() {
-        // Given
-        UserBalance balance1 = new UserBalance(UUID.randomUUID(), BigDecimal.valueOf(100));
-        UserBalance balance2 = new UserBalance(UUID.randomUUID(), BigDecimal.valueOf(200));
-        UserBalance balance3 = new UserBalance(UUID.randomUUID(), BigDecimal.valueOf(300));
+        var balance1 = new UserBalance(UUID.randomUUID(), BigDecimal.valueOf(100));
+        var balance2 = new UserBalance(UUID.randomUUID(), BigDecimal.valueOf(200));
+        var balance3 = new UserBalance(UUID.randomUUID(), BigDecimal.valueOf(300));
 
         repository.save(balance1).block();
         repository.save(balance2).block();
         repository.save(balance3).block();
 
-        // When
-        var result = repository.getAll();
+        var result = repository.getAll().collectList();
 
-        // Then
         StepVerifier.create(result)
-                .expectNextCount(3)
+                .expectNextMatches(e -> e.size() == 3)
                 .verifyComplete();
     }
 
     @Test
     void save_ShouldGenerateUserIdWhenNotProvided() {
-        // Given
-        UserBalance userBalance = new UserBalance(null, BigDecimal.valueOf(1500));
+        var userBalance = new UserBalance(null, BigDecimal.valueOf(1500));
 
-        // When
-        Mono<UserBalance> result = repository.save(userBalance);
+        var result = repository.save(userBalance);
 
-        // Then
         StepVerifier.create(result)
                 .expectNextMatches(saved ->
                         saved.getUserId() != null &&
