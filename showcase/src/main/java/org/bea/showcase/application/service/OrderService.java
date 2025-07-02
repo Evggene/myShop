@@ -1,6 +1,7 @@
 package org.bea.showcase.application.service;
 
 import lombok.RequiredArgsConstructor;
+import org.bea.showcase.application.configuration.CacheType;
 import org.bea.showcase.application.configuration.TechnicalUserProperty;
 import org.bea.showcase.application.exception.MyShopException;
 import org.bea.showcase.application.mapper.OrderMapper;
@@ -25,6 +26,7 @@ public class OrderService {
     private final OrderWebClient orderWebClient;
     private final OrderCartService orderCartService;
     private final GetCartService getCartService;
+    private final static String  cacheType = CacheType.ORDERS.getValue();
 
     @Cacheable(value = "orders", key = "'all'")
     public Mono<List<OrderResponse>> getAll() {
