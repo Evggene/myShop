@@ -4,11 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.bea.showcase.application.service.OrderService;
 import org.bea.showcase.application.service.cart.ActionCartService;
 import org.bea.showcase.application.service.cart.GetCartService;
-import org.bea.showcase.application.service.cart.OrderCartService;
-import org.bea.showcase.domain.Order;
 import org.bea.showcase.infrastructure.input.dto.ActionTypeRequest;
-import org.bea.showcase.infrastructure.output.client.OrderWebClient;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -38,11 +34,11 @@ public class CartController {
      */
     @GetMapping(path = "cart/items")
     public Mono<Rendering> getItemsInCart() {
-        return getCartService.getCartStatePrepare()
+        return getCartService.getCartAndBalance()
                 .map(it -> Rendering.view("cart")
+                        .modelAttribute("empty", it.items().isEmpty() || it.balance().compareTo(BigDecimal.ZERO) < 0)
                         .modelAttribute("items", it.items())
                         .modelAttribute("total", it.totalPrice())
-                        .modelAttribute("empty", it.items().isEmpty())
                         .modelAttribute("cartId", it.cartId())
                         .build());
     }

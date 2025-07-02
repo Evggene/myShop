@@ -3,7 +3,7 @@ package org.bea.showcase.controller;
 import org.bea.showcase.application.type.ActionType;
 import org.bea.showcase.configuration.BaseControllerTest;
 import org.bea.showcase.domain.*;
-import org.bea.showcase.application.dto.ItemAndPriceInfo;
+import org.bea.showcase.application.dto.CartDetailsAndBalance;
 import org.bea.showcase.infrastructure.input.controller.CartController;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Assertions;
@@ -34,12 +34,13 @@ class CartControllerTest extends BaseControllerTest {
 
     @Test
     void getItemsInCart_ShouldReturnCartViewWithItems() {
-        var cartInfo = new ItemAndPriceInfo(
+        var cartInfo = new CartDetailsAndBalance(
                 testCartId,
                 List.of(testItem),
-                new BigDecimal("199.98")
+                new BigDecimal("199.98"),
+                BigDecimal.ONE
         );
-        Mockito.when(getCartService.getCartStatePrepare())
+        Mockito.when(getCartService.getCartAndBalance())
                 .thenReturn(Mono.just(cartInfo));
 
         webTestClient.get()

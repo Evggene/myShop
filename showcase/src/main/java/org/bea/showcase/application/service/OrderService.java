@@ -10,12 +10,10 @@ import org.bea.showcase.domain.Order;
 import org.bea.showcase.infrastructure.input.dto.OrderResponse;
 import org.bea.showcase.application.port.output.OrderRepository;
 import org.bea.showcase.infrastructure.output.client.OrderWebClient;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +40,7 @@ public class OrderService {
 
 
     public Mono<Order> tryPay(UUID orderId) {
-        return getCartService.getCartStatePrepare()
+        return getCartService.getCartAndBalance()
                 .switchIfEmpty(Mono.error(new MyShopException(orderId.toString())))
                 .flatMap(order ->
                         orderWebClient.tryPay(TechnicalUserProperty.technicalUserId, order.totalPrice())

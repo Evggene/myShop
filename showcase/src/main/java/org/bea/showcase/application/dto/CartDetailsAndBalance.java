@@ -6,5 +6,5 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-public record ItemAndPriceInfo(UUID cartId, List<Item> items, BigDecimal totalPrice) {
+public record CartDetailsAndBalance(UUID cartId, List<Item> items, BigDecimal totalPrice, BigDecimal balance) {
 }

@@ -56,7 +56,7 @@ class GetCartServiceTest extends BaseServiceTest {
     void getCartStatePrepare_ShouldReturnCartWithItems() {
         createTestCartWithItem().block();
 
-        StepVerifier.create(getCartService.getCartStatePrepare())
+        StepVerifier.create(getCartService.getCartAndBalance())
                 .assertNext(result -> {
                     assertEquals(testCartId, result.cartId());
                     assertEquals(1, result.items().size());
@@ -69,7 +69,7 @@ class GetCartServiceTest extends BaseServiceTest {
 
     @Test
     void getCartStatePrepare_ShouldReturnEmptyForNoCart() {
-        StepVerifier.create(getCartService.getCartStatePrepare())
+        StepVerifier.create(getCartService.getCartAndBalance())
                 .assertNext(result -> {
                     assertTrue(result.items().isEmpty());
                     assertEquals(0, BigDecimal.ZERO.compareTo(result.totalPrice()));
@@ -98,7 +98,7 @@ class GetCartServiceTest extends BaseServiceTest {
                         .then())
                 .block();
 
-        StepVerifier.create(getCartService.getCartStatePrepare())
+        StepVerifier.create(getCartService.getCartAndBalance())
                 .assertNext(result -> {
                     assertEquals(2, result.items().size());
                     // 99.99 * 2 + 50.00 * 3 = 199.98 + 150.00 = 349.98
@@ -141,7 +141,7 @@ class GetCartServiceTest extends BaseServiceTest {
                         .then())
                 .block();
 
-        StepVerifier.create(getCartService.getCartStatePrepare())
+        StepVerifier.create(getCartService.getCartAndBalance())
                 .assertNext(result -> {
                     assertEquals(3, result.items().size());
                     // Проверяем сортировку по title
