@@ -1,21 +1,15 @@
 package org.bea.payment.repository;
 
 import org.bea.payment.configuration.BaseRepositoryTest;
-import org.bea.payment.insfrastructure.output.UserBalanceRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.redis.core.ReactiveRedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
-import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 import org.bea.payment.insfrastructure.output.entity.UserBalance;
 
-class RepoTest extends BaseRepositoryTest {
+class UserBalanceRepository extends BaseRepositoryTest {
 
     @BeforeEach
     public void init() {

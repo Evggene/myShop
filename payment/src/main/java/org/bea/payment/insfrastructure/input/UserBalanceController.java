@@ -6,12 +6,14 @@ import org.bea.payment.application.usecase.UserBalanceUseCase;
 import org.bea.payment.insfrastructure.input.dto.UserBalanceRequest;
 import org.bea.payment.insfrastructure.output.UserBalanceRepository;
 import org.bea.payment.insfrastructure.output.entity.UserBalance;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -29,6 +31,7 @@ public class UserBalanceController implements UserBalanceUseCase {
     @PostMapping("/try-pay")
     public Mono<Boolean> tryPay(@RequestBody UserBalanceRequest userBalanceRequest) {
         return userBalanceRepository.findById(userBalanceRequest.getUserId())
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")))
                 .flatMap(existingBalance -> {
                     var newBalance = existingBalance.getBalance().subtract(userBalanceRequest.getBalance());
                     if (newBalance.compareTo(BigDecimal.ZERO) >= 0) {
@@ -44,7 +47,7 @@ public class UserBalanceController implements UserBalanceUseCase {
     @GetMapping("/{userId}/balance")
     public Mono<BigDecimal> getBalance(@PathVariable UUID userId) {
         return userBalanceRepository.findById(userId)
-                .switchIfEmpty(Mono.error(new RuntimeException("User not found with id: " + userId)))
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found")))
                 .map(UserBalance::getBalance);
     }
 
