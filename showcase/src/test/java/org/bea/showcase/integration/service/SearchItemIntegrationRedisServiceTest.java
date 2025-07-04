@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -21,6 +22,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class SearchItemIntegrationRedisServiceTest extends BaseServiceConfiguration {
+
+    @Autowired
+    private ReactiveRedisTemplate<String, Object> redisTemplate;
 
     @Test
     public void findById_shouldUseCacheForSameId() {
@@ -36,7 +40,7 @@ public class SearchItemIntegrationRedisServiceTest extends BaseServiceConfigurat
 
         when(itemRepository.getById(itemId)).thenReturn(Mono.just(testItem));
 
-        // Первый вызов
+        // Первый вызов - должен сохранить в кэш
         StepVerifier.create(searchItemService.findById(itemId))
                 .expectNext(testItem)
                 .verifyComplete();
@@ -48,5 +52,8 @@ public class SearchItemIntegrationRedisServiceTest extends BaseServiceConfigurat
 
         // Проверяем, что был только один вызов репозитория
         verify(itemRepository, times(1)).getById(itemId);
+
+        // Очищаем кэш после теста
+        redisTemplate.opsForValue();
     }
 }
