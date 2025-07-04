@@ -1,6 +1,6 @@
 package org.bea.showcase.controller;
 
-import org.bea.showcase.configuration.BaseControllerTest;
+import org.bea.showcase.configuration.BaseControllerConfiguration;
 import org.bea.showcase.infrastructure.input.controller.OrderController;
 import org.bea.showcase.infrastructure.input.dto.ItemInCartResponse;
 import org.bea.showcase.infrastructure.input.dto.OrderResponse;
@@ -16,7 +16,7 @@ import java.util.UUID;
 import static org.junit.Assert.assertTrue;
 
 @WebFluxTest(OrderController.class)
-class OrderControllerTest extends BaseControllerTest {
+class OrderControllerTest extends BaseControllerConfiguration {
 
     private final UUID testOrderId = UUID.randomUUID();
     private final UUID testItemId = UUID.randomUUID();

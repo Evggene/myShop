@@ -1,6 +1,6 @@
 package org.bea.showcase.repository;
 
-import org.bea.showcase.configuration.BaseRepositoryTest;
+import org.bea.showcase.configuration.BaseRepositoryConfiguration;
 import org.bea.showcase.domain.Cart;
 import org.bea.showcase.domain.CartStateType;
 import org.bea.showcase.domain.Item;
@@ -11,7 +11,7 @@ import reactor.test.StepVerifier;
 import java.util.HashMap;
 import java.util.UUID;
 
-class CartRepositoryTest extends BaseRepositoryTest {
+class CartRepositoryTest extends BaseRepositoryConfiguration {
 
     private UUID testCartId;
     private UUID testItemId;

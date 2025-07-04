@@ -1,7 +1,5 @@
 package org.bea.showcase.configuration;
 
-import org.bea.showcase.TestMyShopApplication;
-
 import org.bea.showcase.application.service.cart.ActionCartService;
 import org.bea.showcase.application.service.cart.GetCartService;
 import org.bea.showcase.application.service.item.AddItemService;
@@ -12,17 +10,18 @@ import org.bea.showcase.infrastructure.output.db.repository.ItemRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.r2dbc.core.DatabaseClient;
-import org.testcontainers.shaded.org.bouncycastle.jcajce.provider.symmetric.DES;
+import org.springframework.test.context.ActiveProfiles;
 
-@SpringBootTest
-@Import({ItemRepositoryImpl.class, TestCacheConfig.class})
-@Configuration
-public class BaseServiceTest extends TestMyShopApplication {
+@Profile("test")
+@Import({ItemRepositoryImpl.class, CacheTestConfiguration.class})
+@TestConfiguration
+public class BaseServiceSpringBootTest extends BaseTest{
 
     @Autowired
     protected DatabaseClient databaseClient;
@@ -39,7 +38,6 @@ public class BaseServiceTest extends TestMyShopApplication {
     @Autowired
     protected SearchItemService service;
     @Autowired
-    @Qualifier("testCacheManager")
     protected CacheManager cacheManager;
 
 }

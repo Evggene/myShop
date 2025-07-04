@@ -4,7 +4,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
 import java.util.Collection;
@@ -16,7 +15,7 @@ import static org.mockito.Mockito.when;
 
 @Profile("test")
 @TestConfiguration
-public class TestCacheConfig {
+public class CacheTestConfiguration {
 
     @Bean
     public CacheManager testCacheManager() {

@@ -1,7 +1,7 @@
 package org.bea.showcase.controller;
 
 import org.bea.showcase.application.type.ActionType;
-import org.bea.showcase.configuration.BaseControllerTest;
+import org.bea.showcase.configuration.BaseControllerConfiguration;
 import org.bea.showcase.domain.*;
 import org.bea.showcase.application.dto.CartDetailsAndBalance;
 import org.bea.showcase.infrastructure.input.controller.CartController;
@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 
 @WebFluxTest(CartController.class)
-class CartControllerTest extends BaseControllerTest {
+class CartControllerTest extends BaseControllerConfiguration {
 
     private final UUID testItemId = UUID.randomUUID();
     private final UUID testCartId = UUID.randomUUID();

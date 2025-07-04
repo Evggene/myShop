@@ -1,9 +1,9 @@
 package org.bea.showcase.service;
 
-import org.bea.showcase.TestMyShopApplication;
 import org.bea.showcase.application.service.actionCartStrategy.ActionStrategy;
 import org.bea.showcase.application.service.actionCartStrategy.ActionStrategyContext;
 import org.bea.showcase.application.type.ActionType;
+import org.bea.showcase.configuration.BaseServiceSpringBootTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ActionStrategyContextTest extends TestMyShopApplication {
+class ActionStrategyContextTest extends BaseServiceSpringBootTest {
 
     @Autowired
     private ActionStrategyContext actionStrategyContext;

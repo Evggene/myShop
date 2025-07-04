@@ -1,7 +1,7 @@
 package org.bea.showcase.service;
 
 import org.bea.showcase.application.exception.MyShopException;
-import org.bea.showcase.configuration.BaseServiceTest;
+import org.bea.showcase.configuration.BaseServiceSpringBootTest;
 import org.bea.showcase.infrastructure.input.dto.AddItemRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-class AddItemServiceTest extends BaseServiceTest {
+class AddItemServiceTest extends BaseServiceSpringBootTest {
 
     private FilePart mockFilePart;
 

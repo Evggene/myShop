@@ -2,7 +2,7 @@ package org.bea.showcase.service;
 
 import org.bea.showcase.application.exception.MyShopException;
 import org.bea.showcase.application.type.ActionType;
-import org.bea.showcase.configuration.BaseServiceTest;
+import org.bea.showcase.configuration.BaseServiceSpringBootTest;
 import org.bea.showcase.domain.CartStateType;
 import org.bea.showcase.domain.Item;
 import org.bea.showcase.domain.Money;
@@ -15,7 +15,7 @@ import reactor.test.StepVerifier;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-class ActionCartServicePlusTest extends BaseServiceTest {
+class ActionCartServicePlusTest extends BaseServiceSpringBootTest {
 
     private UUID itemId;
     private Item testItem;

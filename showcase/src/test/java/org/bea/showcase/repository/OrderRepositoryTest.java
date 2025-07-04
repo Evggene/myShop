@@ -1,6 +1,6 @@
 package org.bea.showcase.repository;
 
-import org.bea.showcase.configuration.BaseRepositoryTest;
+import org.bea.showcase.configuration.BaseRepositoryConfiguration;
 import org.bea.showcase.domain.Cart;
 import org.bea.showcase.domain.CartStateType;
 import org.bea.showcase.domain.Item;
@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.UUID;
 
-class OrderRepositoryTest extends BaseRepositoryTest {
+class OrderRepositoryTest extends BaseRepositoryConfiguration {
 
     @BeforeEach
     void setup() {

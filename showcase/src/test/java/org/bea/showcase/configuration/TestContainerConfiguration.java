@@ -1,17 +1,13 @@
-package org.bea.showcase;
+package org.bea.showcase.configuration;
 
 import com.redis.testcontainers.RedisContainer;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-@SpringBootTest
-@ActiveProfiles("test")
 @Testcontainers
-public class TestMyShopApplication {
+public class TestContainerConfiguration {
 
     @Container
     public static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(DockerImageName.parse("postgres:latest"))
@@ -22,5 +18,4 @@ public class TestMyShopApplication {
     @Container
     public static RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:latest"))
             .withExposedPorts(6379);
-
 }

@@ -1,6 +1,6 @@
 package org.bea.showcase.repository;
 
-import org.bea.showcase.configuration.BaseRepositoryTest;
+import org.bea.showcase.configuration.BaseRepositoryConfiguration;
 import org.bea.showcase.domain.Item;
 import org.bea.showcase.domain.Money;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,7 @@ import reactor.test.StepVerifier;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-class ItemRepositoryTest extends BaseRepositoryTest {
+class ItemRepositoryTest extends BaseRepositoryConfiguration {
 
     @BeforeEach
     void setUp() {

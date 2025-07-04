@@ -1,6 +1,6 @@
 package org.bea.showcase.service;
 
-import org.bea.showcase.configuration.BaseServiceTest;
+import org.bea.showcase.configuration.BaseServiceSpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;
@@ -11,7 +11,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GetCartServiceTest extends BaseServiceTest {
+class GetCartServiceTest extends BaseServiceSpringBootTest {
 
     private UUID testCartId;
     private UUID testItemId;

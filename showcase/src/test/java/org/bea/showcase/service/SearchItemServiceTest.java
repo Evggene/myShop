@@ -2,7 +2,7 @@ package org.bea.showcase.service;
 
 import org.bea.showcase.application.service.item.SearchItemService;
 import org.bea.showcase.application.type.SearchType;
-import org.bea.showcase.configuration.BaseServiceTest;
+import org.bea.showcase.configuration.BaseServiceSpringBootTest;
 import org.bea.showcase.infrastructure.output.db.repository.ItemRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class SearchItemServiceTest extends BaseServiceTest {
+class SearchItemServiceTest extends BaseServiceSpringBootTest {
 
     @Autowired
     private SearchItemService searchItemService;

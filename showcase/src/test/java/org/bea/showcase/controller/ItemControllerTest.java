@@ -3,7 +3,7 @@ package org.bea.showcase.controller;
 import org.bea.showcase.application.dto.ItemAndPageInfo;
 import org.bea.showcase.application.type.ActionType;
 import org.bea.showcase.application.type.SearchType;
-import org.bea.showcase.configuration.BaseControllerTest;
+import org.bea.showcase.configuration.BaseControllerConfiguration;
 import org.bea.showcase.domain.Item;
 import org.bea.showcase.domain.Money;
 import org.bea.showcase.infrastructure.input.controller.ItemController;
@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 
 @WebFluxTest(ItemController.class)
-class ItemControllerTest extends BaseControllerTest {
+class ItemControllerTest extends BaseControllerConfiguration {
 
     private final UUID testItemId = UUID.randomUUID();
     private final Item testItem = Item.builder()

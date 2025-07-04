@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-public class BaseControllerTest {
+public class BaseControllerConfiguration {
     @Autowired
     protected WebTestClient webTestClient;
     @MockBean
