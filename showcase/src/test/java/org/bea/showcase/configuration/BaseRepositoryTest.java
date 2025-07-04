@@ -10,7 +10,7 @@ import org.springframework.r2dbc.core.DatabaseClient;
 
 @DataR2dbcTest
 @Import({ItemRepositoryImpl.class, CartRepositoryImpl.class, OrderRepositoryImpl.class})
-public class BaseRepositoryTest extends BaseTest{
+public class BaseRepositoryTest extends BaseContainersTest {
 
 	@Autowired
 	protected DatabaseClient databaseClient;

@@ -10,13 +10,15 @@ import org.bea.showcase.application.port.output.CartRepository;
 import org.bea.showcase.application.port.output.ItemRepository;
 import org.bea.showcase.infrastructure.output.db.repository.ItemRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.r2dbc.core.DatabaseClient;
 
+@SpringBootTest
 @Import(ItemRepositoryImpl.class)
 @Configuration
-public class BaseServiceTest extends TestMyShopApplication{
+public class BaseServiceTest extends BaseContainersTest {
 
     @Autowired
     protected DatabaseClient databaseClient;
