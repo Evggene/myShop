@@ -10,6 +10,7 @@ import org.bea.showcase.application.port.output.CartRepository;
 import org.bea.showcase.application.port.output.ItemRepository;
 import org.bea.showcase.infrastructure.output.db.repository.ItemRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
@@ -38,6 +39,7 @@ public class BaseServiceTest extends TestMyShopApplication {
     @Autowired
     protected SearchItemService service;
     @Autowired
+    @Qualifier("testCacheManager")
     protected CacheManager cacheManager;
 
 }

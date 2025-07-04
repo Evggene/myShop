@@ -9,6 +9,7 @@ import org.bea.showcase.application.type.ActionType;
 import org.bea.showcase.domain.CartStateType;
 import org.bea.showcase.application.port.output.CartRepository;
 import org.bea.showcase.application.port.output.ItemRepository;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -23,6 +24,7 @@ public class ActionCartService {
     private final ActionStrategyContext actionStrategyContext;
     private final ItemRepository itemRepository;
 
+    @CacheEvict(value = "findByIdItem", key = "#id")
     public Mono<ActionType> handleAction(UUID id, ActionType actionType) {
         return Mono.zip(
                         itemRepository.getById(id)

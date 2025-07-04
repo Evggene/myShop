@@ -21,10 +21,10 @@ public class SearchItemService {
 
     private final ItemRepositoryImpl itemRepository;
 
-    @Cacheable(
-            value = "searchItemAndPageInfo",
-            key = "{#searchRaw, #searchTypeRaw, #itemSizeRaw, #pageNumberRaw}"
-    )
+//    @Cacheable(
+//            value = "searchItemAndPageInfo",
+//            key = "{#searchRaw, #searchTypeRaw, #itemSizeRaw, #pageNumberRaw}"
+//    )
     public Mono<ItemAndPageInfo> search(
             String searchRaw, SearchType searchTypeRaw, Integer itemSizeRaw, Integer pageNumberRaw) {
 
@@ -61,6 +61,10 @@ public class SearchItemService {
         };
     }
 
+    @Cacheable(
+            value = "findByIdItem",
+            key = "{#id}"
+    )
     public Mono<Item> findById(UUID id) {
         return itemRepository.getById(id);
     }

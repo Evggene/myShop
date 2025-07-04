@@ -7,6 +7,9 @@ import java.math.BigDecimal;
 
 @Data
 public class Money {
+
+    public Money() {}
+
     private BigDecimal price;
 
     public Money(BigDecimal price) {
