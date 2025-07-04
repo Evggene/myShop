@@ -2,9 +2,12 @@ package org.bea.showcase.integration;
 
 import com.redis.testcontainers.RedisContainer;
 import org.bea.showcase.application.configuration.RedisConfiguration;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -25,4 +28,17 @@ public class BaseIntegrationSpringBootTest {
     @Container
     public static RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:latest"))
             .withExposedPorts(6379);
+
+    @Test
+    void testRedisConnection() {
+        String host = redis.getHost();
+        Integer port = redis.getFirstMappedPort();
+        System.out.println("Redis is running at: " + host + ":" + port);
+    }
+
+    @DynamicPropertySource
+    static void redisProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.redis.host", redis::getHost);
+        registry.add("spring.data.redis.port", () -> redis.getRedisPort());
+    }
 }

@@ -6,6 +6,7 @@ import org.bea.showcase.integration.BaseIntegrationSpringBootTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 
 public class BaseServiceConfiguration extends BaseIntegrationSpringBootTest {
 
@@ -17,4 +18,7 @@ public class BaseServiceConfiguration extends BaseIntegrationSpringBootTest {
 
     @Autowired
     protected CacheManager cacheManager;
+
+    @Autowired
+    protected ReactiveRedisTemplate<String, Object> redisTemplate;
 }

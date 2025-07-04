@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.bea.client.domain.UserBalance;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,7 +51,6 @@ public class RedisConfiguration {
 
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
         cacheConfigurations.put("orders", redisCacheConfiguration());
         cacheConfigurations.put("searchItemAndPageInfo", redisCacheConfiguration());
@@ -64,15 +62,12 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(
-            ReactiveRedisConnectionFactory connectionFactory) {
+    public ReactiveRedisTemplate<String, Object> reactiveRedisTemplate(ReactiveRedisConnectionFactory connectionFactory) {
         StringRedisSerializer keySerializer = new StringRedisSerializer();
-        Jackson2JsonRedisSerializer<Object> valueSerializer =
-                new Jackson2JsonRedisSerializer<>(Object.class);
+        var valueSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
         RedisSerializationContext.RedisSerializationContextBuilder<String, Object> builder =
                 RedisSerializationContext.newSerializationContext(keySerializer);
-        RedisSerializationContext<String, Object> context =
-                builder.value(valueSerializer).build();
+        var context = builder.value(valueSerializer).build();
         return new ReactiveRedisTemplate<>(connectionFactory, context);
     }
 }
