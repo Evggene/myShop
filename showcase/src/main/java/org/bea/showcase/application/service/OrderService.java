@@ -1,7 +1,6 @@
 package org.bea.showcase.application.service;
 
 import lombok.RequiredArgsConstructor;
-import org.bea.showcase.application.configuration.CacheType;
 import org.bea.showcase.application.configuration.TechnicalUserProperty;
 import org.bea.showcase.application.exception.MyShopException;
 import org.bea.showcase.application.mapper.OrderMapper;

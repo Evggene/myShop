@@ -11,12 +11,15 @@ import org.bea.showcase.application.port.output.ItemRepository;
 import org.bea.showcase.infrastructure.output.db.repository.ItemRepositoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.r2dbc.core.DatabaseClient;
+import org.testcontainers.shaded.org.bouncycastle.jcajce.provider.symmetric.DES;
 
 @SpringBootTest
-@Import(ItemRepositoryImpl.class)
+@Import({ItemRepositoryImpl.class, TestCacheConfig.class})
 @Configuration
 public class BaseServiceTest extends TestMyShopApplication {
 
@@ -34,5 +37,7 @@ public class BaseServiceTest extends TestMyShopApplication {
     protected GetCartService getCartService;
     @Autowired
     protected SearchItemService service;
+    @Autowired
+    protected CacheManager cacheManager;
 
 }

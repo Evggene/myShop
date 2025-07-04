@@ -125,18 +125,14 @@ class SearchItemServiceTest extends BaseServiceTest {
     void search_ShouldApplyPagination() {
         StepVerifier.create(searchItemService.search("", null, 2, 1))
                 .assertNext(result -> {
-             //       assertEquals(3, result.pageInfo().totalElements());
                     assertEquals(1, result.pageInfo().pageNumber());
-           //         assertEquals(2, result.pageInfo().itemSize());
                     assertEquals(2, result.items().size());
                 })
                 .verifyComplete();
 
         StepVerifier.create(searchItemService.search("", null, 2, 2))
                 .assertNext(result -> {
-          //          assertEquals(3, result.pageInfo().totalElements());
                     assertEquals(2, result.pageInfo().pageNumber());
-           //         assertEquals(2, result.pageInfo().itemSize());
                     assertEquals(1, result.items().size());
                 })
                 .verifyComplete();

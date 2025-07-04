@@ -7,6 +7,7 @@ import org.bea.showcase.application.dto.ItemAndPageInfo;
 import org.bea.showcase.infrastructure.input.dto.PageOfItemsResponse;
 import org.bea.showcase.application.type.SearchType;
 import org.bea.showcase.infrastructure.output.db.repository.ItemRepositoryImpl;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,10 @@ public class SearchItemService {
 
     private final ItemRepositoryImpl itemRepository;
 
+    @Cacheable(
+            value = "searchItemAndPageInfo",
+            key = "{#searchRaw, #searchTypeRaw, #itemSizeRaw, #pageNumberRaw}"
+    )
     public Mono<ItemAndPageInfo> search(
             String searchRaw, SearchType searchTypeRaw, Integer itemSizeRaw, Integer pageNumberRaw) {
 
