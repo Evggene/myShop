@@ -1,5 +1,6 @@
 package org.bea.showcase.integration.configuration;
 
+import org.bea.showcase.application.service.item.AddItemService;
 import org.bea.showcase.application.service.item.SearchItemService;
 import org.bea.showcase.infrastructure.output.db.repository.ItemRepositoryImpl;
 import org.bea.showcase.integration.BaseIntegrationSpringBootTest;
@@ -12,6 +13,9 @@ public class BaseServiceConfiguration extends BaseIntegrationSpringBootTest {
 
     @Autowired
     protected SearchItemService searchItemService;
+
+    @Autowired
+    protected AddItemService addItemService;
 
     @MockBean
     protected ItemRepositoryImpl itemRepository;

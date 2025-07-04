@@ -5,6 +5,7 @@ import org.bea.showcase.domain.Item;
 import org.bea.showcase.infrastructure.input.dto.AddItemRequest;
 import org.bea.showcase.application.mapper.ItemMapper;
 import org.bea.showcase.infrastructure.output.db.repository.ItemRepositoryImpl;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -16,6 +17,7 @@ public class AddItemService {
 
     private final ItemRepositoryImpl itemRepository;
 
+    @CachePut(value = "findByIdItem", key = "#result.id")
     public Mono<Item> add(Mono<AddItemRequest> addItemRequest) {
         return addItemRequest
                 .flatMap(req -> {
