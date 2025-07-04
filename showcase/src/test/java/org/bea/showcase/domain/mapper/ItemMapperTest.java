@@ -1,4 +1,4 @@
-package org.bea.showcase.mapper;
+package org.bea.showcase.domain.mapper;
 
 import org.bea.showcase.application.mapper.ItemMapper;
 import org.bea.showcase.domain.Item;

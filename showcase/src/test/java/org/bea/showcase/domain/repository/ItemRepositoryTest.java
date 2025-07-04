@@ -1,6 +1,6 @@
-package org.bea.showcase.repository;
+package org.bea.showcase.domain.repository;
 
-import org.bea.showcase.configuration.BaseRepositoryConfiguration;
+import org.bea.showcase.domain.configuration.BaseRepositoryConfiguration;
 import org.bea.showcase.domain.Item;
 import org.bea.showcase.domain.Money;
 import org.junit.jupiter.api.BeforeEach;

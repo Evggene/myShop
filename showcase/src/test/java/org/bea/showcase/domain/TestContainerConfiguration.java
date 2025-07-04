@@ -1,4 +1,4 @@
-package org.bea.showcase.configuration;
+package org.bea.showcase.domain;
 
 import com.redis.testcontainers.RedisContainer;
 import org.testcontainers.containers.PostgreSQLContainer;

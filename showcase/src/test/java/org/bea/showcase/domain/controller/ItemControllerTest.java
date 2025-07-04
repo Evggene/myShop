@@ -1,9 +1,9 @@
-package org.bea.showcase.controller;
+package org.bea.showcase.domain.controller;
 
 import org.bea.showcase.application.dto.ItemAndPageInfo;
 import org.bea.showcase.application.type.ActionType;
 import org.bea.showcase.application.type.SearchType;
-import org.bea.showcase.configuration.BaseControllerConfiguration;
+import org.bea.showcase.domain.configuration.BaseControllerConfiguration;
 import org.bea.showcase.domain.Item;
 import org.bea.showcase.domain.Money;
 import org.bea.showcase.infrastructure.input.controller.ItemController;

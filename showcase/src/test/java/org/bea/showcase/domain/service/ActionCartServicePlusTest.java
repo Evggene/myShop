@@ -1,8 +1,8 @@
-package org.bea.showcase.service;
+package org.bea.showcase.domain.service;
 
 import org.bea.showcase.application.exception.MyShopException;
 import org.bea.showcase.application.type.ActionType;
-import org.bea.showcase.configuration.BaseServiceSpringBootTest;
+import org.bea.showcase.domain.configuration.BaseServiceSpringBootTest;
 import org.bea.showcase.domain.CartStateType;
 import org.bea.showcase.domain.Item;
 import org.bea.showcase.domain.Money;

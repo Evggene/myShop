@@ -1,12 +1,12 @@
 package org.bea.showcase.integration_configuration;
 
-import org.bea.showcase.integration_configuration.RedisForIntegrationTestConfiguration;
+import org.bea.showcase.application.configuration.RedisConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test-integration")
+@ActiveProfiles("integration-test")
 @SpringBootTest
-@Import(RedisForIntegrationTestConfiguration.class)
+@Import(RedisConfiguration.class)
 public class BaseIntegrationSpringBootTest {
 }

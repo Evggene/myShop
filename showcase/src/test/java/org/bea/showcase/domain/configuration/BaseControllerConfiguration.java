@@ -1,4 +1,4 @@
-package org.bea.showcase.configuration;
+package org.bea.showcase.domain.configuration;
 
 import org.bea.showcase.application.port.output.CartRepository;
 import org.bea.showcase.application.service.OrderService;

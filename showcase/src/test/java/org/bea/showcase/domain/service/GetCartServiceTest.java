@@ -1,6 +1,6 @@
-package org.bea.showcase.service;
+package org.bea.showcase.domain.service;
 
-import org.bea.showcase.configuration.BaseServiceSpringBootTest;
+import org.bea.showcase.domain.configuration.BaseServiceSpringBootTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import reactor.core.publisher.Mono;

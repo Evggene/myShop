@@ -1,6 +1,6 @@
-package org.bea.showcase.controller;
+package org.bea.showcase.domain.controller;
 
-import org.bea.showcase.configuration.BaseControllerConfiguration;
+import org.bea.showcase.domain.configuration.BaseControllerConfiguration;
 import org.bea.showcase.infrastructure.input.controller.OrderController;
 import org.bea.showcase.infrastructure.input.dto.ItemInCartResponse;
 import org.bea.showcase.infrastructure.input.dto.OrderResponse;

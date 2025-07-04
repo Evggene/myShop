@@ -1,4 +1,4 @@
-package org.bea.showcase.configuration;
+package org.bea.showcase.domain;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;

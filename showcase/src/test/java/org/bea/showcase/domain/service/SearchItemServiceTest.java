@@ -1,8 +1,8 @@
-package org.bea.showcase.service;
+package org.bea.showcase.domain.service;
 
 import org.bea.showcase.application.service.item.SearchItemService;
 import org.bea.showcase.application.type.SearchType;
-import org.bea.showcase.configuration.BaseServiceSpringBootTest;
+import org.bea.showcase.domain.configuration.BaseServiceSpringBootTest;
 import org.bea.showcase.infrastructure.output.db.repository.ItemRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

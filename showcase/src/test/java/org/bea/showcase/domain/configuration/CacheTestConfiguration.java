@@ -1,4 +1,4 @@
-package org.bea.showcase.configuration;
+package org.bea.showcase.domain.configuration;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cache.Cache;

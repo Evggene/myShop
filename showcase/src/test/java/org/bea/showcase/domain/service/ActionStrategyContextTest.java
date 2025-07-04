@@ -1,9 +1,9 @@
-package org.bea.showcase.service;
+package org.bea.showcase.domain.service;
 
 import org.bea.showcase.application.service.actionCartStrategy.ActionStrategy;
 import org.bea.showcase.application.service.actionCartStrategy.ActionStrategyContext;
 import org.bea.showcase.application.type.ActionType;
-import org.bea.showcase.configuration.BaseServiceSpringBootTest;
+import org.bea.showcase.domain.configuration.BaseServiceSpringBootTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

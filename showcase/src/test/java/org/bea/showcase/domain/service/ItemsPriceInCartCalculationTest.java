@@ -1,4 +1,4 @@
-package org.bea.showcase.service;
+package org.bea.showcase.domain.service;
 
 import org.bea.showcase.application.service.ItemsPriceInCartCalculation;
 import org.bea.showcase.domain.Cart;

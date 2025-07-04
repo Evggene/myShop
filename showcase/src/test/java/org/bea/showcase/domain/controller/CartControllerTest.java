@@ -1,7 +1,7 @@
-package org.bea.showcase.controller;
+package org.bea.showcase.domain.controller;
 
 import org.bea.showcase.application.type.ActionType;
-import org.bea.showcase.configuration.BaseControllerConfiguration;
+import org.bea.showcase.domain.configuration.BaseControllerConfiguration;
 import org.bea.showcase.domain.*;
 import org.bea.showcase.application.dto.CartDetailsAndBalance;
 import org.bea.showcase.infrastructure.input.controller.CartController;
