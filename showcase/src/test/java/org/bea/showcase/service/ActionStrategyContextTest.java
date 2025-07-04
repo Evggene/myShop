@@ -24,14 +24,12 @@ class ActionStrategyContextTest extends TestMyShopApplication {
 
     @Test
     void contextShouldHaveStrategyForEveryActionType() {
-        // Получаем все зарегистрированные стратегии из контекста
         Map<ActionType, ActionStrategy> registeredStrategies =
                 applicationContext.getBeansOfType(ActionStrategy.class)
                         .values()
                         .stream()
                         .collect(Collectors.toMap(ActionStrategy::getType, s -> s));
 
-        // Проверяем, что для каждого ActionType есть стратегия
         Arrays.stream(ActionType.values())
                 .forEach(actionType -> assertTrue(
                         registeredStrategies.containsKey(actionType),

@@ -18,7 +18,7 @@ import org.springframework.r2dbc.core.DatabaseClient;
 @SpringBootTest
 @Import(ItemRepositoryImpl.class)
 @Configuration
-public class BaseServiceTest extends BaseContainersTest {
+public class BaseServiceTest extends TestMyShopApplication {
 
     @Autowired
     protected DatabaseClient databaseClient;
