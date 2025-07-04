@@ -1,4 +1,4 @@
-package org.bea.showcase.integration_configuration;
+package org.bea.showcase.integration;
 
 import org.bea.showcase.application.configuration.RedisConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;

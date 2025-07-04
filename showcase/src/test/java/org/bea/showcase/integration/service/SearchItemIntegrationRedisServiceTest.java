@@ -1,16 +1,15 @@
-package org.bea.showcase.integration_configuration.service;
+package org.bea.showcase.integration.service;
 
 import org.bea.showcase.application.service.item.SearchItemService;
-import org.bea.showcase.integration_configuration.BaseIntegrationSpringBootTest;
+import org.bea.showcase.integration.BaseIntegrationSpringBootTest;
 import org.bea.showcase.domain.Item;
 import org.bea.showcase.domain.Money;
 import org.bea.showcase.infrastructure.output.db.repository.ItemRepositoryImpl;
+import org.bea.showcase.integration.configuration.BaseServiceConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cache.CacheManager;
-import org.springframework.context.annotation.Import;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -21,16 +20,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class SearchItemIntegrationRedisServiceTest extends BaseIntegrationSpringBootTest {
-
-    @Autowired
-    private SearchItemService searchItemService;
-
-    @MockBean
-    private ItemRepositoryImpl itemRepository;
-
-    @Autowired
-    private CacheManager cacheManager;
+public class SearchItemIntegrationRedisServiceTest extends BaseServiceConfiguration {
 
     @Test
     public void findById_shouldUseCacheForSameId() {
