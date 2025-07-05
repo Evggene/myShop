@@ -1,5 +1,10 @@
 package org.bea.payment.insfrastructure.input;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.bea.payment.application.config.TechnicalUserProperty;
 import org.bea.payment.application.usecase.UserBalanceUseCase;

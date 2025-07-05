@@ -36,10 +36,10 @@ public class CartController {
     public Mono<Rendering> getItemsInCart() {
         return getCartService.getCartAndBalance()
                 .map(it -> Rendering.view("cart")
-                        .modelAttribute("empty", it.items().isEmpty() || it.balance().compareTo(BigDecimal.ZERO) < 0)
-                        .modelAttribute("items", it.items())
-                        .modelAttribute("total", it.totalPrice())
-                        .modelAttribute("cartId", it.cartId())
+                        .modelAttribute("empty", it.getItems().isEmpty() || it.getBalance().compareTo(BigDecimal.ZERO) < 0)
+                        .modelAttribute("items", it.getItems())
+                        .modelAttribute("total", it.getTotalPrice())
+                        .modelAttribute("cartId", it.getCartId())
                         .build());
     }
 

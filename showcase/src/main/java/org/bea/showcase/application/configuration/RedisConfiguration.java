@@ -24,7 +24,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-@Profile("!test & integration-test")
+@Profile("!test | integration-test")
 @EnableCaching
 @Configuration
 public class RedisConfiguration {
@@ -52,9 +52,8 @@ public class RedisConfiguration {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-        cacheConfigurations.put("orders", redisCacheConfiguration());
-        cacheConfigurations.put("searchItemAndPageInfo", redisCacheConfiguration());
         cacheConfigurations.put("findByIdItem", redisCacheConfiguration());
+        cacheConfigurations.put("getCartAndBalance", redisCacheConfiguration());
 
         return RedisCacheManager.builder(redisConnectionFactory)
                 .withInitialCacheConfigurations(cacheConfigurations)

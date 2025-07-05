@@ -42,7 +42,7 @@ public class OrderService {
         return getCartService.getCartAndBalance()
                 .switchIfEmpty(Mono.error(new MyShopException(orderId.toString())))
                 .flatMap(order ->
-                        orderWebClient.tryPay(TechnicalUserProperty.technicalUserId, order.totalPrice())
+                        orderWebClient.tryPay(TechnicalUserProperty.technicalUserId, order.getTotalPrice())
                         .flatMap(bool -> {
                             if (bool) {
                                 return orderCartService.orderCart(orderId);

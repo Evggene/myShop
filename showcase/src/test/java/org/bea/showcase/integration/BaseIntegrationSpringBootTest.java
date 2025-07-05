@@ -28,12 +28,5 @@ public class BaseIntegrationSpringBootTest {
     @Container
     public static RedisContainer redis = new RedisContainer(DockerImageName.parse("redis:latest"))
             .withExposedPorts(6379);
-
-    @Test
-    void testRedisConnection() {
-        String host = redis.getHost();
-        Integer port = redis.getFirstMappedPort();
-        System.out.println("Redis is running at: " + host + ":" + port);
-    }
     
 }

@@ -58,11 +58,11 @@ class GetCartServiceTest extends BaseServiceSpringBootTest {
 
         StepVerifier.create(getCartService.getCartAndBalance())
                 .assertNext(result -> {
-                    assertEquals(testCartId, result.cartId());
-                    assertEquals(1, result.items().size());
-                    assertEquals(0, new BigDecimal("199.98").compareTo(result.totalPrice()));
-                    assertEquals("Test Item", result.items().get(0).getTitle());
-                    assertEquals(2, result.items().get(0).getCount()); // Проверяем что count установлен правильно
+                    assertEquals(testCartId, result.getCartId());
+                    assertEquals(1, result.getItems().size());
+                    assertEquals(0, new BigDecimal("199.98").compareTo(result.getTotalPrice()));
+                    assertEquals("Test Item", result.getItems().get(0).getTitle());
+                    assertEquals(2, result.getItems().get(0).getCount()); // Проверяем что count установлен правильно
                 })
                 .verifyComplete();
     }
@@ -71,8 +71,8 @@ class GetCartServiceTest extends BaseServiceSpringBootTest {
     void getCartStatePrepare_ShouldReturnEmptyForNoCart() {
         StepVerifier.create(getCartService.getCartAndBalance())
                 .assertNext(result -> {
-                    assertTrue(result.items().isEmpty());
-                    assertEquals(0, BigDecimal.ZERO.compareTo(result.totalPrice()));
+                    assertTrue(result.getItems().isEmpty());
+                    assertEquals(0, BigDecimal.ZERO.compareTo(result.getTotalPrice()));
                 })
                 .verifyComplete();
     }
@@ -100,9 +100,9 @@ class GetCartServiceTest extends BaseServiceSpringBootTest {
 
         StepVerifier.create(getCartService.getCartAndBalance())
                 .assertNext(result -> {
-                    assertEquals(2, result.items().size());
+                    assertEquals(2, result.getItems().size());
                     // 99.99 * 2 + 50.00 * 3 = 199.98 + 150.00 = 349.98
-                    assertEquals(0, new BigDecimal("349.98").compareTo(result.totalPrice()));
+                    assertEquals(0, new BigDecimal("349.98").compareTo(result.getTotalPrice()));
                 })
                 .verifyComplete();
     }
@@ -143,11 +143,11 @@ class GetCartServiceTest extends BaseServiceSpringBootTest {
 
         StepVerifier.create(getCartService.getCartAndBalance())
                 .assertNext(result -> {
-                    assertEquals(3, result.items().size());
+                    assertEquals(3, result.getItems().size());
                     // Проверяем сортировку по title
-                    assertEquals("A Item", result.items().get(0).getTitle());
-                    assertEquals("B Item", result.items().get(1).getTitle());
-                    assertEquals("Test Item", result.items().get(2).getTitle());
+                    assertEquals("A Item", result.getItems().get(0).getTitle());
+                    assertEquals("B Item", result.getItems().get(1).getTitle());
+                    assertEquals("Test Item", result.getItems().get(2).getTitle());
                 })
                 .verifyComplete();
     }

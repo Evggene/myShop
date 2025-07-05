@@ -62,7 +62,7 @@ public class SearchItemIntegrationRedisServiceTest extends BaseServiceConfigurat
                 Integer.valueOf(5).equals(itemMap.get("count"));
     }
 
-    private static Item buildTestItem(UUID itemId) {
+    private Item buildTestItem(UUID itemId) {
         return Item.builder()
                 .id(itemId)
                 .title("Test Item")
