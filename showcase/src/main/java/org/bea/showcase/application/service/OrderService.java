@@ -26,7 +26,6 @@ public class OrderService {
     private final OrderCartService orderCartService;
     private final GetCartService getCartService;
 
-    @Cacheable(value = "orders", key = "'all'")
     public Mono<List<OrderResponse>> getAll() {
         return orderRepository.getAll()
                 .map(OrderMapper::fromEntityToRequest)

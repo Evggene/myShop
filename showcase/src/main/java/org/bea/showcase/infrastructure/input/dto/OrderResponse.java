@@ -14,7 +14,6 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@CacheConfig(cacheNames = "orders", cacheManager = "redisCacheManager")
 public class OrderResponse {
     private UUID id;
     private List<ItemInCartResponse> items;

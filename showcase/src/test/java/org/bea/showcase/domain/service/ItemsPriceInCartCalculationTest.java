@@ -1,6 +1,6 @@
 package org.bea.showcase.domain.service;
 
-import org.bea.showcase.application.service.ItemsPriceInCartCalculation;
+import org.bea.showcase.application.service.item.ItemsPriceInCartCalculation;
 import org.bea.showcase.domain.Cart;
 import org.bea.showcase.domain.Item;
 import org.bea.showcase.domain.Money;

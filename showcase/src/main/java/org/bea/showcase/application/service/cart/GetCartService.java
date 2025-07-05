@@ -3,7 +3,7 @@ package org.bea.showcase.application.service.cart;
 import lombok.RequiredArgsConstructor;
 import org.bea.showcase.application.configuration.TechnicalUserProperty;
 import org.bea.showcase.application.dto.CartDetailsAndBalance;
-import org.bea.showcase.application.service.ItemsPriceInCartCalculation;
+import org.bea.showcase.application.service.item.ItemsPriceInCartCalculation;
 import org.bea.showcase.domain.Cart;
 import org.bea.showcase.domain.CartStateType;
 import org.bea.showcase.domain.Item;
